@@ -87,6 +87,15 @@ python -m pip install aws-cdk-lib
 ### Install Docker
 - CDK will build the Docker images locally as part of deployment, so you need both the Docker SDK installed, and also a Docker VM (such as Docker Desktop or Rancher Desktop)
 
+### Install nvm and node
+It strongly recommended that you use nvm to install/manage node and do not install node directly.
+- Install nvm
+- Use nvm to install latest LTS version of node
+   ```bash
+    nvm install --lts
+   ```
+
+
 ---
 
 ## Local docker testing 

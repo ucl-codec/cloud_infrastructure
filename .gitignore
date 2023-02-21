@@ -1,0 +1,12 @@
+# Python ignores
+__pycache__
+.pytest_cache
+*.egg-info
+
+# CDK
+*.swp
+cdk.context.json
+package-lock.json
+yarn.lock
+.cdk.staging
+cdk.out

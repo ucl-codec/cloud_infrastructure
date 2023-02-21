@@ -169,8 +169,16 @@ cdk synth --profile passian
 
 Deploy the stack
 ```bash
-./deploy.sh
+./scripts/deploy.sh
 ```
+
+### Destroy the AWS stack
+```bash
+./scripts/destroy.sh
+```
+Note that some resources may persist (such as volumes). These need to be manually deleted on the
+AWS console to stop further costs.
+
 
 ## Troubleshooting
 
@@ -179,4 +187,3 @@ available to the local docker VM. This is not a build argument but is configured
 provider (e.g. Docker Desktop or Rancher Desktop)
 
 ---
-

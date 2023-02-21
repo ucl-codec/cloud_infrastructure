@@ -10,3 +10,9 @@ package-lock.json
 yarn.lock
 .cdk.staging
 cdk.out
+
+# Local docker testing
+/.local_docker_storage
+
+# Local python environment
+/.aws_fbm_env

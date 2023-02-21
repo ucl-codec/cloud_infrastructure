@@ -1,0 +1,6 @@
+# UCL PASSIAN - user environment launch script for Fed-BioMed researcher container
+# This script is appended to .bashrc and will be run when the user launches an interactive shell
+
+# Initialise and activate conda
+source /miniconda/etc/profile.d/conda.sh
+conda activate fedbiomed-researcher

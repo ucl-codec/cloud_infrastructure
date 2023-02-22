@@ -26,15 +26,15 @@ https://aws.amazon.com/vpn/client-vpn-download/
 - Launch AWS VPN Client 
 - Select Researcher profile
 - Click Connect
-- Connect to Jupyter notebook in your web browser: http://researcher.passian:8888
-- Connect to TensorBoard in your web browser: http://researcher.passian:6007
+- Connect to Jupyter notebook in your web browser: http://researcher.passian.federated:8888
+- Connect to TensorBoard in your web browser: http://researcher.passian.federated:6007
 
 ### Connect to the Clinical network
 
 - Launch AWS VPN Client 
 - Select Clinical profile
 - Click Connect
-- Connect to Fed Bio-Med GUI in your web browser: http://node.passian:8484
+- Connect to Fed Bio-Med GUI in your web browser: http://node.passian.clinical:8484
 
 ---
 ## Setting up your system for AWS deployment
@@ -169,8 +169,14 @@ For more details: https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/client-
 
 ### Deployment
 
+- Before deployment, set the vpn_cert_arn variable in `app.py`. This is the ARN of the
+VPN development server certificate. In future, this will be replaced by a parameter store lookup.
+
+
+
+
 You can synthesize the CloudFormation template prior to deployment. This is not essential as it 
-will be performed automatically when you deploy, but it is a useful check  
+will be performed automatically when you deploy, but it is a useful check .
 
 ```bash
 cdk synth --profile passian
@@ -180,6 +186,12 @@ Deploy the stack
 ```bash
 ./scripts/deploy.sh
 ```
+
+After deployment has started, add the node VPC to the Hosted Zone of the Federated VPC on the AWS console.
+You only need to do this if one of the VPCs has been re-created. 
+
+Note that the node deployment will fail if this is not performed.
+
 
 ### Destroy the AWS stack
 ```bash

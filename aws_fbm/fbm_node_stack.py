@@ -25,7 +25,7 @@ class FbmNodeStack(FbmBaseStack):
         self.peer(network_stack=network_stack, peer_vpc=network_vpc)
 
         self.add_vpn(cidr_range="10.3.0.0/22", dns_server="10.2.0.2")
-        self.add_dns(namespace="passian")
+        self.add_dns(namespace="passian.clinical")
 
         self.add_file_system()
         node_config_volume_name = self.add_volume(
@@ -39,9 +39,9 @@ class FbmNodeStack(FbmBaseStack):
         node_common_volume_name = self.add_volume(
             name="common", root_directory='/node/common')
 
-        mqtt_broker = "researcher.passian"
+        mqtt_broker = "researcher.passian.federated"
         mqtt_broker_port = "1883"
-        uploads_url = "http://researcher.passian:8000/upload/"
+        uploads_url = "http://researcher.passian.federated:8000/upload/"
 
         # Node container
         node_container = self.add_docker_container(

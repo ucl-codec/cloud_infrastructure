@@ -17,7 +17,7 @@ class FbmNetworkStack(FbmBaseStack):
                          **kwargs)
 
         self.add_vpn(cidr_range="10.1.0.0/22", dns_server="10.0.0.2")
-        self.add_dns(namespace="passian")
+        self.add_dns(namespace="passian.federated")
 
         mqtt_broker = "localhost"
         mqtt_broker_port = "1883"

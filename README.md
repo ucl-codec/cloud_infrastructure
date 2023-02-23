@@ -12,10 +12,20 @@ using VPN and your web browser
 ### Install the AWS Client VPN
 https://aws.amazon.com/vpn/client-vpn-download/
 
-### Obtain your development VPN certificates
+### Obtain your development VPN profiles
 
-- Development certificates are stored as secure strings in the AWS Parameter Store. 
-- You require separate certificates for the researcher VPN and the clinical VPN
+- Log into the AWS Console
+- Go to AWS Systems Manager
+- Select Parameter Store on the left
+- There is a SecureString for each VPN - one for the federated researcher VPN and one for each clinical node VPN
+  - Click on a SecureString
+  - Click View
+  - Copy the contents into a local text file
+  - Save securely with an appropriate name (eg my_federated_vpn_profile)
+  - Repeat for the other SecureStrings
+
+Note: on Linux you may need to add the line `dhcp-option DOMAIN-ROUTE .` to the start of the config file
+See here: https://docs.aws.amazon.com/vpn/latest/clientvpn-user/linux-troubleshooting.html
 
 ### Add the certificates to the AWS VPN Client
 - Launch AWS VPN Client 
@@ -35,6 +45,13 @@ https://aws.amazon.com/vpn/client-vpn-download/
 - Select Clinical profile
 - Click Connect
 - Connect to Fed Bio-Med GUI in your web browser: http://node.passian.clinical:8484
+
+### Troubleshooting
+
+See the troubleshooting docs:
+
+https://docs.aws.amazon.com/vpn/latest/clientvpn-user/troubleshooting.html
+
 
 ---
 ## Setting up your system for AWS deployment
@@ -86,6 +103,7 @@ python -m pip install aws-cdk-lib
 
 ### Install Docker
 - CDK will build the Docker images locally as part of deployment, so you need both the Docker SDK installed, and also a Docker VM (such as Docker Desktop or Rancher Desktop)
+- Docker Desktop and Rancher Desktop run Docker inside a VM; you may want to increase the RAM available to the VM to speed up builds.
 
 ### Install nvm and node
 It strongly recommended that you use nvm to install/manage node and do not install node directly.
@@ -157,11 +175,20 @@ cdk bootstrap
 
 ### VPN server 
 
+#### Create VPN server certificate
 You need to generate a development CA for the VPN and add the key, certificate and CA chain to the
 AWS Certificate Manager. You will need to reference the ARN of this certificate in the CDK
 codebase. You will need to use this CA to generate development VPN certificates.
 
 For more details: https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/client-authentication.html#mutual
+
+#### Add ARN of VPN server certificate to parameter store
+
+Once you have added this certificate to the AWS Certificate Manager, you need to create a parameter
+which the CDK templates will use to identify the certificate.
+
+To do this, create a parameter in the AWS Parameter Store called `passian-fbm-vpn-server-cert-arn`.
+This should be a String, and the value should be the ARN (Amazon Resource Name) of the cerficiate. 
 
 ---
 

@@ -11,6 +11,7 @@ from aws_cdk import (
 from constructs import Construct
 from aws_cdk.aws_ecr_assets import DockerImageAsset
 from aws_cdk import (aws_ec2 as ec2, aws_ecs as ecs)
+import aws_cdk.aws_ssm as ssm
 
 
 class FbmBaseStack(Stack):
@@ -18,7 +19,6 @@ class FbmBaseStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, *,
                  stack_prefix: str,
                  cidr_range: str,
-                 vpn_cert_arn: str,
                  cpu=8192,
                  memory_limit_mib=40960,
                  **kwargs) -> None:
@@ -27,6 +27,8 @@ class FbmBaseStack(Stack):
         self.stack_prefix = stack_prefix
         self.cidr_range = cidr_range
         self.vpn_cert_arn = vpn_cert_arn
+        self.vpn_cert_arn = ssm.StringParameter.value_for_string_parameter(
+            self, "passian-fbm-vpn-server-cert-arn")
 
         # Create VPC
         self.vpc = ec2.Vpc(

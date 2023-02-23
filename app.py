@@ -7,23 +7,25 @@ from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_node_stack import FbmNodeStack
 
 
+def get_environment() -> cdk.Environment:
+    # Fetch account and region from env vars.
+    return cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+                           region=os.getenv('CDK_DEFAULT_REGION'))
+
+
 app = cdk.App()
 network = FbmNetworkStack(
     scope=app,
     construct_id="FbmNetworkStack",
-    # Fetch account and region from env vars.
-    env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-                        region=os.getenv('CDK_DEFAULT_REGION')),
+    env=get_environment()
 )
 node = FbmNodeStack(
     scope=app,
     construct_id="FbmNodeStack",
     network_stack=network,
     network_vpc=network.vpc,
+    env=get_environment()
 
-    # Fetch account and region from env vars.
-    env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-                        region=os.getenv('CDK_DEFAULT_REGION')),
 )
 
 

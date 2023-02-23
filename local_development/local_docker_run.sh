@@ -37,24 +37,25 @@ docker network inspect "${NETWORK}" >/dev/null 2>&1 || \
     docker network create --driver bridge  --subnet=172.18.0.0/16 "${NETWORK}"
 
 # Run MQTT
-docker start mqtt || docker run -d -p 1883:1883 --net "${NETWORK}" --ip "${MQTT_IP}" --name mqtt passian/mqtt
+docker start mqtt 2>/dev/null || docker run -d -p 1883:1883 --net "${NETWORK}" --ip "${MQTT_IP}" --name mqtt passian/mqtt
 
 # Run restful
-docker start restful || docker run -d -p 8844:8000 --net "${NETWORK}" --ip "${RESTFUL_IP}" --name restful passian/restful
+docker start restful 2>/dev/null || docker run -d -p 8844:8000 --net "${NETWORK}" --ip "${RESTFUL_IP}" --name restful passian/restful
 
 # Run gui
 # Note the mounts correspond to the volumes in docker-compose
-docker start gui || docker run -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
+docker start gui 2>/dev/null || docker run -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
   -e MQTT_BROKER -e UPLOADS_URL \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \
   --mount type=bind,source="${NODE_STORAGE}/var",target=/fedbiomed/var \
   --mount type=bind,source="${NODE_STORAGE}/common",target=/fedbiomed/envs/common \
-  --name gui passian/gui
+  --name gui \
+  passian/gui
 
 # Run researcher
 # Note the mounts correspond to the volumes in docker-compose
-docker start researcher || docker run -d -p 8888:8888 -p 6007:6007 --net "${NETWORK}" --ip "${RESEARCHER_IP}" \
+docker start researcher 2>/dev/null || docker run -d -p 8888:8888 -p 6007:6007 --net "${NETWORK}" --ip "${RESEARCHER_IP}" \
   -e MQTT_BROKER -e UPLOADS_URL \
   --mount type=bind,source="${RESEARCHER_STORAGE}/config",target=/config \
   --mount type=bind,source="${RESEARCHER_STORAGE}/data",target=/data \
@@ -66,7 +67,7 @@ docker start researcher || docker run -d -p 8888:8888 -p 6007:6007 --net "${NETW
 
 # Run node
 # Note the mounts correspond to the volumes in docker-compose
-docker start node || docker run -d --net "${NETWORK}" --ip "${NODE_IP}" \
+docker start node 2>/dev/null || docker run -d --net "${NETWORK}" --ip "${NODE_IP}" \
   -e MQTT_BROKER -e UPLOADS_URL \
   --mount type=bind,source="${NODE_STORAGE}/config",target=/config \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
@@ -74,4 +75,6 @@ docker start node || docker run -d --net "${NETWORK}" --ip "${NODE_IP}" \
   --mount type=bind,source="${NODE_STORAGE}/var",target=/fedbiomed/var \
   --mount type=bind,source="${NODE_STORAGE}/common",target=/fedbiomed/envs/common \
   --name node passian/node
+# For GPU support add this option (linux only)
+#  --gpus all \
 

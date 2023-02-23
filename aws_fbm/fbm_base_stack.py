@@ -1,7 +1,7 @@
 from typing import List
 
 import aws_cdk.aws_logs as logs
-from aws_cdk import RemovalPolicy
+from aws_cdk import RemovalPolicy, Environment
 from aws_cdk import (
     aws_iam as iam,
     aws_efs as efs,
@@ -17,16 +17,22 @@ import aws_cdk.aws_ssm as ssm
 class FbmBaseStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, *,
+                 stack_name: str,
                  stack_prefix: str,
-                 cidr_range: str,
+                 description: str,
+                 network_number: int,
                  cpu=8192,
                  memory_limit_mib=40960,
-                 **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+                 env: Environment) -> None:
+        super().__init__(scope, construct_id,
+                         stack_name=stack_name,
+                         description=description,
+                         env=env)
 
         self.stack_prefix = stack_prefix
-        self.cidr_range = cidr_range
-        self.vpn_cert_arn = vpn_cert_arn
+        self.cidr_range = f"10.{2*network_number}.0.0/16"
+        self.vpn_cidr_range = f"10.{2*network_number + 1}.0.0/22"
+        self.dns_ip = f"10.{2*network_number}.0.2"
         self.vpn_cert_arn = ssm.StringParameter.value_for_string_parameter(
             self, "passian-fbm-vpn-server-cert-arn")
 
@@ -41,7 +47,7 @@ class FbmBaseStack(Stack):
                     service=ec2.GatewayVpcEndpointAwsService.S3
                 )
             },
-            cidr=cidr_range,
+            cidr=self.cidr_range,
             nat_gateways=0,
             enable_dns_hostnames=True,
             enable_dns_support=True,
@@ -116,19 +122,19 @@ class FbmBaseStack(Stack):
             description="Private DnsNamespace for FBM"
         )
 
-    def add_vpn(self, cidr_range: str, dns_server):
+    def add_vpn(self):
         """Add VPN endpoint"""
 
         # ToDo: fetch server cert arn automatically
         self.vpn_endpoint = self.vpc.add_client_vpn_endpoint(
             f"{self.stack_prefix}-VpnEndpoint",
-            cidr=cidr_range,
+            cidr=self.vpn_cidr_range,
             server_certificate_arn=self.vpn_cert_arn,
             authorize_all_users_to_vpc_cidr=True,  # Automatically creates authorization rule
             client_certificate_arn=self.vpn_cert_arn,
             self_service_portal=False,
             split_tunnel=True,
-            dns_servers=[dns_server]
+            dns_servers=[self.dns_ip]
             # vpc_subnets=""
         )
 

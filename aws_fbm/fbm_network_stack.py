@@ -7,16 +7,22 @@ from aws_cdk import (aws_ecs as ecs)
 
 class FbmNetworkStack(FbmBaseStack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        stack_prefix = "fbm-fed"
+    def __init__(self, scope: Construct, construct_id: str,
+                 stack_name: str,
+                 stack_prefix: str,
+                 description: str,
+                 network_number: int,
+                 **kwargs) -> None:
         super().__init__(scope, construct_id,
+                         stack_name=stack_name,
                          stack_prefix=stack_prefix,
-                         cidr_range="10.0.0.0/16",
+                         description=description,
+                         network_number=network_number,
                          cpu=2048,
                          memory_limit_mib=16384,
                          **kwargs)
 
-        self.add_vpn(cidr_range="10.1.0.0/22", dns_server="10.0.0.2")
+        self.add_vpn()
         self.add_dns(namespace="passian.federated")
 
         mqtt_broker = "localhost"

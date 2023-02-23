@@ -2,8 +2,9 @@ from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.utils import repo_path
 from aws_cdk import (aws_ecs as ecs)
-from aws_cdk import custom_resources, aws_route53
+from aws_cdk import custom_resources, Environment
 from aws_cdk import aws_ec2 as ec2, aws_iam
+from aws_cdk import aws_s3
 from constructs import Construct
 import aws_cdk.aws_logs as logs
 
@@ -11,20 +12,25 @@ import aws_cdk.aws_logs as logs
 class FbmNodeStack(FbmBaseStack):
 
     def __init__(self, scope: Construct, construct_id: str,
+                 stack_name: str,
+                 stack_prefix: str,
+                 description: str,
+                 network_number: int,
                  network_stack: FbmNetworkStack,
                  network_vpc: ec2.Vpc,
-                 **kwargs) -> None:
-        stack_prefix = "fbm-node"
+                 env: Environment) -> None:
         super().__init__(scope, construct_id,
+                         stack_name=stack_name,
                          stack_prefix=stack_prefix,
-                         cidr_range="10.2.0.0/16",
+                         description=description,
+                         network_number=network_number,
                          cpu=8192,
                          memory_limit_mib=40960,
-                         **kwargs)
+                         env=env)
         self.peering = None
         self.peer(network_stack=network_stack, peer_vpc=network_vpc)
 
-        self.add_vpn(cidr_range="10.3.0.0/22", dns_server="10.2.0.2")
+        self.add_vpn()
         self.add_dns(namespace="passian.clinical")
 
         self.add_file_system()

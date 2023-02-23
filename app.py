@@ -14,18 +14,39 @@ def get_environment() -> cdk.Environment:
 
 
 app = cdk.App()
+
 network = FbmNetworkStack(
     scope=app,
     construct_id="FbmNetworkStack",
+    stack_name="FbmNetworkStack",
+    stack_prefix="fbm-fed",
+    description="PASSIAN Fed-BioMed stack for federation network",
+    network_number=0,
     env=get_environment()
 )
-node = FbmNodeStack(
+
+node_a = FbmNodeStack(
     scope=app,
     construct_id="FbmNodeStack",
+    stack_name="FbmNodeStack",
+    stack_prefix="fbm-node",
+    description="PASSIAN Fed-BioMed stack for clinical node A",
+    network_number=1,
     network_stack=network,
     network_vpc=network.vpc,
     env=get_environment()
+)
 
+node_b = FbmNodeStack(
+    scope=app,
+    construct_id="FbmNodeStackB",
+    stack_name="FbmNodeStackB",
+    stack_prefix="fbm-node-b",
+    description="PASSIAN Fed-BioMed stack for clinical node B",
+    network_number=2,
+    network_stack=network,
+    network_vpc=network.vpc,
+    env=get_environment()
 )
 
 

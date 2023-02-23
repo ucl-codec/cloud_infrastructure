@@ -232,9 +232,9 @@ class FbmBaseStack(Stack):
         """Create IAM role to be used to create ECS tasks
         https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
         """
-        ecs_execution_role = iam.Role(self, 'EcsExecutionRole',
+        ecs_execution_role = iam.Role(self, f"{self.stack_prefix}-FargateServiceEcsExecutionRole",
             assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-            role_name=f"{self.stack_prefix}-EcsExecutionRole"
+            role_name=f"{self.stack_prefix}-FargateServiceEcsExecutionRole"
 
                                     )
         ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))
@@ -249,7 +249,7 @@ class FbmBaseStack(Stack):
         """
         ecs_task_role = iam.Role(self, f"{self.stack_prefix}-FargateServiceEcsTaskRole",
             assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-            role_name=f"{self.stack_prefix}-OrderServiceEcsTaskRole"
+            role_name=f"{self.stack_prefix}-FargateServiceEcsTaskRole"
         )
 
         ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))

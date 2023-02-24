@@ -197,14 +197,6 @@ This should be a String, and the value should be the ARN (Amazon Resource Name) 
 
 ## AWS deployment  
 
-### Deployment
-
-- Before deployment, set the vpn_cert_arn variable in `app.py`. This is the ARN of the
-VPN development server certificate. In future, this will be replaced by a parameter store lookup.
-
-
-
-
 You can synthesize the CloudFormation template prior to deployment. This is not essential as it 
 will be performed automatically when you deploy, but it is a useful check .
 

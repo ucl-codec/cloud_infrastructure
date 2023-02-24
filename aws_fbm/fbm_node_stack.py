@@ -49,6 +49,17 @@ class FbmNodeStack(FbmBaseStack):
         mqtt_broker_port = "1883"
         uploads_url = "http://researcher.passian.federated:8000/upload/"
 
+        self.import_bucket = aws_s3.Bucket(
+            self,
+            f"{stack_prefix}-NodeImportBucket",
+            bucket_name=f"{stack_prefix}-import-bucket",
+            block_public_access=aws_s3.BlockPublicAccess.BLOCK_ALL,
+            object_ownership=aws_s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
+            enforce_ssl=True,
+            versioned=False,
+            access_control=aws_s3.BucketAccessControl.PRIVATE
+        )
+
         # Node container
         node_container = self.add_docker_container(
             name="node",

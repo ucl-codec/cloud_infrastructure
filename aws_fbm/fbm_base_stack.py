@@ -94,12 +94,14 @@ class FbmBaseStack(Stack):
         self.cluster = ecs.Cluster(self, f"{self.stack_prefix}-Cluster",
                                    vpc=self.vpc)
 
+        self.task_role = self.create_ecs_task_role()
+        self.execution_role = self.create_ecs_execution_role()
         # Create Fargate task definition
         self.fargate_task_definition = ecs.FargateTaskDefinition(
             self,
             f"{self.stack_prefix}-FargateTaskDefinition",
-            task_role=self.create_ecs_task_role(),
-            execution_role=self.create_ecs_execution_role(),
+            task_role=self.task_role,
+            execution_role=self.execution_role,
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,
             ephemeral_storage_gib=100
@@ -240,9 +242,9 @@ class FbmBaseStack(Stack):
         """Create IAM role to be used to create ECS tasks
         https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
         """
-        ecs_execution_role = iam.Role(self, f"{self.stack_prefix}-FargateServiceEcsExecutionRole",
+        ecs_execution_role = iam.Role(self, f"{self.stack_prefix}-EcsExecutionRole",
             assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-            role_name=f"{self.stack_prefix}-FargateServiceEcsExecutionRole"
+            role_name=f"{self.stack_prefix}-EcsExecutionRole"
 
                                     )
         ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))
@@ -255,9 +257,9 @@ class FbmBaseStack(Stack):
         """Create IAM role to be used by the ECS tasks.
         https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
         """
-        ecs_task_role = iam.Role(self, f"{self.stack_prefix}-FargateServiceEcsTaskRole",
+        ecs_task_role = iam.Role(self, f"{self.stack_prefix}-EcsTaskRole",
             assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-            role_name=f"{self.stack_prefix}-FargateServiceEcsTaskRole"
+            role_name=f"{self.stack_prefix}-EcsTaskRole"
         )
 
         ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))

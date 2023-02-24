@@ -113,8 +113,11 @@ It strongly recommended that you use nvm to install/manage node and do not insta
     nvm install --lts
    ```
 
+### Install the AWS CDK
 
----
+```bash
+npm install -g aws-cdk
+```
 
 ## Local docker testing 
 
@@ -170,7 +173,7 @@ provider preferences (e.g. Docker Desktop, Rancher Desktop)
 If this CDK stack has not previously been deployed on this AWS account, you can run a bootstrap to
 set up the resources necessary for CDK to run.
 ```bash
-cdk bootstrap
+cdk bootstrap --profile passian
 ```
 
 ### VPN server 

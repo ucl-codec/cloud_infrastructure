@@ -144,7 +144,7 @@ If the build and run succeed, you should be able to access the containers via lo
 docker exec -it node bash
 docker exec -it researcher bash
 docker exec -it gui bash
-docker exec -it mqtt bash
+docker exec -it mqtt sh
 docker exec -it restful bash
 ```
 

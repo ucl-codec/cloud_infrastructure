@@ -1,4 +1,4 @@
 [submodule "docker/common/fedbiomed"]
 	path = docker/common/fedbiomed
 	url = git@github.com:ucl-codec/fedbiomed.git
-	branch = aws-passian
+	branch = aws-passian-dev

@@ -20,6 +20,16 @@ done
 # Start the GUI
 source /miniconda/etc/profile.d/conda.sh
 conda activate fedbiomed-gui
-/fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start
+
+cd /fedbiomed/gui/server
+FEDBIOMED_DIR="/fedbiomed" \
+  NODE_CONFIG_FILE="config_node.ini" \
+  BUILD_DIR="/fedbiomed/var/gui-build" \
+  DATA_PATH="/data" \
+  HOST="$GUI_HOST" \
+  PORT="$GUI_PORT" \
+  DEBUG="False" \
+  FLASK_ENV="production" \
+  gunicorn -w 4 'app:app' --preload
 
 wait $!

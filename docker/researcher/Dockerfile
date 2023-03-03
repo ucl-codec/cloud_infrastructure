@@ -24,9 +24,6 @@ COPY ./common/fedbiomed/fedbiomed /fedbiomed/fedbiomed
 COPY ./common/fedbiomed/scripts /fedbiomed/scripts
 COPY ./common/fedbiomed/notebooks /fedbiomed/notebooks
 
-# Copy entrypoint script
-COPY ./researcher/entrypoint.bash /
-
 COPY ./researcher/bashrc_append /tmp
 RUN cat /tmp/bashrc_append | tee -a /root/.bashrc /root/bashrc_entrypoint \
         /etc/skel/.bashrc /etc/skel/bashrc_entrypoint >/dev/null
@@ -40,5 +37,8 @@ WORKDIR /fedbiomed
 RUN conda env update --file ./envs/vpn/conda/fedbiomed-researcher.yaml && \
 	pip cache purge && conda clean -a -y 
 
+# Copy entrypoint script
+COPY ./researcher/entrypoint*.bash /
+
 # Entrypoint script to be run on container launch
-ENTRYPOINT ["/entrypoint.bash"]
+ENTRYPOINT ["/entrypoint_jupyter.bash"]

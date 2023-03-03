@@ -1,6 +1,6 @@
 # UCL PASSIAN - Dockerfile for Fed-BioMed researcher container
 
-FROM python:3.9-slim-bullseye
+FROM --platform=linux/amd64 python:3.9-slim-bullseye
 
 # Jupyter notebook
 EXPOSE 8888

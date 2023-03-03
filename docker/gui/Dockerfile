@@ -1,6 +1,6 @@
 # UCL PASSIAN - Dockerfile for Fed-BioMed gui container
 
-FROM debian:bullseye-slim
+FROM --platform=linux/amd64 debian:bullseye-slim
 
 # flask server
 EXPOSE 8484

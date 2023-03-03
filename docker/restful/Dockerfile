@@ -1,6 +1,6 @@
 # UCL PASSIAN - Dockerfile for Fed-BioMed restful container
 
-FROM python:3.9-alpine
+FROM --platform=linux/amd64 python:3.9-alpine
 ENV PYTHONUNBUFFERED 1
 
 # http restful server

@@ -1,5 +1,5 @@
 # GPU support: NVIDIA base image and install
-FROM nvidia/cuda:11.5.0-base-ubuntu20.04
+FROM --platform=linux/amd64 nvidia/cuda:11.5.0-base-ubuntu20.04
 
 # Network env variables to be set at runtime
 ENV MQTT_BROKER=""

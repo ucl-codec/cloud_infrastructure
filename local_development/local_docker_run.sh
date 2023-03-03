@@ -40,7 +40,7 @@ docker network inspect "${NETWORK}" >/dev/null 2>&1 || \
 docker start mqtt 2>/dev/null || docker run -d -p 1883:1883 --net "${NETWORK}" --ip "${MQTT_IP}" --name mqtt passian/mqtt
 
 # Run restful
-docker start restful 2>/dev/null || docker run -d -p 8844:8000 --net "${NETWORK}" --ip "${RESTFUL_IP}" --name restful passian/restful
+docker start restful 2>/dev/null || docker run -d -p 8000:8000 --net "${NETWORK}" --ip "${RESTFUL_IP}" --name restful passian/restful
 
 # Run gui
 # Note the mounts correspond to the volumes in docker-compose

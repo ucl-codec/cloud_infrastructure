@@ -8,7 +8,7 @@
 set -e
 
 # Get the repo root directory
-REPO_DIR=$(dirname $(dirname $(realpath -s ${0})))
+REPO_DIR=$(dirname $(dirname $(realpath ${0})))
 
 docker build -t passian/restful --quiet --file ./docker/restful/Dockerfile ${REPO_DIR}/docker/restful
 docker build -t passian/mqtt --quiet --file ./docker/mqtt/Dockerfile ${REPO_DIR}/docker/mqtt

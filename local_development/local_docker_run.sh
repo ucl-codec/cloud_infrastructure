@@ -8,7 +8,7 @@
 set -e
 
 # Get the repo root directory
-REPO_DIR=$(dirname $(dirname $(realpath -s ${0})))
+REPO_DIR=$(dirname $(dirname $(realpath ${0})))
 
 MQTT_IP="172.18.0.22"
 RESTFUL_IP="172.18.0.23"

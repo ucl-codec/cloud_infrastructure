@@ -15,7 +15,7 @@ RESTFUL_IP="172.18.0.23"
 NODE_IP="172.18.0.24"
 GUI_IP="172.18.0.25"
 RESEARCHER_IP="172.18.0.26"
-RESTFUL_PORT="8844"
+RESTFUL_PORT="8000"
 NETWORK="fbm_net"
 
 # These variables will be provided to the containers

@@ -20,9 +20,6 @@ done
 # Start the GUI
 source /miniconda/etc/profile.d/conda.sh
 conda activate fedbiomed-gui
-/fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start &
-
-# Allows stop/restart of the gui without terminating the container
-sleep infinity &
+/fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start
 
 wait $!

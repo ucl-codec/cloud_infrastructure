@@ -36,15 +36,19 @@ See here: https://docs.aws.amazon.com/vpn/latest/clientvpn-user/linux-troublesho
 - Launch AWS VPN Client 
 - Select Researcher profile
 - Click Connect
-- Connect to Jupyter notebook in your web browser: http://researcher.passian.federated:8888
-- Connect to TensorBoard in your web browser: http://researcher.passian.federated:6007
+- Connect to Jupyter notebook in your web browser:  http://jupyter.passian.federated:8888
+- Connect to TensorBoard in your web browser:  http://tensorboard.passian.federated:6007
 
-### Connect to the Clinical network
+### Connect to a Clinical network
 
 - Launch AWS VPN Client 
-- Select Clinical profile
+- Select the VPN profile for your clinical site:
+  - Profile A for site A
+  - Profile B for site B
 - Click Connect
-- Connect to Fed Bio-Med GUI in your web browser: http://node.passian.clinical:8484
+- Connect to Fed Bio-Med GUI in your web browser:
+  - Site A: http://gui.passian.clinicala:8484
+  - Site B: http://gui.passian.clinicalb:8484
 
 ### Troubleshooting
 
@@ -86,7 +90,7 @@ Create a new virtual environment using
 python3 -m venv .aws_fbm_env
 ```
 
-Whenever you need to reactivate the environment in future, you do this with 
+Activate the environment. You will need to do this when returning in the future.
 ```bash
 source .aws_fbm_env/bin/activate
 ```
@@ -144,7 +148,7 @@ If the build and run succeed, you should be able to access the containers via lo
 docker exec -it node bash
 docker exec -it researcher bash
 docker exec -it gui bash
-docker exec -it mqtt sh
+docker exec -it mqtt bash
 docker exec -it restful bash
 ```
 

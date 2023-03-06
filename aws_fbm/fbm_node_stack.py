@@ -145,8 +145,8 @@ class FbmNodeStack(FbmBaseStack):
             id="GuiService",
             dns_namespace=self.dns_namespace,
             dns_name="gui",
-            cpu=512,
-            memory_limit_mib=4096,
+            cpu=2048,
+            memory_limit_mib=8192,
             ephemeral_storage_gib=40
         )
         # Add volumes to the task definition
@@ -168,8 +168,8 @@ class FbmNodeStack(FbmBaseStack):
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": mqtt_broker_port,
                 "UPLOADS_URL": uploads_url},
-            cpu=512,
-            memory_limit_mib=4096
+            cpu=2048,
+            memory_limit_mib=8192
         )
         gui_container.add_port_mappings(
             ecs.PortMapping(container_port=8484))

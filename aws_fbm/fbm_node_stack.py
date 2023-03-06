@@ -27,10 +27,6 @@ class FbmNodeStack(FbmBaseStack):
                          stack_name=stack_name,
                          description=description,
                          network_number=network_number,
-                         cpu=8192,
-                         memory_limit_mib=40960,
-                         # enable_ec2=False,
-                         enable_ec2=True,
                          env=env)
         self.dns_domain = dns_domain
         self.peering = None

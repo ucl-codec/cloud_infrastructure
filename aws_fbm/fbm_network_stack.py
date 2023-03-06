@@ -19,8 +19,6 @@ class FbmNetworkStack(FbmBaseStack):
                          stack_name=stack_name,
                          description=description,
                          network_number=network_number,
-                         cpu=2048,
-                         memory_limit_mib=16384,
                          **kwargs)
 
         self.dns_domain = dns_domain

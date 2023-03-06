@@ -14,9 +14,6 @@ class FbmBaseStack(Stack):
                  stack_name: str,
                  description: str,
                  network_number: int,
-                 cpu=8192,
-                 memory_limit_mib=40960,
-                 enable_ec2: bool = False,
                  env: Environment) -> None:
         super().__init__(scope, construct_id,
                          stack_name=stack_name,

@@ -28,11 +28,7 @@ COPY ./common/fedbiomed/fedbiomed /fedbiomed/fedbiomed
 COPY ./common/fedbiomed/scripts /fedbiomed/scripts
 COPY ./common/fedbiomed/gui /fedbiomed/gui
 
-# Copy GUI config file template to image. This will be used in the entrypoint script
-COPY ./gui/config_gui.ini.template /
 
-# Copy entrypoint script
-COPY ./gui/entrypoint.bash /
 
 # Set working directory
 WORKDIR /fedbiomed
@@ -43,6 +39,16 @@ RUN conda env update --file ./envs/vpn/conda/fedbiomed-gui.yaml && \
 
 # Install the gui but do not run. `data-folder` and `config` are not used when doing `install-only`
 RUN ./scripts/fedbiomed_run gui data-folder /data config DUMMY install-only start
+
+# Move the GUI build to a root folder, as /fedbiomed/var will be overwritten by a mount when the
+# container is run
+RUN mv /fedbiomed/var/gui-build /gui-build
+
+# Copy entrypoint script
+COPY ./gui/entrypoint.bash /
+
+# Copy GUI config file template to image. This will be used in the entrypoint script
+COPY ./gui/config_gui.ini.template /
 
 # Entrypoint script to be run on container launch
 ENTRYPOINT ["/entrypoint.bash"]

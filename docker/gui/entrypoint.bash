@@ -24,12 +24,10 @@ conda activate fedbiomed-gui
 cd /fedbiomed/gui/server
 FEDBIOMED_DIR="/fedbiomed" \
   NODE_CONFIG_FILE="config_node.ini" \
-  BUILD_DIR="/fedbiomed/var/gui-build" \
+  BUILD_DIR="/gui-build" \
   DATA_PATH="/data" \
   HOST="$GUI_HOST" \
   PORT="$GUI_PORT" \
   DEBUG="False" \
   FLASK_ENV="production" \
-  gunicorn -w 4 'app:app' --preload
-
-wait $!
+  gunicorn -b 0.0.0.0:${GUI_PORT} --timeout 600 --error-logfile '-' --log-level 'debug' 'app:app'

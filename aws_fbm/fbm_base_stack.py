@@ -94,7 +94,6 @@ class FbmBaseStack(Stack):
         self.cluster = ecs.Cluster(self, "Cluster", vpc=self.vpc)
 
         self.dns_namespace = None
-        self.file_system = None
         self.vpn_endpoint = None
 
     def add_dns(self, namespace):

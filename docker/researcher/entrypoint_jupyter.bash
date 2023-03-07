@@ -16,5 +16,5 @@ conda activate fedbiomed-researcher
 trap finish TERM INT QUIT
 
 export PYTHONPATH=/fedbiomed
-su -c "export PATH=${PATH} ; cd notebooks ; \
-    jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' "
+cd notebooks
+jupyter notebook --ip=0.0.0.0 --port="${JUPYTER_PORT}" --no-browser --allow-root --NotebookApp.token=''

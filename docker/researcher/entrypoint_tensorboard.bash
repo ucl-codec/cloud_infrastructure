@@ -18,21 +18,7 @@ trap finish TERM INT QUIT
 export PYTHONPATH=/fedbiomed
 
 # Run tensorboard
-su -c "source /miniconda/etc/profile.d/conda.sh ; conda activate fedbiomed-researcher ; \
-    cd /fedbiomed ; tensorboard --logdir runs" &
-
-#su -c "export PATH=${PATH} ; eval $(conda shell.bash hook) ; \
-#    conda activate fedbiomed-researcher ; cd notebooks ; \
-#    jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' " $CONTAINER_USER &
-
-# proxy port for TensorBoard
-# enables launching TB without `--host` option (thus listening only on `localhost`)
-# + `watch` for easy respawn in case of failure
-while true ; do \
-    socat TCP-LISTEN:6007,fork,reuseaddr TCP4:127.0.0.1:6006 ; \
-    sleep 1 ; \
-done &
-
-sleep infinity &
-
-wait $!
+source /miniconda/etc/profile.d/conda.sh
+conda activate fedbiomed-researcher
+cd /fedbiomed
+tensorboard --logdir runs --host 0.0.0.0 --port="${TENSORBOARD_PORT}"

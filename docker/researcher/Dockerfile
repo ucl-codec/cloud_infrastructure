@@ -2,11 +2,18 @@
 
 FROM --platform=linux/amd64 python:3.9-slim-bullseye
 
-# Jupyter notebook
-EXPOSE 8888
+# Default port used by Jupyter
+ARG JUPYTER_PORT_DEFAULT=8888
+EXPOSE ${JUPYTER_PORT_DEFAULT}
 
-# tensorboard via socat proxy
-EXPOSE 6007
+# Default port used by Tensorboard
+ARG TENSORBOARD_PORT_DEFAULT=6007
+EXPOSE ${TENSORBOARD_PORT_DEFAULT}
+
+# Initial GUI configuration - can be set at runtime by specifying env variables
+ENV TENSORBOARD_PORT=${TENSORBOARD_PORT_DEFAULT}
+ENV JUPYTER_PORT=${JUPYTER_PORT_DEFAULT}
+
 
 # Install dependencies
 RUN apt-get update && apt-get install -y apt-utils wget socat

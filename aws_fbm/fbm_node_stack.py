@@ -16,6 +16,7 @@ from aws_cdk.aws_ecr_assets import DockerImageAsset
 class FbmNodeStack(FbmBaseStack):
 
     def __init__(self, scope: Construct, construct_id: str,
+                 site_name: str,
                  stack_name: str,
                  dns_domain: str,
                  bucket_name: str,
@@ -54,15 +55,14 @@ class FbmNodeStack(FbmBaseStack):
             name="common", root_directory='/node/common')
 
         mqtt_broker = network_stack.mqtt_broker
-        mqtt_broker_port = network_stack.mqtt_broker_port
+        mqtt_port = network_stack.mqtt_port
         uploads_url = network_stack.uploads_url
 
         self.data_sync = FbmDataSync(
-            self,
-            "DataSync",
+            scope=self,
+            id="DataSync",
             bucket_name=bucket_name,
-            stack_name=stack_name,
-            volume=node_data_volume,
+            site_name=site_name,
             file_system=self.file_system.file_system,
             vpc=self.vpc,
             subnet_arn=f'arn:aws:ec2:{self.region}:{self.account}:subnet/{self.subnet_id}',
@@ -102,7 +102,7 @@ class FbmNodeStack(FbmBaseStack):
             memory_limit_mib=30000,
             environment={
                 "MQTT_BROKER": mqtt_broker,
-                "MQTT_BROKER_PORT": mqtt_broker_port,
+                "MQTT_BROKER_PORT": f"{mqtt_port}",
                 "UPLOADS_URL": uploads_url}
         )
         node_container.add_mount_points(
@@ -167,7 +167,7 @@ class FbmNodeStack(FbmBaseStack):
             name="gui",
             environment={
                 "MQTT_BROKER": mqtt_broker,
-                "MQTT_BROKER_PORT": mqtt_broker_port,
+                "MQTT_BROKER_PORT": f"{mqtt_port}",
                 "UPLOADS_URL": uploads_url},
             cpu=2048,
             memory_limit_mib=8192
@@ -239,9 +239,9 @@ class FbmNodeStack(FbmBaseStack):
             props=AllowVPCPeeringDNSResolutionProps(vpc_peering=self.peering))
 
     def open_peer_ports(self, network_stack: FbmNetworkStack):
-        network_stack.network_service.connections.allow_from(
+        network_stack.mqtt_service.service.connections.allow_from(
             ec2.Peer.ipv4(self.cidr_range), ec2.Port.tcp(1883))
-        network_stack.network_service.connections.allow_from(
+        network_stack.restful_service.service.connections.allow_from(
             ec2.Peer.ipv4(self.cidr_range), ec2.Port.tcp(8000))
 
 

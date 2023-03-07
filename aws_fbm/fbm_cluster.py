@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Mapping
 
 from constructs import Construct
 from aws_cdk import aws_logs, aws_ecs, aws_servicediscovery, aws_iam, aws_ec2
@@ -43,7 +43,7 @@ class FbmBaseServiceDef(Construct):
                              memory_limit_mib: int,
                              gpu_count: int = 0,
                              entry_point: Optional[Sequence[str]] = None,
-                             environment=None):
+                             environment: Optional[Mapping[str, str]] = None):
         """Run a Docker image as an ECR container. The Docker image will be
          built locally as part of the cdk deploy and uploaded to the ECR"""
         container = self.task_definition.add_container(

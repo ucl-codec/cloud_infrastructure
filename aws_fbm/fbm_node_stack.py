@@ -1,4 +1,5 @@
 from aws_fbm.fbm_base_stack import FbmBaseStack
+from aws_fbm.fbm_cluster import FbmFargateServiceDef, FbmEC2ServiceDef
 from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
@@ -70,8 +71,10 @@ class FbmNodeStack(FbmBaseStack):
         )
 
         # Fed-BioMed Node service
-        self.node_service_def = self.cluster.add_ec2_service_def(
+        self.node_service_def = FbmEC2ServiceDef(
+            scope=self,
             id="NodeServiceDef",
+            cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name="node",
             vpc=self.vpc,
@@ -132,13 +135,15 @@ class FbmNodeStack(FbmBaseStack):
         # Create the node service
         self.node_service = self.node_service_def.create_service()
 
-        # Note: We do not add permissions from the file storgae to the EC2
+        # Note: We do not add permissions from the file storage to the EC2
         # service here as we do for Fargate services,
         # as we instead add permissions to the EC2 security group
 
         # Fed-BioMed Gui service
-        self.gui_service_def = self.cluster.add_fargate_service_def(
+        self.gui_service_def = FbmFargateServiceDef(
+            scope=self,
             id="GuiService",
+            cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name="gui",
             cpu=2048,

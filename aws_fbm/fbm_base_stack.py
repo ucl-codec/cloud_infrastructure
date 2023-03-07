@@ -5,8 +5,6 @@ from constructs import Construct
 from aws_cdk import (aws_ec2 as ec2, aws_ecs as ecs)
 import aws_cdk.aws_ssm as ssm
 
-from aws_fbm.fbm_cluster import FbmCluster
-
 
 class FbmBaseStack(Stack):
 
@@ -93,7 +91,7 @@ class FbmBaseStack(Stack):
             service=ec2.InterfaceVpcEndpointAwsService.SSM)
 
         # Create cluster
-        self.cluster = FbmCluster(self, "Cluster", vpc=self.vpc)
+        self.cluster = ecs.Cluster(self, "Cluster", vpc=self.vpc)
 
         self.dns_namespace = None
         self.file_system = None

@@ -1,6 +1,7 @@
 from constructs import Construct
 
 from aws_fbm.fbm_base_stack import FbmBaseStack
+from aws_fbm.fbm_cluster import FbmFargateServiceDef
 from aws_fbm.utils import repo_path
 from aws_cdk import (aws_ecs as ecs)
 from aws_cdk.aws_ecr_assets import DockerImageAsset
@@ -34,8 +35,10 @@ class FbmNetworkStack(FbmBaseStack):
         self.uploads_url = f"http://{self.network_dns_host}.{self.dns_domain}:{self.uploads_port}/upload/"
 
         # Create task definition
-        self.network_service_def = self.cluster.add_fargate_service_def(
+        self.network_service_def = FbmFargateServiceDef(
+            scope=self,
             id="NetworkServiceDef",
+            cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.network_dns_host,
             cpu=1024,
@@ -82,8 +85,10 @@ class FbmNetworkStack(FbmBaseStack):
             ec2.Peer.ipv4(self.cidr_range), ec2.Port.tcp(8000))
 
         # Jupyter service
-        self.researcher_service_def = self.cluster.add_fargate_service_def(
+        self.researcher_service_def = FbmFargateServiceDef(
+            scope=self,
             id="JupyterServiceDef",
+            cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.jupyter_dns_host,
             cpu=2048,
@@ -120,8 +125,10 @@ class FbmNetworkStack(FbmBaseStack):
             )
 
         # Tensorboard service
-        self.tensorboard_service_def = self.cluster.add_fargate_service_def(
+        self.tensorboard_service_def = FbmFargateServiceDef(
+            scope=self,
             id="ResearcherServiceDef",
+            cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.tensorboard_dns_host,
             cpu=2048,

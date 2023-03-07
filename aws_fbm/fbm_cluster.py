@@ -6,49 +6,6 @@ from aws_cdk import aws_autoscaling
 from aws_fbm.fbm_file_system import FbmVolume, FbmFileSystem
 
 
-class FbmCluster(Construct):
-    def __init__(self, scope: Construct, id: str, vpc: aws_ec2.Vpc):
-        super().__init__(scope=scope, id=id)
-        self.cluster = aws_ecs.Cluster(self, "Cluster", vpc=vpc)
-
-    def add_fargate_service_def(
-            self,
-            id: str,
-            dns_namespace: aws_servicediscovery.PrivateDnsNamespace,
-            dns_name: str,
-            cpu: int,
-            memory_limit_mib: int,
-            ephemeral_storage_gib: int
-    ):
-        return FbmFargateServiceDef(
-            scope=self,
-            id=id,
-            cluster=self.cluster,
-            dns_namespace=dns_namespace,
-            dns_name=dns_name,
-            cpu=cpu,
-            memory_limit_mib=memory_limit_mib,
-            ephemeral_storage_gib=ephemeral_storage_gib
-        )
-
-    def add_ec2_service_def(
-            self,
-            id: str,
-            dns_namespace: aws_servicediscovery.PrivateDnsNamespace,
-            dns_name: str,
-            vpc: aws_ec2.Vpc,
-            file_system: FbmFileSystem):
-        return FbmEC2ServiceDef(
-            scope=self,
-            id=id,
-            cluster=self.cluster,
-            dns_namespace=dns_namespace,
-            dns_name=dns_name,
-            vpc=vpc,
-            file_system=file_system
-        )
-
-
 class FbmBaseServiceDef(Construct):
 
     def __init__(self,

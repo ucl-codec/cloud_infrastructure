@@ -2,12 +2,15 @@
 
 FROM --platform=linux/amd64 debian:bullseye-slim
 
-# flask server
-EXPOSE 8484
+# Port used by flask server
+ARG GUI_PORT_DEFAULT=8484
+
+# Note the actual port used can be overridden at runtime using environment variables
+EXPOSE ${GUI_PORT_DEFAULT}
 
 # Initial GUI configuration - can be set at runtime by specifying env variables
 ENV GUI_HOST=localhost
-ENV GUI_PORT=8484
+ENV GUI_PORT=${GUI_PORT_DEFAULT}
 ENV GUI_DATA_PATH=/data
 ENV GUI_DEFAULT_ADMIN_EMAIL=admin@fedbiomed.gui
 ENV GUI_DEFAULT_ADMIN_PW=admin

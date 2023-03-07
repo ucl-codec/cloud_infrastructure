@@ -95,8 +95,8 @@ class FbmNodeStack(FbmBaseStack):
             node_docker_image,
             name="node",
             gpu_count=1,
-            cpu=2048,
-            memory_limit_mib=16384,
+            cpu=4096,
+            memory_limit_mib=30000,
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": mqtt_broker_port,

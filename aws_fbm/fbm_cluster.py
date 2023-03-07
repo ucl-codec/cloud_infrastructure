@@ -232,7 +232,7 @@ class FbmEC2ServiceDef(FbmBaseServiceDef):
             vpc=vpc,
             launch_template=launch_template,
             desired_capacity=1,
-            max_capacity=2
+            max_capacity=1
         )
 
         self.capacity_provider = aws_ecs.AsgCapacityProvider(
@@ -251,6 +251,8 @@ class FbmEC2ServiceDef(FbmBaseServiceDef):
             "Ec2Service",
             cluster=self.cluster,
             desired_count=1,
+            min_healthy_percent=0,
+            max_healthy_percent=100,
             task_definition=self.task_definition,
             circuit_breaker=aws_ecs.DeploymentCircuitBreaker(rollback=True)
         )

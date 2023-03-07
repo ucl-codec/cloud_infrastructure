@@ -8,7 +8,8 @@
 set -e
 
 docker rm -f gui
-docker rm -f researcher
+docker rm -f jupyter
+docker rm -f tensorboard
 docker rm -f node
 docker rm -f restful
 docker rm -f mqtt

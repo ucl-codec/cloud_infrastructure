@@ -14,7 +14,8 @@ MQTT_IP="172.18.0.22"
 RESTFUL_IP="172.18.0.23"
 NODE_IP="172.18.0.24"
 GUI_IP="172.18.0.25"
-RESEARCHER_IP="172.18.0.26"
+JUPYTER_IP="172.18.0.26"
+TENSORBOARD_IP="172.18.0.27"
 RESTFUL_PORT="8000"
 NETWORK="fbm_net"
 
@@ -37,14 +38,14 @@ docker network inspect "${NETWORK}" >/dev/null 2>&1 || \
     docker network create --driver bridge  --subnet=172.18.0.0/16 "${NETWORK}"
 
 # Run MQTT
-docker start mqtt 2>/dev/null || docker run -d -p 1883:1883 --net "${NETWORK}" --ip "${MQTT_IP}" --name mqtt passian/mqtt
+docker start mqtt 2>/dev/null || docker run --rm -d -p 1883:1883 --net "${NETWORK}" --ip "${MQTT_IP}" --name mqtt passian/mqtt
 
 # Run restful
-docker start restful 2>/dev/null || docker run -d -p 8000:8000 --net "${NETWORK}" --ip "${RESTFUL_IP}" --name restful passian/restful
+docker start restful 2>/dev/null || docker run --rm -d -p 8000:8000 --net "${NETWORK}" --ip "${RESTFUL_IP}" --name restful passian/restful
 
 # Run gui
 # Note the mounts correspond to the volumes in docker-compose
-docker start gui 2>/dev/null || docker run -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
+docker start gui 2>/dev/null || docker run --rm -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
   -e MQTT_BROKER -e UPLOADS_URL \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \
@@ -53,9 +54,9 @@ docker start gui 2>/dev/null || docker run -d -p 8484:8484 --net "${NETWORK}" --
   --name gui \
   passian/gui
 
-# Run researcher
+# Run jupyter
 # Note the mounts correspond to the volumes in docker-compose
-docker start researcher 2>/dev/null || docker run -d -p 8888:8888 -p 6007:6007 --net "${NETWORK}" --ip "${RESEARCHER_IP}" \
+docker start jupyter 2>/dev/null || docker run --rm -d -p 8888:8888 --net "${NETWORK}" --ip "${JUPYTER_IP}" \
   -e MQTT_BROKER -e UPLOADS_URL \
   --mount type=bind,source="${RESEARCHER_STORAGE}/config",target=/config \
   --mount type=bind,source="${RESEARCHER_STORAGE}/data",target=/data \
@@ -63,18 +64,32 @@ docker start researcher 2>/dev/null || docker run -d -p 8888:8888 -p 6007:6007 -
   --mount type=bind,source="${RESEARCHER_STORAGE}/samples",target=/fedbiomed/notebooks/samples \
   --mount type=bind,source="${RESEARCHER_STORAGE}/runs",target=/fedbiomed/runs \
   --mount type=bind,source="${RESEARCHER_STORAGE}/var",target=/fedbiomed/var \
-  --name researcher passian/researcher
+  --entrypoint /entrypoint_jupyter.bash \
+  --name jupyter passian/researcher
+
+# Run tensorboard
+# Note the mounts correspond to the volumes in docker-compose
+docker start tensorboard 2>/dev/null || docker run --rm -d -p 6007:6007 --net "${NETWORK}" --ip "${TENSORBOARD_IP}" \
+  -e MQTT_BROKER -e UPLOADS_URL \
+  --mount type=bind,source="${RESEARCHER_STORAGE}/config",target=/config \
+  --mount type=bind,source="${RESEARCHER_STORAGE}/data",target=/data \
+  --mount type=bind,source="${RESEARCHER_STORAGE}/etc",target=/fedbiomed/etc \
+  --mount type=bind,source="${RESEARCHER_STORAGE}/samples",target=/fedbiomed/notebooks/samples \
+  --mount type=bind,source="${RESEARCHER_STORAGE}/runs",target=/fedbiomed/runs \
+  --mount type=bind,source="${RESEARCHER_STORAGE}/var",target=/fedbiomed/var \
+  --entrypoint /entrypoint_tensorboard.bash \
+  --name tensorboard passian/researcher
 
 # Run node
 # Note the mounts correspond to the volumes in docker-compose
-docker start node 2>/dev/null || docker run -d --net "${NETWORK}" --ip "${NODE_IP}" \
+docker start node 2>/dev/null || docker run --rm -d --net "${NETWORK}" --ip "${NODE_IP}" \
   -e MQTT_BROKER -e UPLOADS_URL \
   --mount type=bind,source="${NODE_STORAGE}/config",target=/config \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \
   --mount type=bind,source="${NODE_STORAGE}/var",target=/fedbiomed/var \
   --mount type=bind,source="${NODE_STORAGE}/common",target=/fedbiomed/envs/common \
-  --name node passian/node
+  --name node passian/node \
+  --gpus all
 # For GPU support add this option (linux only)
-#  --gpus all \
 

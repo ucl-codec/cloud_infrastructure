@@ -18,5 +18,3 @@ trap finish TERM INT QUIT
 export PYTHONPATH=/fedbiomed
 su -c "export PATH=${PATH} ; cd notebooks ; \
     jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' "
-
-wait $!

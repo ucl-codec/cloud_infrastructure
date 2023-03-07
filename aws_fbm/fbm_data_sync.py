@@ -19,16 +19,8 @@ class FbmDataSync(Construct):
             account: str):
         super().__init__(scope, id)
 
-        # Create S3 bucket for data import
-        self.import_bucket = aws_s3.Bucket(
-            self,
-            "NodeImportBucket",
-            bucket_name=f"{bucket_name}-import-bucket",
-            block_public_access=aws_s3.BlockPublicAccess.BLOCK_ALL,
-            object_ownership=aws_s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
-            enforce_ssl=True,
-            versioned=False,
-            access_control=aws_s3.BucketAccessControl.PRIVATE
+        self.import_bucket = aws_s3.Bucket.from_bucket_name(
+            scope=self, id="NodeImportBucket", bucket_name=bucket_name
         )
 
         # Create IAM role for accessing the S3 source bucket

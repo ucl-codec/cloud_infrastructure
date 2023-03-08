@@ -11,10 +11,12 @@ class FbmVolume(Construct):
                  scope: Construct,
                  name: str,
                  file_system: aws_efs.FileSystem,
-                 root_directory: str):
+                 root_directory: str,
+                 mount_dir: str):
         super().__init__(scope=scope, id=name)
         self.volume_name = name
         self.file_system_id = file_system.file_system_id
+        self.mount_dir = mount_dir
 
         # Creating access point will force creation of directory in volume
         # This is necessary otherwise mounting the volume will fail if the
@@ -53,11 +55,12 @@ class FbmFileSystem(Construct):
             #   efs.OutOfInfrequentAccessPolicy.AFTER_1_ACCESS,
         )
 
-    def create_volume(self, name: str, root_directory: str):
+    def create_volume(self, name: str, root_directory: str, mount_dir: str):
         return FbmVolume(scope=self,
                          name=name,
                          file_system=self.file_system,
-                         root_directory=root_directory)
+                         root_directory=root_directory,
+                         mount_dir=mount_dir)
 
     def allow_access_from_service(self, service: aws_ec2.IConnectable):
         # ToDo: change to allow_default_port_from

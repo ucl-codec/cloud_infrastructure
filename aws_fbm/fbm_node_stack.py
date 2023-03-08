@@ -154,9 +154,11 @@ class FbmNodeStack(FbmBaseStack):
         self.gui_service = FargateService(
             scope=self,
             id="GuiService",
+            vpc=self.vpc,
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.gui_dns_host,
+            dns_domain=self.dns_domain,
             cpu=2048,
             memory_limit_mib=8192,
             ephemeral_storage_gib=40,

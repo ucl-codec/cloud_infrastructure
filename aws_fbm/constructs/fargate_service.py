@@ -5,8 +5,10 @@ from constructs import Construct
 from aws_fbm.fbm_cluster import FbmFargateServiceDef
 from aws_cdk import aws_servicediscovery as servicediscovery
 from aws_cdk import aws_ecr_assets as ecr_assets
+from aws_cdk import aws_ecs_patterns as ecs_patterns
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ec2 as ec2
+from aws_cdk import aws_elasticloadbalancingv2 as elbv2
 
 from aws_fbm.fbm_file_system import FbmVolume
 
@@ -17,9 +19,11 @@ class FargateService(Construct):
         self,
         scope: Construct,
         id: str,
+        vpc: ec2.Vpc,
         cluster: ecs.Cluster,
         dns_namespace: servicediscovery.PrivateDnsNamespace,
         dns_name: str,
+        dns_domain: str,
         cpu: int,
         memory_limit_mib: int,
         ephemeral_storage_gib: int,

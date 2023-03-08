@@ -79,8 +79,6 @@ class FbmNodeStack(FbmBaseStack):
             scope=self,
             id="NodeServiceDef",
             cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
-            dns_name="node",
             vpc=self.vpc,
             file_system=self.file_system
         )

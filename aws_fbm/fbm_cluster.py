@@ -11,14 +11,10 @@ class FbmBaseServiceDef(Construct):
     def __init__(self,
                  scope: Construct,
                  id: str,
-                 cluster: aws_ecs.Cluster,
-                 dns_name: str,
-                 dns_namespace: aws_servicediscovery.PrivateDnsNamespace):
+                 cluster: aws_ecs.Cluster):
 
         super().__init__(scope=scope, id=id)
         self.cluster = cluster
-        self.dns_name = dns_name
-        self.dns_namespace = dns_namespace
 
     def add_volume(self, volume: FbmVolume):
         self.task_definition.add_volume(
@@ -93,42 +89,15 @@ class FbmBaseServiceDef(Construct):
         return ecs_execution_role
 
 
-class FbmFargateServiceDef(FbmBaseServiceDef):
-    def __init__(self,
-                 scope: Construct,
-                 id: str,
-                 cluster: aws_ecs.Cluster,
-                 dns_namespace: aws_servicediscovery.PrivateDnsNamespace,
-                 dns_name: str,
-                 cpu: int,
-                 memory_limit_mib: int,
-                 ephemeral_storage_gib: int):
-        super().__init__(scope, id=id, dns_name=dns_name, cluster=cluster,
-                         dns_namespace=dns_namespace)
-        self.task_definition = aws_ecs.FargateTaskDefinition(
-            self,
-            id="FargateTaskDefinition",
-            task_role=self.create_task_role(),
-            execution_role=self.create_execution_role(),
-            cpu=cpu,
-            memory_limit_mib=memory_limit_mib,
-            ephemeral_storage_gib=ephemeral_storage_gib
-        )
-
-
 class FbmEC2ServiceDef(FbmBaseServiceDef):
     def __init__(
             self,
             scope: Construct,
             id: str,
             cluster: aws_ecs.Cluster,
-            dns_namespace: aws_servicediscovery.PrivateDnsNamespace,
-            dns_name: str,
             file_system: FbmFileSystem,
             vpc: aws_ec2.Vpc):
-        super().__init__(scope, id=id, dns_name=dns_name,
-                         dns_namespace=dns_namespace,
-                         cluster=cluster)
+        super().__init__(scope, id=id, cluster=cluster)
 
         """Create EC2 task definition"""
         self.task_definition = aws_ecs.Ec2TaskDefinition(

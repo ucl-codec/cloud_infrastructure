@@ -181,7 +181,8 @@ class FbmEC2ServiceDef(FbmBaseServiceDef):
             self,
             "AsgCapacityProvider",
             auto_scaling_group=auto_scaling_group,
-            machine_image_type=aws_ecs.MachineImageType.AMAZON_LINUX_2
+            machine_image_type=aws_ecs.MachineImageType.AMAZON_LINUX_2,
+            enable_managed_termination_protection=False
         )
 
         self.cluster.add_asg_capacity_provider(self.capacity_provider)

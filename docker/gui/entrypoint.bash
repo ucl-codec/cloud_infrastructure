@@ -30,4 +30,4 @@ FEDBIOMED_DIR="/fedbiomed" \
   PORT="$GUI_PORT" \
   DEBUG="False" \
   FLASK_ENV="production" \
-  gunicorn -b 0.0.0.0:${GUI_PORT} --timeout 600 --error-logfile '-' --log-level 'debug' 'app:app'
+  gunicorn -b 0.0.0.0:${GUI_PORT} -w 4 --preload --timeout 20 --error-logfile '-' --log-level 'debug' 'app:app'

@@ -72,7 +72,19 @@ class FargateService(Construct):
             ))
 
         # Create the service
-        self.service = self.service_def.create_service()
+        self.service = ecs.FargateService(
+            self,
+            "FargateService",
+            cluster=cluster,
+            desired_count=1,
+            task_definition=self.service_def.task_definition,
+            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+            cloud_map_options=ecs.CloudMapOptions(
+                name=dns_name,
+                cloud_map_namespace=dns_namespace,
+                dns_record_type=servicediscovery.DnsRecordType.A
+            )
+        )
 
         # Open the service to incoming connections
         self.service.connections.allow_from(

@@ -91,7 +91,8 @@ class FbmBaseStack(Stack):
             service=ec2.InterfaceVpcEndpointAwsService.SSM)
 
         # Create cluster
-        self.cluster = ecs.Cluster(self, "Cluster", vpc=self.vpc)
+        self.cluster = ecs.Cluster(
+            scope=self, id="Cluster", container_insights=True, vpc=self.vpc)
 
         self.dns_namespace = None
         self.vpn_endpoint = None

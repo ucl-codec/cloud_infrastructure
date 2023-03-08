@@ -44,15 +44,16 @@ class FbmNodeStack(FbmBaseStack):
             vpc=self.vpc
         )
         node_config_volume = self.file_system.create_volume(
-            name="config", root_directory='/node/config')
+            name="config", root_directory='/node/config', mount_dir="/config")
         node_data_volume = self.file_system.create_volume(
-            name="data", root_directory='/node/data')
+            name="data", root_directory='/node/data', mount_dir="/data")
         node_etc_volume = self.file_system.create_volume(
-            name="etc", root_directory='/node/etc')
+            name="etc", root_directory='/node/etc', mount_dir="/fedbiomed/etc")
         node_var_volume = self.file_system.create_volume(
-            name="var", root_directory='/node/var')
+            name="var", root_directory='/node/var', mount_dir="/fedbiomed/var")
         node_common_volume = self.file_system.create_volume(
-            name="common", root_directory='/node/common')
+            name="common", root_directory='/node/common',
+            mount_dir="/fedbiomed/envs/common")
 
         mqtt_broker = network_stack.mqtt_broker
         mqtt_port = network_stack.mqtt_port

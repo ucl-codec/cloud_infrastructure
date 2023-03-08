@@ -1,5 +1,6 @@
+from aws_fbm.constructs.fargate_service import FargateService
 from aws_fbm.fbm_base_stack import FbmBaseStack
-from aws_fbm.fbm_cluster import FbmFargateServiceDef, FbmEC2ServiceDef
+from aws_fbm.fbm_cluster import FbmEC2ServiceDef
 from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
@@ -35,6 +36,8 @@ class FbmNodeStack(FbmBaseStack):
         self.peer(network_stack=network_stack, peer_vpc=network_vpc)
 
         self.add_vpn()
+        self.gui_port = 8484
+        self.gui_dns_host = "gui"
         self.add_dns(namespace=self.dns_domain)
 
         # Create file system and volumes
@@ -140,22 +143,6 @@ class FbmNodeStack(FbmBaseStack):
         # service here as we do for Fargate services,
         # as we instead add permissions to the EC2 security group
 
-        # Fed-BioMed Gui service
-        self.gui_service_def = FbmFargateServiceDef(
-            scope=self,
-            id="GuiService",
-            cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
-            dns_name="gui",
-            cpu=2048,
-            memory_limit_mib=8192,
-            ephemeral_storage_gib=40
-        )
-        # Add volumes to the task definition
-        self.gui_service_def.add_volume(volume=node_data_volume)
-        self.gui_service_def.add_volume(volume=node_etc_volume)
-        self.gui_service_def.add_volume(volume=node_var_volume)
-        self.gui_service_def.add_volume(volume=node_common_volume)
         # Docker image
         gui_docker_image = DockerImageAsset(
             self,
@@ -163,51 +150,29 @@ class FbmNodeStack(FbmBaseStack):
             directory=str(repo_path() / "docker"),
             file="gui/Dockerfile"
         )
-        gui_container = self.gui_service_def.add_docker_container(
-            gui_docker_image,
-            name="gui",
+        # Create gui service
+        self.gui_service = FargateService(
+            scope=self,
+            id="GuiService",
+            cluster=self.cluster,
+            dns_namespace=self.dns_namespace,
+            dns_name=self.gui_dns_host,
+            cpu=2048,
+            memory_limit_mib=8192,
+            ephemeral_storage_gib=40,
+            docker_image_asset=gui_docker_image,
+            task_name="gui",
+            port=self.gui_port,
+            permitted_client_ip_range=self.cidr_range,
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
                 "UPLOADS_URL": uploads_url},
-            cpu=2048,
-            memory_limit_mib=8192
+            volumes=[node_data_volume, node_etc_volume, node_var_volume,
+                     node_common_volume]
         )
-        gui_container.add_port_mappings(
-            ecs.PortMapping(container_port=8484))
-        gui_container.add_mount_points(
-            ecs.MountPoint(
-                source_volume=node_data_volume.volume_name,
-                container_path="/data",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_etc_volume.volume_name,
-                container_path="/fedbiomed/etc",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_var_volume.volume_name,
-                container_path="/fedbiomed/var",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_common_volume.volume_name,
-                container_path="/fedbiomed/envs/common",
-                read_only=False,
-            ),
-        )
-        # Create the gui service
-        self.gui_service = self.gui_service_def.create_service()
-        # Allow the gui service to access EFS
-        self.file_system.allow_access_from_service(self.gui_service)
-        # Allow incoming connections to gui
-        for port in [8484]:
-            self.gui_service.connections.security_groups[0].add_ingress_rule(
-                peer=ec2.Peer.ipv4(self.vpc.vpc_cidr_block),
-                connection=ec2.Port.tcp(port),
-                description=f"Allow http inbound from VPC on port {port}"
-            )
+
+        self.file_system.allow_access_from_service(self.gui_service.service)
 
         # Do this here after the stack has been created
         self.open_peer_ports(network_stack=network_stack)

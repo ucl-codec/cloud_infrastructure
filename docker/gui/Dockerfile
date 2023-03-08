@@ -14,6 +14,7 @@ ENV GUI_PORT=${GUI_PORT_DEFAULT}
 ENV GUI_DATA_PATH=/data
 ENV GUI_DEFAULT_ADMIN_EMAIL=admin@fedbiomed.gui
 ENV GUI_DEFAULT_ADMIN_PW=admin
+ENV GUI_TIMEOUT=600
 
 # Install dependencies
 RUN apt-get update && apt-get install -y apt-utils wget procps gettext-base

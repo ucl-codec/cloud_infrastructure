@@ -115,21 +115,6 @@ class FbmFargateServiceDef(FbmBaseServiceDef):
             ephemeral_storage_gib=ephemeral_storage_gib
         )
 
-    def create_service(self) -> aws_ecs.FargateService:
-        return aws_ecs.FargateService(
-            self,
-            "FargateService",
-            cluster=self.cluster,
-            desired_count=1,
-            task_definition=self.task_definition,
-            circuit_breaker=aws_ecs.DeploymentCircuitBreaker(rollback=True),
-            cloud_map_options=aws_ecs.CloudMapOptions(
-                name=self.dns_name,
-                cloud_map_namespace=self.dns_namespace,
-                dns_record_type=aws_servicediscovery.DnsRecordType.A
-            )
-        )
-
 
 class FbmEC2ServiceDef(FbmBaseServiceDef):
     def __init__(

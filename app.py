@@ -28,7 +28,7 @@ network = FbmNetworkStack(
 
 node_a_import_bucket_name = "clinical-node-a-import-bucket"
 node_a_setup = FbmNodeSetupStack(
-    scope=app, id="FbmNodeStackA", site_name="Clinical Node A",
+    scope=app, id="FbmNodeASetup", site_name="Clinical Node A",
     bucket_name=node_a_import_bucket_name)
 node_a = FbmNodeStack(
     scope=app,
@@ -46,7 +46,7 @@ node_a = FbmNodeStack(
 
 node_b_import_bucket_name = "clinical-node-b-import-bucket"
 node_b_setup = FbmNodeSetupStack(
-    scope=app, id="FbmNodeStackB", site_name="Clinical Node B",
+    scope=app, id="FbmNodeBSetup", site_name="Clinical Node B",
     bucket_name=node_b_import_bucket_name)
 node_b = FbmNodeStack(
     scope=app,

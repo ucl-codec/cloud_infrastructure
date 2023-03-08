@@ -45,7 +45,7 @@ class FbmNetworkStack(FbmBaseStack):
         # Create mqtt service
         self.mqtt_service = FargateService(
             scope=self,
-            id="RestfulService",
+            id="MqttService",
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.mqtt_dns_host,

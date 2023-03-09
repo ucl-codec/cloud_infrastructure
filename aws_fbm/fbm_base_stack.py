@@ -89,6 +89,14 @@ class FbmBaseStack(Stack):
             vpc=self.vpc,
             name="SSMEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SSM)
+        self.add_interface_endpoint(
+            vpc=self.vpc,
+            name="Ec2MessagesEndpoint",
+            service=ec2.InterfaceVpcEndpointAwsService.EC2_MESSAGES)
+        self.add_interface_endpoint(
+            vpc=self.vpc,
+            name="SSMMessagesEndpoint",
+            service=ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES)
 
         # Create cluster
         self.cluster = ecs.Cluster(

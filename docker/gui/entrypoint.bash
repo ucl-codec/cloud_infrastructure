@@ -22,12 +22,23 @@ source /miniconda/etc/profile.d/conda.sh
 conda activate fedbiomed-gui
 
 cd /fedbiomed/gui/server
-FEDBIOMED_DIR="/fedbiomed" \
-  NODE_CONFIG_FILE="config_node.ini" \
-  BUILD_DIR="/gui-build" \
-  DATA_PATH="/data" \
-  HOST="$GUI_HOST" \
-  PORT="$GUI_PORT" \
-  DEBUG="False" \
-  FLASK_ENV="production" \
-  gunicorn -b 0.0.0.0:${GUI_PORT} --worker-class=gevent -w 4 --preload --timeout ${GUI_TIMEOUT} --error-logfile '-' --log-level 'debug' 'app:app'
+
+
+if [ -d "/fedbiomed/var/gui-build" ];then
+  rm -Rf "/fedbiomed/var/gui-build";
+fi
+mkdir -p /fedbiomed/var
+mv "/gui-build/" "/fedbiomed/var/gui-build"
+
+/fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start
+#FEDBIOMED_DIR="/fedbiomed" \
+#  NODE_CONFIG_FILE="config_node.ini" \
+#  BUILD_DIR="/gui-build" \
+#  DATA_PATH="/data" \
+#  HOST="$GUI_HOST" \
+#  PORT="$GUI_PORT" \
+#  DEBUG="False" \
+#  FLASK_ENV="production" \
+#  gunicorn -b 0.0.0.0:${GUI_PORT} --worker-class=gevent -w 4 --preload --timeout ${GUI_TIMEOUT} --error-logfile '-' --log-level 'debug' 'app:app'
+
+

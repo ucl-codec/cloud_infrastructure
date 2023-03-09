@@ -20,7 +20,6 @@ class FargateService(Construct):
         self,
         scope: Construct,
         id: str,
-        vpc: ec2.Vpc,
         cluster: ecs.Cluster,
         dns_namespace: servicediscovery.PrivateDnsNamespace,
         dns_name: str,
@@ -52,7 +51,6 @@ class FargateService(Construct):
 
         # Add volumes
         for volume in volumes:
-            # self.service_def.add_volume(volume=volume)
             self.task_definition.add_volume(
                 name=volume.volume_name,
                 efs_volume_configuration=ecs.EfsVolumeConfiguration(
@@ -68,6 +66,7 @@ class FargateService(Construct):
                 )
             )
 
+        # Add the Docker container
         self.container = self.task_definition.add_container(
             id=task_name,
             image=ecs.ContainerImage.from_docker_image_asset(docker_image_asset),

@@ -46,7 +46,6 @@ class FbmNetworkStack(FbmBaseStack):
         self.mqtt_service = FargateService(
             scope=self,
             id="MqttService",
-            vpc=self.vpc,
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.mqtt_dns_host,
@@ -71,7 +70,6 @@ class FbmNetworkStack(FbmBaseStack):
         self.restful_service = FargateService(
             scope=self,
             id="RestfulService",
-            vpc=self.vpc,
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.restful_dns_host,
@@ -96,7 +94,6 @@ class FbmNetworkStack(FbmBaseStack):
         self.jupyter_service = FargateService(
             scope=self,
             id="JupyterService",
-            vpc=self.vpc,
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.jupyter_dns_host,
@@ -119,7 +116,6 @@ class FbmNetworkStack(FbmBaseStack):
         self.tensorboard_service = FargateService(
             scope=self,
             id="TensorboardService",
-            vpc=self.vpc,
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.tensorboard_dns_host,

@@ -112,7 +112,6 @@ class FbmNodeStack(FbmBaseStack):
         self.gui_service = FargateService(
             scope=self,
             id="GuiService",
-            vpc=self.vpc,
             cluster=self.cluster,
             dns_namespace=self.dns_namespace,
             dns_name=self.gui_dns_host,

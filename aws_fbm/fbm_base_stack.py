@@ -39,7 +39,7 @@ class FbmBaseStack(Stack):
             nat_gateways=0,
             enable_dns_hostnames=True,
             enable_dns_support=True,
-            max_azs=1,
+            max_azs=2,
             subnet_configuration=[
                 ec2.SubnetConfiguration(
                     name="private",

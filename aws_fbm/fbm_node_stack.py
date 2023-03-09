@@ -1,17 +1,17 @@
 from aws_fbm.constructs.fargate_service import FargateService
 from aws_fbm.fbm_base_stack import FbmBaseStack
-from aws_fbm.fbm_cluster import FbmEC2ServiceDef
 from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
 from aws_fbm.utils import repo_path
-from aws_cdk import (aws_ecs as ecs)
 from aws_cdk import custom_resources, Environment
 from aws_cdk import aws_ec2 as ec2, aws_iam
 
 from constructs import Construct
 import aws_cdk.aws_logs as logs
 from aws_cdk.aws_ecr_assets import DockerImageAsset
+
+from aws_fbm.constructs.ec2_service import EC2Service
 
 
 class FbmNodeStack(FbmBaseStack):
@@ -74,74 +74,34 @@ class FbmNodeStack(FbmBaseStack):
             account=self.account
         )
 
-        # Fed-BioMed Node service
-        self.node_service_def = FbmEC2ServiceDef(
-            scope=self,
-            id="NodeServiceDef",
-            cluster=self.cluster,
-            vpc=self.vpc,
-            file_system=self.file_system
-        )
-        # Add volumes to node service
-        self.node_service_def.add_volume(volume=node_config_volume)
-        self.node_service_def.add_volume(volume=node_data_volume)
-        self.node_service_def.add_volume(volume=node_etc_volume)
-        self.node_service_def.add_volume(volume=node_var_volume)
-        self.node_service_def.add_volume(volume=node_common_volume)
-
-        # Docker image
+        # Docker image for node
         node_docker_image = DockerImageAsset(
             self,
             id="node",
             directory=str(repo_path() / "docker"),
             file="node/Dockerfile"
         )
-        node_container = self.node_service_def.add_docker_container(
-            node_docker_image,
-            name="node",
-            gpu_count=1,
+        # Create node service
+        self.node_service = EC2Service(
+            scope=self,
+            id="NodeService",
+            vpc=self.vpc,
+            cluster=self.cluster,
             cpu=4096,
+            gpu_count=1,
             memory_limit_mib=30000,
+            docker_image_asset=node_docker_image,
+            task_name="node",
+            file_system=self.file_system,
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
-                "UPLOADS_URL": uploads_url}
+                "UPLOADS_URL": uploads_url},
+            volumes=[node_config_volume, node_data_volume, node_etc_volume,
+                     node_var_volume, node_common_volume]
         )
-        node_container.add_mount_points(
-            ecs.MountPoint(
-                source_volume=node_config_volume.volume_name,
-                container_path="/config",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_data_volume.volume_name,
-                container_path="/data",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_etc_volume.volume_name,
-                container_path="/fedbiomed/etc",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_var_volume.volume_name,
-                container_path="/fedbiomed/var",
-                read_only=False,
-            ),
-            ecs.MountPoint(
-                source_volume=node_common_volume.volume_name,
-                container_path="/fedbiomed/envs/common",
-                read_only=False,
-            )
-        )
-        # Create the node service
-        self.node_service = self.node_service_def.create_service()
 
-        # Note: We do not add permissions from the file storage to the EC2
-        # service here as we do for Fargate services,
-        # as we instead add permissions to the EC2 security group
-
-        # Docker image
+        # Docker image for gui
         gui_docker_image = DockerImageAsset(
             self,
             id="gui",

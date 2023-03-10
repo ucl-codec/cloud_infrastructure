@@ -6,7 +6,5 @@ REPO_DIR=$(dirname $(dirname $(realpath ${0})))
 # Start from repo dir
 cd "${REPO_DIR}"
 
-cdk deploy --all --profile passian
-
-# To deploy a particular stack, specify the stack name before --profile, like this:
-# cdk deploy FbmNodeStack --profile passian
+# Deploy main stacks
+cdk deploy FbmNetworkStack FbmNodeStackA FbmNodeStackB --profile passian

@@ -1,6 +1,7 @@
-from aws_cdk import Stack
 from constructs import Construct
 from aws_cdk import aws_s3 as s3
+from aws_cdk import Environment
+from aws_cdk import Stack
 
 
 class FbmNodeSetupStack(Stack):
@@ -8,9 +9,11 @@ class FbmNodeSetupStack(Stack):
                  scope: Construct,
                  id: str,
                  site_name: str,
-                 bucket_name: str):
+                 bucket_name: str,
+                 env: Environment):
         super().__init__(scope, id=id,
-                         description=f"FBM setup stack for site {site_name}")
+                         description=f"FBM setup stack for site {site_name}",
+                         env=env)
 
         # Create S3 bucket for data import
         self.import_bucket = s3.Bucket(

@@ -55,7 +55,8 @@ class FbmNetworkStack(FbmBaseStack):
             ephemeral_storage_gib=40,
             docker_image_asset=mqtt_docker_image,
             task_name="mqtt",
-            port=self.mqtt_port,
+            container_port=self.mqtt_port,
+            listener_port=self.mqtt_port,
             permitted_client_ip_range=self.cidr_range
         )
 
@@ -79,7 +80,8 @@ class FbmNetworkStack(FbmBaseStack):
             ephemeral_storage_gib=40,
             docker_image_asset=restful_docker_image,
             task_name="restful",
-            port=self.restful_port,
+            container_port=self.restful_port,
+            listener_port=self.restful_port,
             permitted_client_ip_range=self.cidr_range
         )
 
@@ -103,7 +105,8 @@ class FbmNetworkStack(FbmBaseStack):
             ephemeral_storage_gib=40,
             docker_image_asset=researcher_docker_image,
             task_name="restful",
-            port=self.jupyter_port,
+            container_port=self.jupyter_port,
+            listener_port=self.jupyter_port,
             permitted_client_ip_range=self.cidr_range,
             entry_point=["/entrypoint_jupyter.bash"],
             environment={
@@ -125,7 +128,8 @@ class FbmNetworkStack(FbmBaseStack):
             ephemeral_storage_gib=40,
             docker_image_asset=researcher_docker_image,
             task_name="restful",
-            port=self.tensorboard_port,
+            container_port=self.tensorboard_port,
+            listener_port=self.tensorboard_port,
             permitted_client_ip_range=self.cidr_range,
             entry_point=["/entrypoint_tensorboard.bash"],
             environment={

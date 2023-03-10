@@ -121,7 +121,8 @@ class FbmNodeStack(FbmBaseStack):
             ephemeral_storage_gib=100,
             docker_image_asset=gui_docker_image,
             task_name="gui",
-            port=self.gui_port,
+            container_port=self.gui_port,
+            listener_port=self.gui_port,
             permitted_client_ip_range=self.cidr_range,
             environment={
                 "MQTT_BROKER": mqtt_broker,

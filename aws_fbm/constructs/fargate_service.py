@@ -29,7 +29,8 @@ class FargateService(Construct):
         ephemeral_storage_gib: int,
         docker_image_asset: ecr_assets.DockerImageAsset,
         task_name: str,
-        port: int,
+        container_port: int,
+        listener_port: int,
         permitted_client_ip_range: str,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
@@ -75,7 +76,7 @@ class FargateService(Construct):
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,
             entry_point=entry_point,
-            port_mappings=[ecs.PortMapping(container_port=port)],
+            port_mappings=[ecs.PortMapping(container_port=container_port)],
             logging=ecs.LogDrivers.aws_logs(
                 stream_prefix=task_name,
                 log_retention=logs.RetentionDays.THREE_DAYS)
@@ -106,7 +107,7 @@ class FargateService(Construct):
 
         # Open the service to incoming connections
         self.service.connections.allow_from(
-            ec2.Peer.ipv4(permitted_client_ip_range), ec2.Port.tcp(port))
+            ec2.Peer.ipv4(permitted_client_ip_range), ec2.Port.tcp(listener_port))
 
     def create_task_role(self):
         """Create IAM role to be used by the ECS tasks.

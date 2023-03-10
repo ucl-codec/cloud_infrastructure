@@ -29,7 +29,6 @@ RUN mkdir -p /fedbiomed/envs /data
 COPY ./common/fedbiomed/envs/vpn /fedbiomed/envs/vpn
 COPY ./common/fedbiomed/fedbiomed /fedbiomed/fedbiomed
 COPY ./common/fedbiomed/scripts /fedbiomed/scripts
-COPY ./common/fedbiomed/notebooks /fedbiomed/notebooks
 
 COPY ./researcher/bashrc_append /tmp
 RUN cat /tmp/bashrc_append | tee -a /root/.bashrc /root/bashrc_entrypoint \
@@ -37,12 +36,16 @@ RUN cat /tmp/bashrc_append | tee -a /root/.bashrc /root/bashrc_entrypoint \
 
 RUN ln -s /miniconda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 
+
 # Set working directory
 WORKDIR /fedbiomed
 
 # Install dependencies from conda environment file
 RUN conda env update --file ./envs/vpn/conda/fedbiomed-researcher.yaml && \
-	pip cache purge && conda clean -a -y 
+	pip cache purge && conda clean -a -y
+
+# Copy default notebooks, which will be added in the entrypoint
+COPY ./common/fedbiomed/notebooks/ /default_notebooks
 
 # Copy entrypoint script
 COPY ./researcher/entrypoint*.bash /

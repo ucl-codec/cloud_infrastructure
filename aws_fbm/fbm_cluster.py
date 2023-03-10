@@ -114,7 +114,10 @@ class FbmEC2ServiceDef(FbmBaseServiceDef):
         # Custom UserData so the EC2 instance registers with the correct cluster
         # when it launches
         user_data = aws_ec2.UserData.for_linux()
-        user_data.add_commands(f'echo "ECS_CLUSTER={cluster.cluster_name}" >> /etc/ecs/ecs.config')
+        # Tell ECS to use GPU
+        user_data.add_commands(f'echo "ECS_ENABLE_GPU_SUPPORT=true" >> /etc/ecs/ecs.config')
+        # Register cluster - not required if using the default cluster
+        # user_data.add_commands(f'echo "ECS_CLUSTER={cluster.cluster_name}" >> /etc/ecs/ecs.config')
 
         template_security_group = aws_ec2.SecurityGroup(
             self, "LaunchTemplateSG", vpc=vpc)

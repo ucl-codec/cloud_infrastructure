@@ -75,14 +75,11 @@ class FargateService(Construct):
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,
             entry_point=entry_point,
+            port_mappings=[ecs.PortMapping(container_port=port)],
             logging=ecs.LogDrivers.aws_logs(
                 stream_prefix=task_name,
                 log_retention=logs.RetentionDays.THREE_DAYS)
         )
-
-        # Expose ports from the container
-        self.container.add_port_mappings(
-            ecs.PortMapping(container_port=port))
 
         # Add mount points to the container
         for volume in volumes:

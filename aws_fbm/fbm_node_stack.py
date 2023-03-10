@@ -145,13 +145,16 @@ class FbmNodeStack(FbmBaseStack):
             vpc_id=self.vpc.vpc_id,
             peer_vpc_id=network_stack.vpc.vpc_id,
         )
-        ec2.CfnRoute(
-            self,
-            "NodeNetworkRoute",
-            destination_cidr_block=network_stack.cidr_range,
-            route_table_id=self.vpc.isolated_subnets[0].route_table.route_table_id,
-            vpc_peering_connection_id=self.peering.ref,
-        )
+        subnet_index = 0
+        for subnet in self.vpc.isolated_subnets:
+            ec2.CfnRoute(
+                self,
+                f"NodeNetworkRoute{subnet_index}",
+                destination_cidr_block=network_stack.cidr_range,
+                route_table_id=subnet.route_table.route_table_id,
+                vpc_peering_connection_id=self.peering.ref,
+            )
+            subnet_index += 1
         # Custom Construct to allow use of the peered VPC for DNS resolution
         AllowVPCPeeringDNSResolution(
             self,

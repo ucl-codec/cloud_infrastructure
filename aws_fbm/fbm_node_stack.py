@@ -147,13 +147,6 @@ class FbmNodeStack(FbmBaseStack):
         )
         ec2.CfnRoute(
             self,
-            "NetworkNodeRoute",
-            destination_cidr_block=self.cidr_range,
-            route_table_id=network_stack.vpc.isolated_subnets[0].route_table.route_table_id,
-            vpc_peering_connection_id=self.peering.ref,
-        )
-        ec2.CfnRoute(
-            self,
             "NodeNetworkRoute",
             destination_cidr_block=network_stack.cidr_range,
             route_table_id=self.vpc.isolated_subnets[0].route_table.route_table_id,

@@ -5,6 +5,8 @@ from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.utils import repo_path
 from aws_cdk.aws_ecr_assets import DockerImageAsset
 
+from aws_fbm.fbm_file_system import FbmFileSystem
+
 
 class FbmNetworkStack(FbmBaseStack):
 
@@ -22,6 +24,26 @@ class FbmNetworkStack(FbmBaseStack):
 
         self.dns_domain = dns_domain
         self.add_vpn()
+
+        # Create file system and volumes
+        self.file_system = FbmFileSystem(
+            scope=self,
+            id="FileSystem",
+            vpc=self.vpc
+        )
+        researcher_config_volume = self.file_system.create_volume(
+            name="config", root_directory='/researcher/config', mount_dir="/config")
+        researcher_data_volume = self.file_system.create_volume(
+            name="data", root_directory='/researcher/data', mount_dir="/data")
+        researcher_etc_volume = self.file_system.create_volume(
+            name="etc", root_directory='/researcher/etc', mount_dir="/fedbiomed/etc")
+        researcher_runs_volume = self.file_system.create_volume(
+            name="runs", root_directory='/researcher/runs', mount_dir="/fedbiomed/runs")
+        researcher_var_volume = self.file_system.create_volume(
+            name="var", root_directory='/researcher/var', mount_dir="/fedbiomed/var")
+        researcher_notebooks_volume = self.file_system.create_volume(
+            name="notebooks", root_directory='/researcher/notebooks', mount_dir="/fedbiomed/notebooks")
+
         self.jupyter_port = 8888
         self.tensorboard_port = 6007
         self.restful_port = 8000
@@ -114,6 +136,9 @@ class FbmNetworkStack(FbmBaseStack):
                 "MQTT_BROKER": self.mqtt_broker,
                 "MQTT_BROKER_PORT": f"{self.mqtt_port}",
                 "UPLOADS_URL": self.uploads_url},
+            volumes=[researcher_config_volume, researcher_data_volume,
+                     researcher_etc_volume, researcher_runs_volume,
+                     researcher_var_volume, researcher_notebooks_volume]
         )
 
         # Tensorboard service using the common researcher container
@@ -138,4 +163,7 @@ class FbmNetworkStack(FbmBaseStack):
                 "MQTT_BROKER": self.mqtt_broker,
                 "MQTT_BROKER_PORT": f"{self.mqtt_port}",
                 "UPLOADS_URL": self.uploads_url},
+            volumes=[researcher_config_volume, researcher_data_volume,
+                     researcher_etc_volume, researcher_runs_volume,
+                     researcher_var_volume, researcher_notebooks_volume]
         )

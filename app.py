@@ -27,9 +27,12 @@ network = FbmNetworkStack(
 )
 
 node_a_import_bucket_name = "clinical-node-a-import-bucket"
-node_a_setup = FbmNodeSetupStack(
-    scope=app, id="FbmNodeASetup", site_name="Clinical Node A",
-    bucket_name=node_a_import_bucket_name)
+
+# For initial setup
+# node_a_setup = FbmNodeSetupStack(
+#     scope=app, id="FbmNodeASetup", site_name="Clinical Node A",
+#     bucket_name=node_a_import_bucket_name)
+
 node_a = FbmNodeStack(
     scope=app,
     construct_id="FbmNodeStackA",
@@ -45,9 +48,12 @@ node_a = FbmNodeStack(
 )
 
 node_b_import_bucket_name = "clinical-node-b-import-bucket"
-node_b_setup = FbmNodeSetupStack(
-    scope=app, id="FbmNodeBSetup", site_name="Clinical Node B",
-    bucket_name=node_b_import_bucket_name)
+
+# For initial setup
+# node_b_setup = FbmNodeSetupStack(
+#     scope=app, id="FbmNodeBSetup", site_name="Clinical Node B",
+#     bucket_name=node_b_import_bucket_name)
+
 node_b = FbmNodeStack(
     scope=app,
     construct_id="FbmNodeStackB",
@@ -62,5 +68,35 @@ node_b = FbmNodeStack(
     env=get_environment()
 )
 
+
+
+# test_network = FbmNetworkStack(
+#     scope=app,
+#     construct_id="TestNetworkStack",
+#     stack_name="TestNetworkStack",
+#     dns_domain="test.testfederated2",
+#     description="Test PASSIAN Fed-BioMed stack for federation network",
+#     network_number=0,
+#     env=get_environment()
+# )
+#
+# test_node_a_import_bucket_name = "test-a-import-bucket"
+# # test_node_a_setup = FbmNodeSetupStack(
+# #     scope=app, id="TestNodeASetup", site_name="Test A",
+# #     bucket_name=test_node_a_import_bucket_name)
+#
+# test_node_a = FbmNodeStack(
+#     scope=app,
+#     construct_id="TestNodeStackA",
+#     site_name="Test Node A",
+#     stack_name="TestNodeStackA",
+#     dns_domain="test.testclinicala2",
+#     bucket_name=test_node_a_import_bucket_name,
+#     description="Test PASSIAN Fed-BioMed stack for clinical node A",
+#     network_number=1,
+#     network_stack=test_network,
+#     network_vpc=test_network.vpc,
+#     env=get_environment()
+# )
 
 app.synth()

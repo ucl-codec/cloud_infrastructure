@@ -6,6 +6,7 @@ from aws_cdk import (aws_ec2 as ec2, aws_ecs as ecs)
 import aws_cdk.aws_ssm as ssm
 from aws_cdk import aws_route53 as route53
 
+
 class FbmBaseStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, *,

@@ -36,7 +36,6 @@ class FbmNodeStack(FbmBaseStack):
         self.peer(network_stack=network_stack, peer_vpc=network_vpc)
 
         self.add_vpn()
-        self.gui_port = 8484
         self.gui_dns_host = "gui"
         self.add_dns(namespace=self.dns_domain)
 
@@ -121,8 +120,8 @@ class FbmNodeStack(FbmBaseStack):
             ephemeral_storage_gib=100,
             docker_image_asset=gui_docker_image,
             task_name="gui",
-            container_port=self.gui_port,
-            listener_port=self.gui_port,
+            container_port=8484,
+            listener_port=80,
             permitted_client_ip_range=self.cidr_range,
             environment={
                 "MQTT_BROKER": mqtt_broker,

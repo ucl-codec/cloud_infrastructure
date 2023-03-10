@@ -1,10 +1,10 @@
 from aws_cdk import Environment
-from aws_cdk import Stack, aws_servicediscovery
+from aws_cdk import Stack
 
 from constructs import Construct
 from aws_cdk import (aws_ec2 as ec2, aws_ecs as ecs)
 import aws_cdk.aws_ssm as ssm
-
+from aws_cdk import aws_route53 as route53
 
 class FbmBaseStack(Stack):
 
@@ -102,20 +102,15 @@ class FbmBaseStack(Stack):
         self.cluster = ecs.Cluster(
             scope=self, id="Cluster", container_insights=True, vpc=self.vpc)
 
-        self.dns_namespace = None
         self.vpn_endpoint = None
 
     def add_dns(self, namespace):
-
-        # ToDo: Does not directly support discovery from peered VPC
-        # You need to manually add the node VPC to the hosted zone that is
-        # created here
-        self.dns_namespace = aws_servicediscovery.PrivateDnsNamespace(
+        self.hosted_zone = route53.HostedZone(
             self,
-            "DnsNamespace",
-            vpc=self.vpc,
-            name=namespace,
-            description="Private DnsNamespace for FBM"
+            "HostedZone",
+            vpcs=[self.vpc],
+            zone_name=namespace,
+            comment="Private Hosted Zone for FBM"
         )
 
     def add_vpn(self):

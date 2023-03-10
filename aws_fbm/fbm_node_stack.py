@@ -111,10 +111,10 @@ class FbmNodeStack(FbmBaseStack):
         self.gui_service = FargateService(
             scope=self,
             id="GuiService",
+            web=True,
             cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
             dns_name=self.gui_dns_host,
-            dns_domain=self.dns_domain,
+            domain_zone=self.hosted_zone,
             cpu=4096,
             memory_limit_mib=30720,
             ephemeral_storage_gib=100,
@@ -130,6 +130,9 @@ class FbmNodeStack(FbmBaseStack):
             file_system=self.file_system,
             volumes=[node_data_volume, node_etc_volume, node_var_volume,
                      node_common_volume]
+        )
+        self.gui_service.load_balanced_service.target_group.configure_health_check(
+            healthy_http_codes="200,304"
         )
 
         # Do this here after the stack has been created

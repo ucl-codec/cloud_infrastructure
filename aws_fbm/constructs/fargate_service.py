@@ -8,6 +8,7 @@ from aws_cdk import aws_ecs_patterns as ecs_patterns
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_elasticloadbalancingv2 as elbv2
+from aws_cdk import aws_route53 as route53
 from aws_cdk import aws_logs as logs
 from aws_cdk import aws_iam as iam
 
@@ -20,10 +21,10 @@ class FargateService(Construct):
         self,
         scope: Construct,
         id: str,
+        web: bool,
         cluster: ecs.Cluster,
-        dns_namespace: servicediscovery.PrivateDnsNamespace,
         dns_name: str,
-        dns_domain: str,
+        domain_zone: route53.IHostedZone,
         cpu: int,
         memory_limit_mib: int,
         ephemeral_storage_gib: int,
@@ -94,28 +95,60 @@ class FargateService(Construct):
                 read_only=False
             ))
 
-        # Create the service
-        self.service = ecs.FargateService(
-            self,
-            "FargateService",
-            cluster=cluster,
-            desired_count=1,
-            task_definition=self.task_definition,
-            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
-            cloud_map_options=ecs.CloudMapOptions(
-                name=dns_name,
-                cloud_map_namespace=dns_namespace,
-                dns_record_type=servicediscovery.DnsRecordType.A
+        if web:
+            self.load_balanced_service = ecs_patterns.ApplicationLoadBalancedFargateService(
+                self, "LbFargateService",
+                cluster=cluster,
+                desired_count=1,
+                task_definition=self.task_definition,
+                circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+                # cloud_map_options=ecs.CloudMapOptions(
+                #     name=dns_name,
+                #     cloud_map_namespace=dns_namespace,
+                #     dns_record_type=servicediscovery.DnsRecordType.A
+                # ),
+                assign_public_ip=False,
+                domain_name=dns_name,
+                listener_port=listener_port,
+                open_listener=False,
+                public_load_balancer=False,
+                domain_zone=domain_zone
             )
-        )
+        else:
+            self.load_balanced_service = ecs_patterns.NetworkLoadBalancedFargateService(
+                self, "LbFargateService",
+                cluster=cluster,
+                desired_count=1,
+                task_definition=self.task_definition,
+                circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+                # cloud_map_options=ecs.CloudMapOptions(
+                #     name=dns_name,
+                #     cloud_map_namespace=dns_namespace,
+                #     dns_record_type=servicediscovery.DnsRecordType.A
+                # ),
+                assign_public_ip=False,
+                domain_name=dns_name,
+                listener_port=listener_port,
+                # open_listener=False,
+                public_load_balancer=False,
+                domain_zone=domain_zone
+            )
+        self.service = self.load_balanced_service.service
+        self.load_balancer = self.load_balanced_service.load_balancer
 
         # Allow service to access EFS file system
         if file_system:
             file_system.allow_access_from_service(self.service)
 
         # Open the service to incoming connections
-        self.service.connections.allow_from(
-            ec2.Peer.ipv4(permitted_client_ip_range), ec2.Port.tcp(listener_port))
+        if web:
+            self.load_balancer.connections.allow_from(
+                ec2.Peer.ipv4(permitted_client_ip_range),
+                ec2.Port.tcp(listener_port))
+        else:
+            self.service.connections.allow_from(
+                ec2.Peer.ipv4(permitted_client_ip_range),
+                ec2.Port.tcp(listener_port))
 
     def create_task_role(self):
         """Create IAM role to be used by the ECS tasks.

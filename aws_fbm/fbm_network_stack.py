@@ -68,10 +68,10 @@ class FbmNetworkStack(FbmBaseStack):
         self.mqtt_service = FargateService(
             scope=self,
             id="MqttService",
+            web=False,
             cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
             dns_name=self.mqtt_dns_host,
-            dns_domain=self.dns_domain,
+            domain_zone=self.hosted_zone,
             cpu=512,
             memory_limit_mib=4096,
             ephemeral_storage_gib=40,
@@ -93,10 +93,10 @@ class FbmNetworkStack(FbmBaseStack):
         self.restful_service = FargateService(
             scope=self,
             id="RestfulService",
+            web=True,
             cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
             dns_name=self.restful_dns_host,
-            dns_domain=self.dns_domain,
+            domain_zone=self.hosted_zone,
             cpu=512,
             memory_limit_mib=4096,
             ephemeral_storage_gib=40,
@@ -118,17 +118,17 @@ class FbmNetworkStack(FbmBaseStack):
         self.jupyter_service = FargateService(
             scope=self,
             id="JupyterService",
+            web=True,
             cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
             dns_name=self.jupyter_dns_host,
-            dns_domain=self.dns_domain,
+            domain_zone=self.hosted_zone,
             cpu=2048,
             memory_limit_mib=16384,
             ephemeral_storage_gib=40,
             docker_image_asset=researcher_docker_image,
             task_name="jupyter",
             container_port=self.jupyter_port,
-            listener_port=self.jupyter_port,
+            listener_port=80,
             permitted_client_ip_range=self.cidr_range,
             file_system=self.file_system,
             entry_point=["/entrypoint_jupyter.bash"],
@@ -140,22 +140,26 @@ class FbmNetworkStack(FbmBaseStack):
                      researcher_etc_volume, researcher_runs_volume,
                      researcher_var_volume, researcher_notebooks_volume]
         )
+        self.jupyter_service.load_balanced_service.target_group.configure_health_check(
+            path="/tree",
+            healthy_http_codes="200,302,304"
+        )
 
         # Tensorboard service using the common researcher container
         self.tensorboard_service = FargateService(
             scope=self,
             id="TensorboardService",
+            web=True,
             cluster=self.cluster,
-            dns_namespace=self.dns_namespace,
             dns_name=self.tensorboard_dns_host,
-            dns_domain=self.dns_domain,
+            domain_zone=self.hosted_zone,
             cpu=2048,
             memory_limit_mib=16384,
             ephemeral_storage_gib=40,
             docker_image_asset=researcher_docker_image,
             task_name="tensorboard",
             container_port=self.tensorboard_port,
-            listener_port=self.tensorboard_port,
+            listener_port=80,
             permitted_client_ip_range=self.cidr_range,
             file_system=self.file_system,
             entry_point=["/entrypoint_tensorboard.bash"],

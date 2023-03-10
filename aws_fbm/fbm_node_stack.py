@@ -127,11 +127,10 @@ class FbmNodeStack(FbmBaseStack):
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
                 "UPLOADS_URL": uploads_url},
+            file_system=self.file_system,
             volumes=[node_data_volume, node_etc_volume, node_var_volume,
                      node_common_volume]
         )
-
-        self.file_system.allow_access_from_service(self.gui_service.service)
 
         # Do this here after the stack has been created
         self.open_peer_ports(network_stack=network_stack)

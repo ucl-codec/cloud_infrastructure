@@ -11,7 +11,7 @@ from aws_cdk import aws_elasticloadbalancingv2 as elbv2
 from aws_cdk import aws_logs as logs
 from aws_cdk import aws_iam as iam
 
-from aws_fbm.fbm_file_system import FbmVolume
+from aws_fbm.fbm_file_system import FbmVolume, FbmFileSystem
 
 
 class FargateService(Construct):
@@ -32,11 +32,15 @@ class FargateService(Construct):
         container_port: int,
         listener_port: int,
         permitted_client_ip_range: str,
+        file_system: Optional[FbmFileSystem] = None,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
         volumes: Optional[Sequence[FbmVolume]] = None
     ):
         super().__init__(scope, id)
+        if volumes and not file_system:
+            raise RuntimeError("file_system must be specified if volumes are"
+                               "specified")
         volumes = volumes or []
 
         # Create the task definition
@@ -104,6 +108,10 @@ class FargateService(Construct):
                 dns_record_type=servicediscovery.DnsRecordType.A
             )
         )
+
+        # Allow service to access EFS file system
+        if file_system:
+            file_system.allow_access_from_service(self.service)
 
         # Open the service to incoming connections
         self.service.connections.allow_from(

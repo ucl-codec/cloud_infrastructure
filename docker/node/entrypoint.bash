@@ -21,6 +21,6 @@ conda env config vars set MQTT_BROKER="${MQTT_BROKER}" UPLOADS_URL="${UPLOADS_UR
 
 source /miniconda/bin/activate fedbiomed-node
 
-/fedbiomed/scripts/fedbiomed_run node start
+/fedbiomed/scripts/fedbiomed_run node start --gpu-only
 
 wait $!

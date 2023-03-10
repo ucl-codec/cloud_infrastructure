@@ -64,7 +64,7 @@ class EC2Service(Construct):
         launch_template = ec2.LaunchTemplate(
             self,
             "ASG-LaunchTemplate",
-            instance_type=ec2.InstanceType("g3s.xlarge"),
+            instance_type=ec2.InstanceType("p3.2xlarge"),
             machine_image=machine_image,
             user_data=user_data,
             role=self.create_launch_role(),

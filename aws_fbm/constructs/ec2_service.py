@@ -57,6 +57,8 @@ class EC2Service(Construct):
 
         template_security_group = ec2.SecurityGroup(
             self, "LaunchTemplateSG", vpc=vpc)
+
+        # Allow service to access EFS file system
         file_system.allow_access_from_service(template_security_group)
 
         launch_template = ec2.LaunchTemplate(

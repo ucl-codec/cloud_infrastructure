@@ -129,7 +129,8 @@ class FbmEC2ServiceDef(FbmBaseServiceDef):
             assumed_by=aws_iam.ServicePrincipal("ec2.amazonaws.com")
         )
         launch_role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AmazonEC2ContainerServiceforEC2Role'))
-
+        launch_role.add_managed_policy(
+            aws_iam.ManagedPolicy.from_aws_managed_policy_name('AmazonSSMManagedInstanceCore'))
         launch_template = aws_ec2.LaunchTemplate(
             self,
             "ASG-LaunchTemplate",

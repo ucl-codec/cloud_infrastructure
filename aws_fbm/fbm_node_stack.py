@@ -121,7 +121,7 @@ class FbmNodeStack(FbmBaseStack):
             docker_image_asset=gui_docker_image,
             task_name="gui",
             container_port=8484,
-            listener_port=8484,
+            listener_port=80,
             permitted_client_ip_range=self.cidr_range,
             environment={
                 "MQTT_BROKER": mqtt_broker,

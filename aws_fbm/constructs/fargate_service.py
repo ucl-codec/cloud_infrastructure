@@ -19,7 +19,6 @@ class FargateService(Construct):
         self,
         scope: Construct,
         id: str,
-        web: bool,
         cluster: ecs.Cluster,
         dns_name: str,
         domain_zone: route53.IHostedZone,
@@ -37,6 +36,8 @@ class FargateService(Construct):
         volumes: Optional[Sequence[FbmVolume]] = None
     ):
         super().__init__(scope, id)
+        self.listener_port = listener_port
+
         if volumes and not file_system:
             raise RuntimeError("file_system must be specified if volumes are"
                                "specified")
@@ -92,52 +93,12 @@ class FargateService(Construct):
                 container_path=volume.mount_dir,
                 read_only=False
             ))
-
-        if web:
-            self.load_balanced_service = ecs_patterns.ApplicationLoadBalancedFargateService(
-                self, "LbFargateService",
-                cluster=cluster,
-                desired_count=1,
-                task_definition=self.task_definition,
-                circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
-                # cloud_map_options=ecs.CloudMapOptions(
-                #     name=dns_name,
-                #     cloud_map_namespace=dns_namespace,
-                #     dns_record_type=servicediscovery.DnsRecordType.A
-                # ),
-                assign_public_ip=False,
-                domain_name=dns_name,
-                listener_port=listener_port,
-                open_listener=False,
-                public_load_balancer=False,
-                domain_zone=domain_zone
-            )
-        else:
-            self.load_balanced_service = ecs_patterns.NetworkLoadBalancedFargateService(
-                self, "LbFargateService",
-                cluster=cluster,
-                desired_count=1,
-                task_definition=self.task_definition,
-                circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
-                # cloud_map_options=ecs.CloudMapOptions(
-                #     name=dns_name,
-                #     cloud_map_namespace=dns_namespace,
-                #     dns_record_type=servicediscovery.DnsRecordType.A
-                # ),
-                assign_public_ip=False,
-                domain_name=dns_name,
-                # listener_port=listener_port,
-                # open_listener=False,
-                public_load_balancer=False,
-                domain_zone=domain_zone
-            )
-            target = self.load_balanced_service.service.load_balancer_target(
-                container_name='mqtt',
-                container_port=1883
-            )
-            self.load_balanced_service.load_balancer.add_listener(
-                'MqqtListener', port=1883
-            ).add_targets('MqttTarget', port=1883, targets=[target])
+        self.load_balanced_service = self.create_service(
+            cluster=cluster,
+            listener_port=listener_port,
+            dns_name=dns_name,
+            domain_zone=domain_zone
+        )
 
         self.service = self.load_balanced_service.service
         self.load_balancer = self.load_balanced_service.load_balancer
@@ -147,14 +108,7 @@ class FargateService(Construct):
             file_system.allow_access_from_service(self.service)
 
         # Open the service to incoming connections
-        if web:
-            self.load_balancer.connections.allow_from(
-                ec2.Peer.ipv4(permitted_client_ip_range),
-                ec2.Port.tcp(listener_port))
-        else:
-            self.service.connections.allow_from(
-                ec2.Peer.ipv4(permitted_client_ip_range),
-                ec2.Port.tcp(listener_port))
+        self.allow_from(ec2.Peer.ipv4(permitted_client_ip_range))
 
     def create_task_role(self):
         """Create IAM role to be used by the ECS tasks.
@@ -187,3 +141,77 @@ class FargateService(Construct):
         ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonElasticFileSystemReadOnlyAccess'))
 
         return ecs_execution_role
+
+    def create_service(self,
+                       cluster: ecs.Cluster,
+                       listener_port: int,
+                       dns_name: str,
+                       domain_zone: route53.IHostedZone):
+        """Create the load balanced service"""
+        raise NotImplementedError
+
+    def allow_from(self, cidr_range: str):
+        """Permit access to this service from the given range"""
+        raise NotImplementedError
+
+
+class HttpService(FargateService):
+    """A Fargate service corresponding to an http server"""
+
+    def create_service(self,
+                       cluster: ecs.Cluster,
+                       listener_port: int,
+                       dns_name: str,
+                       domain_zone: route53.IHostedZone):
+        return ecs_patterns.ApplicationLoadBalancedFargateService(
+            self, "LbFargateService",
+            cluster=cluster,
+            desired_count=1,
+            task_definition=self.task_definition,
+            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+            assign_public_ip=False,
+            domain_name=dns_name,
+            listener_port=listener_port,
+            open_listener=False,
+            public_load_balancer=False,
+            domain_zone=domain_zone
+        )
+
+    def allow_from(self, cidr_range: str):
+        self.load_balancer.connections.allow_from(
+            ec2.Peer.ipv4(cidr_range),
+            ec2.Port.tcp(self.listener_port))
+
+
+class TcpService(FargateService):
+    """A Fargate service corresponding to a tcp server"""
+
+    def create_service(self,
+                       cluster: ecs.Cluster,
+                       listener_port: int,
+                       dns_name: str,
+                       domain_zone: route53.IHostedZone):
+        load_balanced_service = ecs_patterns.NetworkLoadBalancedFargateService(
+            self, "LbFargateService",
+            cluster=cluster,
+            desired_count=1,
+            task_definition=self.task_definition,
+            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+            assign_public_ip=False,
+            domain_name=dns_name,
+            public_load_balancer=False,
+            domain_zone=domain_zone
+        )
+        target = load_balanced_service.service.load_balancer_target(
+            container_name='mqtt',
+            container_port=1883
+        )
+        load_balanced_service.load_balancer.add_listener(
+            'MqqtListener', port=1883
+        ).add_targets('MqttTarget', port=1883, targets=[target])
+        return load_balanced_service
+
+    def allow_from(self, cidr_range: str):
+        self.service.connections.allow_from(
+            ec2.Peer.ipv4(cidr_range),
+            ec2.Port.tcp(self.listener_port))

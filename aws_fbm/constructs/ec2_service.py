@@ -5,6 +5,7 @@ from constructs import Construct
 from aws_cdk import aws_ecr_assets as ecr_assets
 from aws_cdk import aws_ecs_patterns as ecs_patterns
 from aws_cdk import aws_ecs as ecs
+from aws_cdk import Duration
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_elasticloadbalancingv2 as elbv2
 from aws_cdk import aws_logs as logs
@@ -76,8 +77,8 @@ class EC2Service(Construct):
             "ASG",
             vpc=vpc,
             launch_template=launch_template,
-            desired_capacity=1,
-            max_capacity=1
+            min_capacity=0,
+            cooldown=Duration.seconds(60)
         )
 
         self.capacity_provider = ecs.AsgCapacityProvider(

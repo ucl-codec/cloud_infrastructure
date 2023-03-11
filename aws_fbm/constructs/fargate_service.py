@@ -145,6 +145,8 @@ class FargateService(Construct):
     def create_service(self,
                        cluster: ecs.Cluster,
                        listener_port: int,
+                       container_port: int,
+                       container_name: str,
                        dns_name: str,
                        domain_zone: route53.IHostedZone):
         """Create the load balanced service"""
@@ -161,6 +163,8 @@ class HttpService(FargateService):
     def create_service(self,
                        cluster: ecs.Cluster,
                        listener_port: int,
+                       container_port: int,
+                       container_name: str,
                        dns_name: str,
                        domain_zone: route53.IHostedZone):
         return ecs_patterns.ApplicationLoadBalancedFargateService(
@@ -189,6 +193,8 @@ class TcpService(FargateService):
     def create_service(self,
                        cluster: ecs.Cluster,
                        listener_port: int,
+                       container_port: int,
+                       container_name: str,
                        dns_name: str,
                        domain_zone: route53.IHostedZone):
         load_balanced_service = ecs_patterns.NetworkLoadBalancedFargateService(

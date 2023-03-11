@@ -2,7 +2,7 @@ from aws_cdk import CfnOutput
 
 from constructs import Construct
 
-from aws_fbm.constructs.fargate_service import FargateService
+from aws_fbm.constructs.fargate_service import HttpService, TcpService
 from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.utils import repo_path
 from aws_cdk.aws_ecr_assets import DockerImageAsset
@@ -76,10 +76,9 @@ class FbmNetworkStack(FbmBaseStack):
             file='Dockerfile'
         )
         # Create mqtt service
-        self.mqtt_service = FargateService(
+        self.mqtt_service = TcpService(
             scope=self,
             id="MqttService",
-            web=False,
             cluster=self.cluster,
             dns_name=self.mqtt_dns_host,
             domain_zone=self.hosted_zone,
@@ -101,10 +100,9 @@ class FbmNetworkStack(FbmBaseStack):
             file='Dockerfile'
         )
         # Create restful service
-        self.restful_service = FargateService(
+        self.restful_service = HttpService(
             scope=self,
             id="RestfulService",
-            web=True,
             cluster=self.cluster,
             dns_name=self.restful_dns_host,
             domain_zone=self.hosted_zone,
@@ -126,10 +124,9 @@ class FbmNetworkStack(FbmBaseStack):
             file="researcher/Dockerfile"
         )
         # Jupyter service using the common researcher container
-        self.jupyter_service = FargateService(
+        self.jupyter_service = HttpService(
             scope=self,
             id="JupyterService",
-            web=True,
             cluster=self.cluster,
             dns_name=self.jupyter_dns_host,
             domain_zone=self.hosted_zone,
@@ -157,10 +154,9 @@ class FbmNetworkStack(FbmBaseStack):
         )
 
         # Tensorboard service using the common researcher container
-        self.tensorboard_service = FargateService(
+        self.tensorboard_service = HttpService(
             scope=self,
             id="TensorboardService",
-            web=True,
             cluster=self.cluster,
             dns_name=self.tensorboard_dns_host,
             domain_zone=self.hosted_zone,

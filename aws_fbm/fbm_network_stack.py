@@ -1,10 +1,12 @@
+from aws_cdk import CfnOutput
+
 from constructs import Construct
 
 from aws_fbm.constructs.fargate_service import FargateService
 from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.utils import repo_path
 from aws_cdk.aws_ecr_assets import DockerImageAsset
-
+from aws_cdk import aws_ec2 as ec2
 from aws_fbm.fbm_file_system import FbmFileSystem
 
 

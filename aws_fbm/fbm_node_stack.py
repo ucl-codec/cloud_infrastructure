@@ -171,6 +171,8 @@ class FbmNodeStack(FbmBaseStack):
             "peerConnectionDNSResolution",
             props=AllowVPCPeeringDNSResolutionProps(vpc_peering=self.peering))
 
+        # Allow the node VPC to resolve DNS names from the network's hosted zone
+        # network_stack.hosted_zone.add_vpc(self.vpc)
 
 class AllowVPCPeeringDNSResolutionProps:
     def __init__(self, vpc_peering: ec2.CfnVPCPeeringConnection):

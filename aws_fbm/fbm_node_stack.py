@@ -136,7 +136,7 @@ class FbmNodeStack(FbmBaseStack):
         )
 
         # Do this here after the stack has been created
-        self.open_peer_ports(network_stack=network_stack)
+        network_stack.open_peer_ports(self.cidr_range)
 
     def peer(self, network_stack: FbmNetworkStack, peer_vpc: ec2.Vpc):
         self.peering = ec2.CfnVPCPeeringConnection(
@@ -160,12 +160,6 @@ class FbmNodeStack(FbmBaseStack):
             self,
             "peerConnectionDNSResolution",
             props=AllowVPCPeeringDNSResolutionProps(vpc_peering=self.peering))
-
-    def open_peer_ports(self, network_stack: FbmNetworkStack):
-        network_stack.mqtt_service.service.connections.allow_from(
-            ec2.Peer.ipv4(self.cidr_range), ec2.Port.tcp(1883))
-        network_stack.restful_service.service.connections.allow_from(
-            ec2.Peer.ipv4(self.cidr_range), ec2.Port.tcp(8000))
 
 
 class AllowVPCPeeringDNSResolutionProps:

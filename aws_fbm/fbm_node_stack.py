@@ -169,27 +169,24 @@ class FbmNodeStack(FbmBaseStack):
         AllowVPCPeeringDNSResolution(
             self,
             "peerConnectionDNSResolution",
-            props=AllowVPCPeeringDNSResolutionProps(vpc_peering=self.peering))
+            vpc_peering=self.peering)
 
         # Allow the node VPC to resolve DNS names from the network's hosted zone
         # network_stack.hosted_zone.add_vpc(self.vpc)
 
-class AllowVPCPeeringDNSResolutionProps:
-    def __init__(self, vpc_peering: ec2.CfnVPCPeeringConnection):
-        self.vpc_peering = vpc_peering
 
 
 class AllowVPCPeeringDNSResolution(Construct):
 
     def __init__(self, scope: Construct, id: str,
-                 props: AllowVPCPeeringDNSResolutionProps):
+                 vpc_peering: ec2.CfnVPCPeeringConnection):
         super().__init__(scope, id)
 
         on_create = custom_resources.AwsSdkCall(
             service="EC2",
             action="modifyVpcPeeringConnectionOptions",
             parameters={
-                "VpcPeeringConnectionId": props.vpc_peering.ref,
+                "VpcPeeringConnectionId": vpc_peering.ref,
                 "AccepterPeeringConnectionOptions": {
                     "AllowDnsResolutionFromRemoteVpc": True,
                 },
@@ -205,7 +202,7 @@ class AllowVPCPeeringDNSResolution(Construct):
             service="EC2",
             action="modifyVpcPeeringConnectionOptions",
             parameters={
-                "VpcPeeringConnectionId": props.vpc_peering.ref,
+                "VpcPeeringConnectionId": vpc_peering.ref,
                 "AccepterPeeringConnectionOptions": {
                     "AllowDnsResolutionFromRemoteVpc": False,
                 },
@@ -230,5 +227,5 @@ class AllowVPCPeeringDNSResolution(Construct):
             on_update=on_create,
             on_delete=on_delete
         )
-        custom_resource.node.add_dependency(props.vpc_peering)
+        custom_resource.node.add_dependency(vpc_peering)
 

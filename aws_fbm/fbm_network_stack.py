@@ -182,5 +182,5 @@ class FbmNetworkStack(FbmBaseStack):
     def open_peer_ports(self, cidr_range: str):
         self.mqtt_service.service.connections.allow_from(
             ec2.Peer.ipv4(cidr_range), ec2.Port.tcp(1883))
-        self.restful_service.service.connections.allow_from(
+        self.restful_service.load_balancer.connections.allow_from(
             ec2.Peer.ipv4(cidr_range), ec2.Port.tcp(8000))

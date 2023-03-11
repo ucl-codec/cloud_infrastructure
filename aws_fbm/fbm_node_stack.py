@@ -1,4 +1,4 @@
-from aws_fbm.constructs.fargate_service import FargateService
+from aws_fbm.constructs.fargate_service import HttpService
 from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
@@ -108,10 +108,9 @@ class FbmNodeStack(FbmBaseStack):
             file="gui/Dockerfile"
         )
         # Create gui service
-        self.gui_service = FargateService(
+        self.gui_service = HttpService(
             scope=self,
             id="GuiService",
-            web=True,
             cluster=self.cluster,
             dns_name=self.gui_dns_host,
             domain_zone=self.hosted_zone,

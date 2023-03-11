@@ -57,6 +57,15 @@ class FbmNetworkStack(FbmBaseStack):
         self.mqtt_broker = f"{self.mqtt_dns_host}.{self.dns_domain}"
         self.uploads_url = f"http://{self.restful_dns_host}.{self.dns_domain}:{self.restful_port}/upload/"
 
+        CfnOutput(self, "MqttBroker",
+                  export_name="FbmMqttBroker",
+                  value=self.mqtt_broker,
+                  description="Hostname of FBM MQTT broker")
+        CfnOutput(self, "UploadsUrl",
+                  export_name="FbmUploadsUrl",
+                  value=self.uploads_url,
+                  description="Hostname of FBM restful service")
+
         # MQTT container
         mqtt_docker_image = DockerImageAsset(
             self,

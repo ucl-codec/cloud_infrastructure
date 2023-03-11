@@ -145,6 +145,16 @@ class FbmNodeStack(FbmBaseStack):
             vpc_id=self.vpc.vpc_id,
             peer_vpc_id=network_stack.vpc.vpc_id,
         )
+        network_subnet_index = 0
+        for subnet in network_stack.vpc.isolated_subnets:
+            ec2.CfnRoute(
+                self,
+                f"NetworkNodeRoute{network_subnet_index}",
+                destination_cidr_block=self.cidr_range,
+                route_table_id=subnet.route_table.route_table_id,
+                vpc_peering_connection_id=self.peering.ref,
+            )
+            network_subnet_index += 1
         subnet_index = 0
         for subnet in self.vpc.isolated_subnets:
             ec2.CfnRoute(

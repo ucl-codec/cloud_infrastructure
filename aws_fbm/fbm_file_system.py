@@ -61,10 +61,3 @@ class FbmFileSystem(Construct):
                          file_system=self.file_system,
                          root_directory=root_directory,
                          mount_dir=mount_dir)
-
-    def allow_access_from_service(self, service: aws_ec2.IConnectable):
-        # ToDo: change to allow_default_port_from
-        self.file_system.connections.allow_from(
-                other=service,
-                port_range=aws_ec2.Port.tcp(2049),
-                description='Allow access to file system from Fargate service')

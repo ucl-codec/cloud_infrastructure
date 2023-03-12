@@ -107,7 +107,11 @@ class FargateService(Construct):
 
         # Allow service to access EFS file system
         if file_system:
-            file_system.allow_access_from_service(self.service)
+            self.service.connections.allow_to(
+                other=file_system.file_system,
+                port_range=ec2.Port.tcp(2049),
+                description='Allow access to file system from Fargate service'
+            )
 
         # Open the service to incoming connections
         self.allow_from(permitted_client_ip_range)

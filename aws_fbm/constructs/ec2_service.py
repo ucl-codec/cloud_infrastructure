@@ -60,7 +60,11 @@ class EC2Service(Construct):
             self, "LaunchTemplateSG", vpc=vpc)
 
         # Allow service to access EFS file system
-        file_system.allow_access_from_service(template_security_group)
+        template_security_group.connections.allow_to(
+            other=file_system.file_system,
+            port_range=ec2.Port.tcp(2049),
+            description='Allow access to file system from Fargate service'
+        )
 
         launch_template = ec2.LaunchTemplate(
             self,

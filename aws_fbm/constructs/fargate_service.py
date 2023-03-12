@@ -96,6 +96,8 @@ class FargateService(Construct):
         self.load_balanced_service = self.create_service(
             cluster=cluster,
             listener_port=listener_port,
+            container_port=container_port,
+            container_name=task_name,
             dns_name=dns_name,
             domain_zone=domain_zone
         )

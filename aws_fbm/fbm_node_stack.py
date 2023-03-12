@@ -1,19 +1,13 @@
-from aws_fbm.constructs.fargate_service import HttpService
 from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
-from aws_fbm.utils import repo_path
-from aws_cdk import Environment
-from aws_cdk import aws_ec2 as ec2
-
-from constructs import Construct
-
-from aws_cdk.aws_ecr_assets import DockerImageAsset
-
-from aws_fbm.constructs.ec2_service import EC2Service
 from aws_fbm.constructs.allow_peering_dns_resolution import \
     AllowVPCPeeringDNSResolution
+
+from aws_cdk import Environment
+from aws_cdk import aws_ec2 as ec2
+from constructs import Construct
 
 
 class FbmNodeStack(FbmBaseStack):
@@ -33,12 +27,13 @@ class FbmNodeStack(FbmBaseStack):
                          description=description,
                          network_number=network_number,
                          env=env)
+        self.site_name = site_name
+
         self.dns_domain = dns_domain
         self.peering = None
         self.peer(network_stack=network_stack, peer_vpc=network_vpc)
 
         self.add_vpn()
-        self.gui_dns_host = "gui"
         self.add_dns(namespace=self.dns_domain)
 
         # Create file system and volumes
@@ -47,21 +42,6 @@ class FbmNodeStack(FbmBaseStack):
             id="FileSystem",
             vpc=self.vpc
         )
-        node_config_volume = self.file_system.create_volume(
-            name="config", root_directory='/node/config', mount_dir="/config")
-        node_data_volume = self.file_system.create_volume(
-            name="data", root_directory='/node/data', mount_dir="/data")
-        node_etc_volume = self.file_system.create_volume(
-            name="etc", root_directory='/node/etc', mount_dir="/fedbiomed/etc")
-        node_var_volume = self.file_system.create_volume(
-            name="var", root_directory='/node/var', mount_dir="/fedbiomed/var")
-        node_common_volume = self.file_system.create_volume(
-            name="common", root_directory='/node/common',
-            mount_dir="/fedbiomed/envs/common")
-
-        mqtt_broker = network_stack.mqtt_broker
-        mqtt_port = network_stack.mqtt_port
-        uploads_url = network_stack.uploads_url
 
         self.data_sync = FbmDataSync(
             scope=self,
@@ -73,67 +53,6 @@ class FbmNodeStack(FbmBaseStack):
             subnet_arn=f'arn:aws:ec2:{self.region}:{self.account}:subnet/{self.subnet_id}',
             region=self.region,
             account=self.account
-        )
-
-        # Docker image for node
-        node_docker_image = DockerImageAsset(
-            self,
-            id="node",
-            directory=str(repo_path() / "docker"),
-            file="node/Dockerfile"
-        )
-        # Create node service
-        self.node_service = EC2Service(
-            scope=self,
-            id="NodeService",
-            vpc=self.vpc,
-            cluster=self.cluster,
-            cpu=4096,
-            gpu_count=1,
-            memory_limit_mib=30000,
-            docker_image_asset=node_docker_image,
-            task_name="node",
-            file_system=self.file_system,
-            environment={
-                "MQTT_BROKER": mqtt_broker,
-                "MQTT_BROKER_PORT": f"{mqtt_port}",
-                "UPLOADS_URL": uploads_url},
-            volumes=[node_config_volume, node_data_volume, node_etc_volume,
-                     node_var_volume, node_common_volume]
-        )
-
-        # Docker image for gui
-        gui_docker_image = DockerImageAsset(
-            self,
-            id="gui",
-            directory=str(repo_path() / "docker"),
-            file="gui/Dockerfile"
-        )
-        # Create gui service
-        self.gui_service = HttpService(
-            scope=self,
-            id="GuiService",
-            cluster=self.cluster,
-            dns_name=self.gui_dns_host,
-            domain_zone=self.hosted_zone,
-            cpu=4096,
-            memory_limit_mib=30720,
-            ephemeral_storage_gib=100,
-            docker_image_asset=gui_docker_image,
-            task_name="gui",
-            container_port=8484,
-            listener_port=80,
-            permitted_client_ip_range=self.cidr_range,
-            environment={
-                "MQTT_BROKER": mqtt_broker,
-                "MQTT_BROKER_PORT": f"{mqtt_port}",
-                "UPLOADS_URL": uploads_url},
-            file_system=self.file_system,
-            volumes=[node_data_volume, node_etc_volume, node_var_volume,
-                     node_common_volume]
-        )
-        self.gui_service.load_balanced_service.target_group.configure_health_check(
-            healthy_http_codes="200,304"
         )
 
         # Do this here after the stack has been created

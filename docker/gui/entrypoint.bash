@@ -3,6 +3,8 @@
 # UCL PASSIAN - entrypoint script for Fed-BioMed gui container
 # This script is executed when the container is run
 
+echo "UCL PASSIAN Fed-BioMed gui container"
+
 # Populate server configuration file using runtime environment variables
 ini_template="/config_gui.ini.template"
 if [ -f "${ini_template}" ]; then
@@ -12,10 +14,12 @@ if [ -f "${ini_template}" ]; then
 fi
 
 # Wait until the node container has created the ini file
+echo "Waiting for node config file..."
 until [ -f "/fedbiomed/etc/config_node.ini" ]
 do
    sleep 5
 done
+echo "...done"
 
 # Start the GUI
 source /miniconda/etc/profile.d/conda.sh
@@ -23,14 +27,17 @@ conda activate fedbiomed-gui
 
 cd /fedbiomed/gui/server
 
-
+# Replace pre-built gui files with default files from Docker build
 if [ -d "/fedbiomed/var/gui-build" ];then
   rm -Rf "/fedbiomed/var/gui-build";
 fi
-mkdir -p /fedbiomed/var
-mv "/gui-build/" "/fedbiomed/var/gui-build"
+mkdir -p /fedbiomed/var/gui-build
+cp -rf /gui-build/. /fedbiomed/var/gui-build/
 
+echo "Starting gui..."
 /fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start
+echo "...terminated"
+
 #FEDBIOMED_DIR="/fedbiomed" \
 #  NODE_CONFIG_FILE="config_node.ini" \
 #  BUILD_DIR="/gui-build" \

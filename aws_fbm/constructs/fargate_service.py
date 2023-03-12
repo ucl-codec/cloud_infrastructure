@@ -108,7 +108,7 @@ class FargateService(Construct):
             file_system.allow_access_from_service(self.service)
 
         # Open the service to incoming connections
-        self.allow_from(ec2.Peer.ipv4(permitted_client_ip_range))
+        self.allow_from(permitted_client_ip_range)
 
     def create_task_role(self):
         """Create IAM role to be used by the ECS tasks.

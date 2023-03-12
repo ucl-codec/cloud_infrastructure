@@ -4,14 +4,16 @@ from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
 from aws_fbm.utils import repo_path
-from aws_cdk import custom_resources, Environment
-from aws_cdk import aws_ec2 as ec2, aws_iam
+from aws_cdk import Environment
+from aws_cdk import aws_ec2 as ec2
 
 from constructs import Construct
-import aws_cdk.aws_logs as logs
+
 from aws_cdk.aws_ecr_assets import DockerImageAsset
 
 from aws_fbm.constructs.ec2_service import EC2Service
+from aws_fbm.constructs.allow_peering_dns_resolution import \
+    AllowVPCPeeringDNSResolution
 
 
 class FbmNodeStack(FbmBaseStack):
@@ -172,59 +174,3 @@ class FbmNodeStack(FbmBaseStack):
 
         # Allow the node VPC to resolve DNS names from the network's hosted zone
         # network_stack.hosted_zone.add_vpc(self.vpc)
-
-
-
-class AllowVPCPeeringDNSResolution(Construct):
-
-    def __init__(self, scope: Construct, id: str,
-                 vpc_peering: ec2.CfnVPCPeeringConnection):
-        super().__init__(scope, id)
-
-        on_create = custom_resources.AwsSdkCall(
-            service="EC2",
-            action="modifyVpcPeeringConnectionOptions",
-            parameters={
-                "VpcPeeringConnectionId": vpc_peering.ref,
-                "AccepterPeeringConnectionOptions": {
-                    "AllowDnsResolutionFromRemoteVpc": True,
-                },
-                "RequesterPeeringConnectionOptions": {
-                    "AllowDnsResolutionFromRemoteVpc": True
-                }
-            },
-            physical_resource_id=custom_resources.PhysicalResourceId.of(
-                'allowVPCPeeringDNSResolution:${props.vpcPeering.ref}'
-            )
-        )
-        on_delete = custom_resources.AwsSdkCall(
-            service="EC2",
-            action="modifyVpcPeeringConnectionOptions",
-            parameters={
-                "VpcPeeringConnectionId": vpc_peering.ref,
-                "AccepterPeeringConnectionOptions": {
-                    "AllowDnsResolutionFromRemoteVpc": False,
-                },
-                "RequesterPeeringConnectionOptions": {
-                    "AllowDnsResolutionFromRemoteVpc": False
-                }
-            }
-        )
-
-        custom_resource = custom_resources.AwsCustomResource(
-            scope, "allow-peering-dns-resolution",
-            policy=custom_resources.AwsCustomResourcePolicy.from_statements(
-                statements=[
-                    aws_iam.PolicyStatement(
-                        effect=aws_iam.Effect.ALLOW,
-                        resources=["*"],
-                        actions=["ec2:ModifyVpcPeeringConnectionOptions"]
-                    )
-                ]),
-            log_retention=logs.RetentionDays.ONE_DAY,
-            on_create=on_create,
-            on_update=on_create,
-            on_delete=on_delete
-        )
-        custom_resource.node.add_dependency(vpc_peering)
-

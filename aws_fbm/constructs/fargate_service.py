@@ -207,16 +207,10 @@ class TcpService(FargateService):
             circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
             assign_public_ip=False,
             domain_name=dns_name,
+            listener_port=listener_port,
             public_load_balancer=False,
             domain_zone=domain_zone
         )
-        target = load_balanced_service.service.load_balancer_target(
-            container_name='mqtt',
-            container_port=1883
-        )
-        load_balanced_service.load_balancer.add_listener(
-            'MqqtListener', port=1883
-        ).add_targets('MqttTarget', port=1883, targets=[target])
         return load_balanced_service
 
     def allow_from(self, cidr_range: str):

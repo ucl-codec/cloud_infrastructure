@@ -2,7 +2,7 @@ from aws_cdk import Environment
 from aws_cdk import Stack
 
 from constructs import Construct
-from aws_cdk import (aws_ec2 as ec2, aws_ecs as ecs)
+from aws_cdk import aws_ec2 as ec2
 import aws_cdk.aws_ssm as ssm
 from aws_cdk import aws_route53 as route53
 
@@ -98,10 +98,6 @@ class FbmBaseStack(Stack):
             vpc=self.vpc,
             name="SSMMessagesEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES)
-
-        # Create cluster
-        self.cluster = ecs.Cluster(
-            scope=self, id="Cluster", container_insights=True, vpc=self.vpc)
 
         self.vpn_endpoint = None
 

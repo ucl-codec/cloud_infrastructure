@@ -15,20 +15,17 @@ class FbmNetworkStack(FbmBaseStack):
                  **kwargs) -> None:
         super().__init__(scope, construct_id,
                          stack_name=stack_name,
+                         site_name=site_name,
+                         dns_domain=dns_domain,
                          description=description,
                          network_number=network_number,
                          **kwargs)
 
-        self.site_name = site_name
-        self.dns_domain = dns_domain
-        self.add_vpn()
-
-        # Create file system and volumes
+        # Create file system and volumes for researcher stack
         self.file_system = FbmFileSystem(
             scope=self,
             id="FileSystem",
             vpc=self.vpc
         )
 
-        self.add_dns(namespace=self.dns_domain)
 

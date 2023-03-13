@@ -9,8 +9,10 @@ from aws_cdk import aws_route53 as route53
 
 class FbmBaseStack(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, *,
+    def __init__(self, scope: Construct, construct_id: str,
                  stack_name: str,
+                 site_name: str,
+                 dns_domain: str,
                  description: str,
                  network_number: int,
                  env: Environment) -> None:
@@ -19,13 +21,24 @@ class FbmBaseStack(Stack):
                          description=description,
                          env=env)
 
+        self.site_name = site_name
+        self.dns_domain = dns_domain
+
         self.cidr_range = f"10.{2*network_number}.0.0/16"
         self.vpn_cidr_range = f"10.{2*network_number + 1}.0.0/22"
         self.dns_ip = f"10.{2*network_number}.0.2"
         self.vpn_cert_arn = ssm.StringParameter.value_for_string_parameter(
             self, "passian-fbm-vpn-server-cert-arn")
 
-        # Create VPC
+        self.add_vpc()
+        self.first_subnet_id = self.vpc.select_subnets(
+            subnet_group_name="private").subnet_ids[0]
+        self.add_vpn()
+        self.add_dns(namespace=self.dns_domain)
+
+    def add_vpc(self):
+        """Create VPC"""
+
         self.vpc = ec2.Vpc(
             self,
             "VPC",
@@ -47,7 +60,6 @@ class FbmBaseStack(Stack):
                     cidr_mask=24,
                     subnet_type=ec2.SubnetType.PRIVATE_ISOLATED)]
             )
-        self.first_subnet_id = self.vpc.select_subnets(subnet_group_name="private").subnet_ids[0]
 
         # These endpoints are required in order to use the ECS
         # because we are using a private subnet with no internet connectivity
@@ -98,8 +110,6 @@ class FbmBaseStack(Stack):
             vpc=self.vpc,
             name="SSMMessagesEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES)
-
-        self.vpn_endpoint = None
 
     def add_dns(self, namespace):
         self.hosted_zone = route53.HostedZone(

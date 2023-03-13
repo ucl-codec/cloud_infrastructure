@@ -13,36 +13,31 @@ from constructs import Construct
 class FbmNodeStack(FbmBaseStack):
 
     def __init__(self, scope: Construct, construct_id: str,
-                 site_name: str,
                  stack_name: str,
+                 site_name: str,
                  dns_domain: str,
-                 bucket_name: str,
                  description: str,
                  network_number: int,
+                 bucket_name: str,
                  network_stack: FbmNetworkStack,
                  network_vpc: ec2.Vpc,
                  env: Environment) -> None:
         super().__init__(scope, construct_id,
                          stack_name=stack_name,
+                         site_name=site_name,
+                         dns_domain=dns_domain,
                          description=description,
                          network_number=network_number,
                          env=env)
-        self.site_name = site_name
 
-        self.dns_domain = dns_domain
-        self.peering = None
-        self.peer(network_stack=network_stack, peer_vpc=network_vpc)
-
-        self.add_vpn()
-        self.add_dns(namespace=self.dns_domain)
-
-        # Create file system and volumes
+        # Create file system and volumes for node stack
         self.file_system = FbmFileSystem(
             scope=self,
             id="FileSystem",
             vpc=self.vpc
         )
 
+        # Set up DataSync from S3 bucket to EFS node storage
         self.data_sync = FbmDataSync(
             scope=self,
             id="DataSync",

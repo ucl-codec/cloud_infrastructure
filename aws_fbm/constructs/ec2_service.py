@@ -82,6 +82,8 @@ class EC2Service(Construct):
             "ASG",
             vpc=vpc,
             launch_template=launch_template,
+            desired_capacity=1,
+            # desired_capacity=0,
             min_capacity=0,
             cooldown=Duration.seconds(60)
         )

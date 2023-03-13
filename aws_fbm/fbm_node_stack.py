@@ -2,7 +2,7 @@ from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.fbm_data_sync import FbmDataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
-from aws_fbm.constructs.allow_peering_dns_resolution import \
+from aws_fbm.fbm_constructs.allow_peering_dns_resolution import \
     AllowVPCPeeringDNSResolution
 
 from aws_cdk import Environment

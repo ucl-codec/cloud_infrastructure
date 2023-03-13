@@ -42,6 +42,7 @@ class EC2Service(Construct):
             id="Ec2TaskDefinition",
             task_role=self.create_task_role(),
             execution_role=self.create_execution_role(),
+            # ToDo: add volumes here
         )
 
         # GPU AMI
@@ -54,17 +55,27 @@ class EC2Service(Construct):
         # Tell ECS to use GPU
         user_data.add_commands(f'echo "ECS_ENABLE_GPU_SUPPORT=true" >> /etc/ecs/ecs.config')
         # Register cluster - not required if using the default cluster
-        user_data.add_commands(f'echo "ECS_CLUSTER={cluster.cluster_name}" >> /etc/ecs/ecs.config')
+        # user_data.add_commands(f'echo "ECS_CLUSTER={cluster.cluster_name}" >> /etc/ecs/ecs.config')
 
         template_security_group = ec2.SecurityGroup(
             self, "LaunchTemplateSG", vpc=vpc)
 
         # Allow service to access EFS file system
+        # file_system.file_system.connections.allow_from(
+        #     other=template_security_group,
+        #     port_range=ec2.Port.tcp(2049),
+        #     description='Allow access to file system from Fargate service'
+        # )
         template_security_group.connections.allow_to(
             other=file_system.file_system,
             port_range=ec2.Port.tcp(2049),
             description='Allow access to file system from Fargate service'
         )
+        # template_security_group.connections.allow_to(
+        #     other=file_system.file_system,
+        #     port_range=ec2.Port.tcp(2049),
+        #     description='Allow access to file system from Fargate service'
+        # )
 
         launch_template = ec2.LaunchTemplate(
             self,
@@ -82,17 +93,20 @@ class EC2Service(Construct):
             "ASG",
             vpc=vpc,
             launch_template=launch_template,
-            desired_capacity=1,
-            # desired_capacity=0,
+            # desired_capacity=1,
+            # # desired_capacity=0,
             min_capacity=0,
-            cooldown=Duration.seconds(60)
+            desired_capacity=1,
+            max_capacity=2,
+            # min_capacity=0,
+            # cooldown=Duration.seconds(60)
         )
 
         self.capacity_provider = ecs.AsgCapacityProvider(
             self,
             "AsgCapacityProvider",
             auto_scaling_group=self.auto_scaling_group,
-            machine_image_type=ecs.MachineImageType.AMAZON_LINUX_2,
+            # machine_image_type=ecs.MachineImageType.AMAZON_LINUX_2,
             enable_managed_termination_protection=False
         )
 
@@ -145,11 +159,17 @@ class EC2Service(Construct):
             self,
             "Ec2Service",
             cluster=cluster,
-            desired_count=1,
-            min_healthy_percent=0,
-            max_healthy_percent=100,
+            # desired_count=1,
+            # min_healthy_percent=50,
+            # max_healthy_percent=200,
+            # min_healthy_percent=0,
+            # max_healthy_percent=100,
             task_definition=self.task_definition,
-            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True)
+            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+            capacity_provider_strategies=[ecs.CapacityProviderStrategy(
+                capacity_provider=self.capacity_provider.capacity_provider_name,
+                weight=1
+            )]
         )
 
     def create_task_role(self):

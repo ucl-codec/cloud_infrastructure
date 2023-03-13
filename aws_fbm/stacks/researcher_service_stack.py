@@ -1,4 +1,4 @@
-from aws_fbm.constructs.fargate_service import HttpService
+from aws_fbm.fbm_constructs.fargate_service import HttpService
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.utils import repo_path
 from aws_fbm.stacks.network_service_stack import NetworkServiceStack

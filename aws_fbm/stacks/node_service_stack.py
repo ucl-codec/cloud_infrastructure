@@ -1,6 +1,6 @@
 from aws_fbm.utils import repo_path
-from aws_fbm.constructs.ec2_service import EC2Service
-from aws_fbm.constructs.fargate_service import HttpService
+from aws_fbm.fbm_constructs.ec2_service import EC2Service
+from aws_fbm.fbm_constructs.fargate_service import HttpService
 from aws_fbm.fbm_node_stack import FbmNodeStack
 from aws_fbm.stacks.network_service_stack import NetworkServiceStack
 

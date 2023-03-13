@@ -1,5 +1,5 @@
 from aws_fbm.fbm_base_stack import FbmBaseStack
-from aws_fbm.fbm_data_sync import FbmDataSync
+from aws_fbm.fbm_constructs.data_sync import DataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
 from aws_fbm.fbm_file_system import FbmFileSystem
 from aws_fbm.fbm_constructs.allow_peering_dns_resolution import \
@@ -38,7 +38,7 @@ class FbmNodeStack(FbmBaseStack):
         )
 
         # Set up DataSync from S3 bucket to EFS node storage
-        self.data_sync = FbmDataSync(
+        self.data_sync = DataSync(
             scope=self,
             id="DataSync",
             bucket_name=bucket_name,

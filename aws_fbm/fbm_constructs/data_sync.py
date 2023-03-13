@@ -3,7 +3,7 @@ from aws_cdk import aws_ec2, aws_iam, aws_s3, aws_efs, aws_datasync
 import aws_cdk.aws_logs as logs
 
 
-class FbmDataSync(Construct):
+class DataSync(Construct):
     """Set up automatic AWS DataSync from an existing S3 bucket to an EFS"""
 
     def __init__(

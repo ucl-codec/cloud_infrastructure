@@ -6,7 +6,7 @@ from aws_fbm.constructs.fargate_service import HttpService, TcpService
 from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.utils import repo_path
 from aws_cdk.aws_ecr_assets import DockerImageAsset
-from aws_cdk import aws_ec2 as ec2
+from aws_cdk import aws_ec2 as ec2, aws_ecs as ecs
 from aws_fbm.fbm_file_system import FbmFileSystem
 
 
@@ -23,6 +23,10 @@ class FbmNetworkStack(FbmBaseStack):
                          description=description,
                          network_number=network_number,
                          **kwargs)
+
+        # Create cluster
+        self.cluster = ecs.Cluster(
+            scope=self, id="Cluster", container_insights=True, vpc=self.vpc)
 
         self.dns_domain = dns_domain
         self.add_vpn()

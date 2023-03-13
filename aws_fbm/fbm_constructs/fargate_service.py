@@ -1,6 +1,4 @@
-from typing import Optional, Sequence, Mapping
-
-from constructs import Construct
+from aws_fbm.fbm_constructs.file_system import Volume, FileSystem
 
 from aws_cdk import aws_ecr_assets as ecr_assets
 from aws_cdk import aws_ecs_patterns as ecs_patterns
@@ -10,11 +8,14 @@ from aws_cdk import aws_route53 as route53
 from aws_cdk import aws_logs as logs
 from aws_cdk import aws_iam as iam
 
-from aws_fbm.fbm_file_system import FbmVolume, FbmFileSystem
+from typing import Optional, Sequence, Mapping
+
+from constructs import Construct
 
 
 class FargateService(Construct):
     """Create a Fargate service for running a Docker container"""
+    
     def __init__(
         self,
         scope: Construct,
@@ -30,10 +31,10 @@ class FargateService(Construct):
         container_port: int,
         listener_port: int,
         permitted_client_ip_range: str,
-        file_system: Optional[FbmFileSystem] = None,
+        file_system: Optional[FileSystem] = None,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
-        volumes: Optional[Sequence[FbmVolume]] = None
+        volumes: Optional[Sequence[Volume]] = None
     ):
         super().__init__(scope, id)
         self.listener_port = listener_port

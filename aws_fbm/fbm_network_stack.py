@@ -1,5 +1,5 @@
 from aws_fbm.fbm_base_stack import FbmBaseStack
-from aws_fbm.fbm_file_system import FbmFileSystem
+from aws_fbm.fbm_constructs.file_system import FileSystem
 
 from constructs import Construct
 
@@ -22,7 +22,7 @@ class FbmNetworkStack(FbmBaseStack):
                          **kwargs)
 
         # Create file system and volumes for researcher stack
-        self.file_system = FbmFileSystem(
+        self.file_system = FileSystem(
             scope=self,
             id="FileSystem",
             vpc=self.vpc

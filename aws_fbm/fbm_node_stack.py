@@ -1,7 +1,7 @@
 from aws_fbm.fbm_base_stack import FbmBaseStack
 from aws_fbm.fbm_constructs.data_sync import DataSync
 from aws_fbm.fbm_network_stack import FbmNetworkStack
-from aws_fbm.fbm_file_system import FbmFileSystem
+from aws_fbm.fbm_constructs.file_system import FileSystem
 from aws_fbm.fbm_constructs.allow_peering_dns_resolution import \
     AllowVPCPeeringDNSResolution
 
@@ -31,7 +31,7 @@ class FbmNodeStack(FbmBaseStack):
                          env=env)
 
         # Create file system and volumes for node stack
-        self.file_system = FbmFileSystem(
+        self.file_system = FileSystem(
             scope=self,
             id="FileSystem",
             vpc=self.vpc

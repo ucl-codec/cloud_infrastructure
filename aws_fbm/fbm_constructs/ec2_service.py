@@ -3,16 +3,13 @@ from typing import Optional, Sequence, Mapping
 from constructs import Construct
 
 from aws_cdk import aws_ecr_assets as ecr_assets
-from aws_cdk import aws_ecs_patterns as ecs_patterns
 from aws_cdk import aws_ecs as ecs
-from aws_cdk import Duration
 from aws_cdk import aws_ec2 as ec2
-from aws_cdk import aws_elasticloadbalancingv2 as elbv2
 from aws_cdk import aws_logs as logs
 from aws_cdk import aws_iam as iam
 from aws_cdk import aws_autoscaling as autoscaling
 
-from aws_fbm.fbm_file_system import FbmVolume, FbmFileSystem
+from aws_fbm.fbm_constructs.file_system import Volume, FileSystem
 
 
 class EC2Service(Construct):
@@ -28,10 +25,10 @@ class EC2Service(Construct):
         memory_limit_mib: int,
         docker_image_asset: ecr_assets.DockerImageAsset,
         task_name: str,
-        file_system: FbmFileSystem,
+        file_system: FileSystem,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
-        volumes: Optional[Sequence[FbmVolume]] = None
+        volumes: Optional[Sequence[Volume]] = None
     ):
         super().__init__(scope, id)
         volumes = volumes or []

@@ -50,7 +50,8 @@ class FbmNodeStack(FbmBaseStack):
             site_name=site_name,
             file_system=self.file_system.file_system,
             vpc=self.vpc,
-            subnet_arn=f'arn:aws:ec2:{self.region}:{self.account}:subnet/{self.subnet_id}',
+            subnet_arn=f'arn:aws:ec2:{self.region}:{self.account}:'
+                       f'subnet/{self.first_subnet_id}',
             region=self.region,
             account=self.account
         )

@@ -47,7 +47,7 @@ class FbmBaseStack(Stack):
                     cidr_mask=24,
                     subnet_type=ec2.SubnetType.PRIVATE_ISOLATED)]
             )
-        self.subnet_id = self.vpc.select_subnets(subnet_group_name="private").subnet_ids[0]
+        self.first_subnet_id = self.vpc.select_subnets(subnet_group_name="private").subnet_ids[0]
 
         # These endpoints are required in order to use the ECS
         # because we are using a private subnet with no internet connectivity

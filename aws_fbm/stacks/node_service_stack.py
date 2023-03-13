@@ -106,3 +106,6 @@ class NodeServiceStack(Stack):
         )
         self.gui_service.load_balanced_service.target_group.\
             configure_health_check(healthy_http_codes="200,304")
+
+        # Do this here after the stack has been created
+        network_stack.open_peer_ports(node_stack.cidr_range)

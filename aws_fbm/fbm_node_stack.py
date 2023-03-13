@@ -55,9 +55,6 @@ class FbmNodeStack(FbmBaseStack):
             account=self.account
         )
 
-        # Do this here after the stack has been created
-        network_stack.open_peer_ports(self.cidr_range)
-
     def peer(self, network_stack: FbmNetworkStack, peer_vpc: ec2.Vpc):
         self.peering = ec2.CfnVPCPeeringConnection(
             self,

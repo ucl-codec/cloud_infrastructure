@@ -1,9 +1,8 @@
-from aws_fbm.fbm_network_stack import FbmNetworkStack
-from aws_fbm.fbm_file_system import FbmFileSystem
 from aws_fbm.utils import repo_path
 from aws_fbm.constructs.ec2_service import EC2Service
 from aws_fbm.constructs.fargate_service import HttpService
 from aws_fbm.fbm_node_stack import FbmNodeStack
+from aws_fbm.stacks.network_service_stack import NetworkServiceStack
 
 from aws_cdk import Environment, Stack
 from aws_cdk import aws_ecs as ecs
@@ -13,7 +12,7 @@ from constructs import Construct
 
 class NodeServiceStack(Stack):
     def __init__(self, scope: Construct, id: str,
-                 network_stack: FbmNetworkStack,
+                 network_service_stack: NetworkServiceStack,
                  node_stack: FbmNodeStack,
                  env: Environment):
         super().__init__(
@@ -43,9 +42,9 @@ class NodeServiceStack(Stack):
             name="common", root_directory='/node/common',
             mount_dir="/fedbiomed/envs/common")
 
-        mqtt_broker = network_stack.mqtt_broker
-        mqtt_port = network_stack.mqtt_port
-        uploads_url = network_stack.uploads_url
+        mqtt_broker = network_service_stack.mqtt_broker
+        mqtt_port = network_service_stack.mqtt_port
+        uploads_url = network_service_stack.uploads_url
 
         # Docker image for node
         node_docker_image = DockerImageAsset(
@@ -107,5 +106,5 @@ class NodeServiceStack(Stack):
         self.gui_service.load_balanced_service.target_group.\
             configure_health_check(healthy_http_codes="200,304")
 
-        # Do this here after the stack has been created
-        network_stack.open_peer_ports(node_stack.cidr_range)
+        # Open network services
+        network_service_stack.allow_from(node_stack.cidr_range)

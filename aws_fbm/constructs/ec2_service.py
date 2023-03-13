@@ -73,7 +73,8 @@ class EC2Service(Construct):
             machine_image=machine_image,
             user_data=user_data,
             role=self.create_launch_role(),
-            security_group=template_security_group
+            security_group=template_security_group,
+            detailed_monitoring=True
          )
 
         self.auto_scaling_group = autoscaling.AutoScalingGroup(

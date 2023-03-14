@@ -1,10 +1,11 @@
-from aws_fbm.fbm_base_stack import FbmBaseStack
+from aws_fbm.stacks.base_stack import BaseStack
 from aws_fbm.fbm_constructs.file_system import FileSystem
 
+from aws_cdk import Environment
 from constructs import Construct
 
 
-class FbmNetworkStack(FbmBaseStack):
+class NetworkStack(BaseStack):
     """CDK stack defining the core configuration for the FBM network
     component. This defines stateful configuration such as VPC, VPN and
     the file system.
@@ -13,15 +14,14 @@ class FbmNetworkStack(FbmBaseStack):
     def __init__(self, scope: Construct, id: str,
                  site_name: str,
                  dns_domain: str,
-                 description: str,
                  network_number: int,
-                 **kwargs) -> None:
+                 env: Environment) -> None:
         super().__init__(scope=scope, id=id,
+                         description=f"FBM network stack for {site_name}",
                          site_name=site_name,
                          dns_domain=dns_domain,
-                         description=description,
                          network_number=network_number,
-                         **kwargs)
+                         env=env)
 
         # Create file system and volumes for researcher stack
         self.file_system = FileSystem(

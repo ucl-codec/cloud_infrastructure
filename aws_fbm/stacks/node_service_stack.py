@@ -1,7 +1,7 @@
-from aws_fbm.utils import repo_path
+from aws_fbm.utils.utils import repo_path
 from aws_fbm.fbm_constructs.ec2_service import EC2Service
 from aws_fbm.fbm_constructs.fargate_service import HttpService
-from aws_fbm.fbm_node_stack import FbmNodeStack
+from aws_fbm.stacks.node_stack import NodeStack
 
 from aws_cdk import Environment, Stack
 from aws_cdk import aws_ecs as ecs
@@ -20,16 +20,15 @@ class NodeServiceStack(Stack):
     """
 
     def __init__(self, scope: Construct, id: str,
-                 node_stack: FbmNodeStack,
+                 node_stack: NodeStack,
                  env: Environment,
                  mqtt_broker: str,
                  mqtt_port: int,
                  uploads_url: str):
-        super().__init__(
-            scope=scope,
-            id=id,
-            description=f"FBM node services stack for {node_stack.site_name}",
-            env=env)
+        super().__init__(scope=scope, id=id,
+                         description=f"FBM node services stack for "
+                                     f"{node_stack.site_name}",
+                         env=env)
 
         self.gui_dns_host = "gui"
 

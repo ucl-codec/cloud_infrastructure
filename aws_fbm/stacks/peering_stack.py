@@ -1,6 +1,6 @@
-from aws_fbm.fbm_network_stack import FbmNetworkStack
+from aws_fbm.stacks.network_stack import NetworkStack
 from aws_fbm.stacks.network_service_stack import NetworkServiceStack
-from aws_fbm.fbm_node_stack import FbmNodeStack
+from aws_fbm.stacks.node_stack import NodeStack
 from aws_fbm.fbm_constructs.allow_peering_dns_resolution import \
     AllowVPCPeeringDNSResolution
 
@@ -15,12 +15,13 @@ class PeeringStack(Stack):
     """CDK stack defining peering between FBM network and node VPCs"""
 
     def __init__(self, scope: Construct, id: str,
-                 network_stack: FbmNetworkStack,
+                 network_stack: NetworkStack,
                  network_service_stack: NetworkServiceStack,
-                 node_stacks: List[FbmNodeStack],
+                 node_stacks: List[NodeStack],
                  env: Environment) -> None:
         super().__init__(scope, id=id,
-                         description=f"FBM peering stack",
+                         description=f"FBM peering stack for "
+                                     f"{network_stack.site_name}",
                          env=env)
 
         # Peer each node
@@ -34,7 +35,7 @@ class PeeringStack(Stack):
             # Allow node VPC to resolve DNS names from the network's hosted zone
             network_stack.hosted_zone.add_vpc(node_stack.vpc)
 
-    def peer(self, network: FbmNetworkStack, node: FbmNodeStack):
+    def peer(self, network: NetworkStack, node: NodeStack):
         peering = ec2.CfnVPCPeeringConnection(
             self,
             f"Peer{network.stack_name}{node.stack_name}",

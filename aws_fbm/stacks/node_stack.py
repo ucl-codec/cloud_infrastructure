@@ -1,4 +1,4 @@
-from aws_fbm.fbm_base_stack import FbmBaseStack
+from aws_fbm.stacks.base_stack import BaseStack
 from aws_fbm.fbm_constructs.data_sync import DataSync
 from aws_fbm.fbm_constructs.file_system import FileSystem
 from aws_cdk import Environment
@@ -6,7 +6,7 @@ from aws_cdk import Environment
 from constructs import Construct
 
 
-class FbmNodeStack(FbmBaseStack):
+class NodeStack(BaseStack):
     """CDK stack defining the core configuration for the FBM network
     component. This defines stateful configuration such as the file system.
     """
@@ -14,14 +14,13 @@ class FbmNodeStack(FbmBaseStack):
     def __init__(self, scope: Construct, id: str,
                  site_name: str,
                  dns_domain: str,
-                 description: str,
                  network_number: int,
                  bucket_name: str,
                  env: Environment) -> None:
         super().__init__(scope=scope, id=id,
                          site_name=site_name,
+                         description=f"FBM node stack for {site_name}",
                          dns_domain=dns_domain,
-                         description=description,
                          network_number=network_number,
                          env=env)
 

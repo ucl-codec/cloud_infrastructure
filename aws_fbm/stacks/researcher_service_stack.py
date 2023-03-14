@@ -1,6 +1,6 @@
 from aws_fbm.fbm_constructs.fargate_service import HttpService
-from aws_fbm.fbm_network_stack import FbmNetworkStack
-from aws_fbm.utils import repo_path
+from aws_fbm.stacks.network_stack import NetworkStack
+from aws_fbm.utils.utils import repo_path
 from aws_fbm.stacks.network_service_stack import NetworkServiceStack
 
 from constructs import Construct
@@ -14,15 +14,13 @@ class ResearcherServiceStack(Stack):
     """CDK stack defining a cluster containing Fed-BioMed researcher services"""
 
     def __init__(self, scope: Construct, id: str,
-                 network_stack: FbmNetworkStack,
+                 network_stack: NetworkStack,
                  network_service_stack: NetworkServiceStack,
                  env: Environment):
-        super().__init__(
-            scope=scope,
-            id=id,
-            description=f"FBM network services stack for "
-                        f"{network_stack.site_name}",
-            env=env)
+        super().__init__(scope=scope, id=id,
+                         description=f"FBM researcher services stack for "
+                                     f"{network_stack.site_name}",
+                         env=env)
 
         # Ports and hostnames
         self.jupyter_port = 8888
@@ -40,6 +38,7 @@ class ResearcherServiceStack(Stack):
 
         file_system = network_stack.file_system
 
+        # Volumes that can be shared between researcher services
         researcher_config_volume = file_system.create_volume(
             name="config",
             root_directory='/researcher/config',
@@ -65,13 +64,15 @@ class ResearcherServiceStack(Stack):
             root_directory='/researcher/notebooks',
             mount_dir="/fedbiomed/notebooks")
 
-        # Common researcher container
+        # Common researcher container - used by both jupyter and tensorboard
+        # service, with different entrypoints
         researcher_docker_image = DockerImageAsset(
             self,
             id="researcher",
             directory=str(repo_path() / "docker"),
             file="researcher/Dockerfile"
         )
+
         # Jupyter service using the common researcher container
         self.jupyter_service = HttpService(
             scope=self,

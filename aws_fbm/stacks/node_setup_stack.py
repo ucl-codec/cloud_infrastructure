@@ -5,13 +5,16 @@ from aws_cdk import Stack
 
 
 class FbmNodeSetupStack(Stack):
-    def __init__(self,
-                 scope: Construct,
-                 id: str,
+    """CDK stack defining persistent resources for the clinical node sites
+    which may need to persist beyond the lifetime of the NodeStack, such as the
+    S3 bucket
+    """
+
+    def __init__(self, scope: Construct, id: str,
                  site_name: str,
                  bucket_name: str,
                  env: Environment):
-        super().__init__(scope, id=id,
+        super().__init__(scope=scope, id=id,
                          description=f"FBM setup stack for site {site_name}",
                          env=env)
 

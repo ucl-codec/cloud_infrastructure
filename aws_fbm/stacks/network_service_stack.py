@@ -1,6 +1,6 @@
 from aws_fbm.fbm_constructs.fargate_service import HttpService, TcpService
-from aws_fbm.fbm_network_stack import FbmNetworkStack
-from aws_fbm.utils import repo_path
+from aws_fbm.stacks.network_stack import NetworkStack
+from aws_fbm.utils.utils import repo_path
 
 from constructs import Construct
 from aws_cdk import CfnOutput, Stack
@@ -20,14 +20,12 @@ class NetworkServiceStack(Stack):
     """
 
     def __init__(self, scope: Construct, id: str,
-                 network_stack: FbmNetworkStack,
+                 network_stack: NetworkStack,
                  env: Environment):
-        super().__init__(
-            scope=scope,
-            id=id,
-            description=f"FBM network services stack for "
-                        f"{network_stack.site_name}",
-            env=env)
+        super().__init__(scope=scope, id=id,
+                         description=f"FBM network services stack for "
+                                     f"{network_stack.site_name}",
+                         env=env)
 
         # Ports and hostnames
         self.restful_port = 8000

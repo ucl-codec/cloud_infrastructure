@@ -1,6 +1,6 @@
 import pathlib
 
-from aws_fbm.utils import repo_path
+from aws_fbm.utils.utils import repo_path
 
 
 def test_repo_path():

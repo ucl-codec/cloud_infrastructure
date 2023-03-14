@@ -5,7 +5,7 @@ from aws_cdk import aws_route53 as route53
 from constructs import Construct
 
 
-class FbmBaseStack(Stack):
+class BaseStack(Stack):
     """CDK stack base class defining common VPC, VPN and DNS configuration for
     FBM network and node stacks"""
 

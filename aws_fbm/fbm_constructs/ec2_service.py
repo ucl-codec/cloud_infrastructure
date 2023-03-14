@@ -101,9 +101,9 @@ class EC2Service(Construct):
             # # desired_capacity=0,
             min_capacity=0,
             desired_capacity=1,
-            max_capacity=2,
+            max_capacity=1,
             # min_capacity=0,
-            # cooldown=Duration.seconds(60)
+            cooldown=Duration.seconds(60)
         )
 
         self.capacity_provider = ecs.AsgCapacityProvider(

@@ -59,7 +59,6 @@ class NetworkServiceStack(Stack):
             task_name="mqtt",
             container_port=self.mqtt_port,
             listener_port=self.mqtt_port,
-            permitted_client_ip_range=network_stack.cidr_range
         )
 
         # Restful container
@@ -83,7 +82,6 @@ class NetworkServiceStack(Stack):
             task_name="restful",
             container_port=self.restful_port,
             listener_port=self.restful_port,
-            permitted_client_ip_range=network_stack.cidr_range
         )
 
         CfnOutput(self, "MqttBroker",
@@ -95,7 +93,7 @@ class NetworkServiceStack(Stack):
                   value=self.uploads_url,
                   description="Hostname of FBM restful service")
 
-    def allow_from(self, cidr_range: str):
+    def allow_from_ip_range(self, cidr_range: str):
         """Allow connections to network services from the given cidr range"""
-        self.mqtt_service.allow_from(cidr_range)
-        self.restful_service.allow_from(cidr_range)
+        self.mqtt_service.allow_from_ip_range(cidr_range)
+        self.restful_service.allow_from_ip_range(cidr_range)

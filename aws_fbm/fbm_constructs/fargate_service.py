@@ -1,3 +1,4 @@
+from aws_fbm.fbm_constructs.roles import EcsTaskRole, EcsExecutionRole
 from aws_fbm.fbm_constructs.file_system import Volume, FileSystem
 
 from aws_cdk import aws_ecr_assets as ecr_assets
@@ -6,7 +7,6 @@ from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_route53 as route53
 from aws_cdk import aws_logs as logs
-from aws_cdk import aws_iam as iam
 
 from typing import Optional, Sequence, Mapping
 
@@ -15,7 +15,7 @@ from constructs import Construct
 
 class FargateService(Construct):
     """Create a Fargate service for running a Docker container"""
-    
+
     def __init__(
         self,
         scope: Construct,
@@ -30,7 +30,6 @@ class FargateService(Construct):
         task_name: str,
         container_port: int,
         listener_port: int,
-        permitted_client_ip_range: str,
         file_system: Optional[FileSystem] = None,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
@@ -90,6 +89,7 @@ class FargateService(Construct):
                 container_path=volume.mount_dir,
                 read_only=False
             ))
+
         self.load_balanced_service = self.create_service(
             cluster=cluster,
             listener_port=listener_port,
@@ -110,10 +110,6 @@ class FargateService(Construct):
                 description='Allow access to file system from Fargate service'
             )
 
-        # Open the service to incoming connections
-        self.allow_from(permitted_client_ip_range)
-
-
     def create_service(self,
                        cluster: ecs.Cluster,
                        listener_port: int,
@@ -124,7 +120,7 @@ class FargateService(Construct):
         """Create the load balanced service"""
         raise NotImplementedError
 
-    def allow_from(self, cidr_range: str):
+    def allow_from_ip_range(self, cidr_range: str):
         """Permit access to this service from the given range"""
         raise NotImplementedError
 
@@ -153,7 +149,7 @@ class HttpService(FargateService):
             domain_zone=domain_zone
         )
 
-    def allow_from(self, cidr_range: str):
+    def allow_from_ip_range(self, cidr_range: str):
         self.load_balancer.connections.allow_from(
             ec2.Peer.ipv4(cidr_range),
             ec2.Port.tcp(self.listener_port))
@@ -183,7 +179,7 @@ class TcpService(FargateService):
         )
         return load_balanced_service
 
-    def allow_from(self, cidr_range: str):
+    def allow_from_ip_range(self, cidr_range: str):
         self.service.connections.allow_from(
             ec2.Peer.ipv4(cidr_range),
             ec2.Port.tcp(self.listener_port))

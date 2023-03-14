@@ -86,7 +86,6 @@ class ResearcherServiceStack(Stack):
             task_name="jupyter",
             container_port=self.jupyter_port,
             listener_port=80,
-            permitted_client_ip_range=network_stack.cidr_range,
             file_system=file_system,
             entry_point=["/entrypoint_jupyter.bash"],
             environment={
@@ -97,9 +96,12 @@ class ResearcherServiceStack(Stack):
                      researcher_etc_volume, researcher_runs_volume,
                      researcher_var_volume, researcher_notebooks_volume]
         )
+        # Configure expected healthy return codes from the web interface
         self.jupyter_service.load_balanced_service.target_group.\
             configure_health_check(path="/tree",
                                    healthy_http_codes="200,302,304")
+        # Allow connections from network VPN
+        self.jupyter_service.allow_from_ip_range(network_stack.cidr_range)
 
         # Tensorboard service using the common researcher container
         self.tensorboard_service = HttpService(
@@ -115,7 +117,6 @@ class ResearcherServiceStack(Stack):
             task_name="tensorboard",
             container_port=self.tensorboard_port,
             listener_port=80,
-            permitted_client_ip_range=network_stack.cidr_range,
             file_system=file_system,
             entry_point=["/entrypoint_tensorboard.bash"],
             environment={
@@ -126,3 +127,8 @@ class ResearcherServiceStack(Stack):
                      researcher_etc_volume, researcher_runs_volume,
                      researcher_var_volume, researcher_notebooks_volume]
         )
+        # Allow connections from network VPN
+        self.tensorboard_service.allow_from_ip_range(network_stack.cidr_range)
+
+        # Allow researcher components to connect to the network stack
+        network_service_stack.allow_from_ip_range(network_stack.cidr_range)

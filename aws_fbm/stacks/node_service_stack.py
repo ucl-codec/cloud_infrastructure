@@ -74,6 +74,8 @@ class NodeServiceStack(Stack):
             volumes=[node_config_volume, node_data_volume, node_etc_volume,
                      node_var_volume, node_common_volume]
         )
+        # Open network services
+        network_service_stack.allow_from_ip_range(node_stack.cidr_range)
 
         # Docker image for gui
         gui_docker_image = DockerImageAsset(
@@ -96,7 +98,6 @@ class NodeServiceStack(Stack):
             task_name="gui",
             container_port=8484,
             listener_port=80,
-            permitted_client_ip_range=node_stack.cidr_range,
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
@@ -109,5 +110,5 @@ class NodeServiceStack(Stack):
         self.gui_service.load_balanced_service.target_group.\
             configure_health_check(healthy_http_codes="200,304")
 
-        # Open network services
-        network_service_stack.allow_from(node_stack.cidr_range)
+        # Allow connections from node VPN
+        self.gui_service.allow_from_ip_range(node_stack.cidr_range)

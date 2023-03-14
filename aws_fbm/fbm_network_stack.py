@@ -16,8 +16,7 @@ class FbmNetworkStack(FbmBaseStack):
                  description: str,
                  network_number: int,
                  **kwargs) -> None:
-        super().__init__(scope, construct_id,
-                         stack_name=stack_name,
+        super().__init__(scope=scope, id=id,
                          site_name=site_name,
                          dns_domain=dns_domain,
                          description=description,

@@ -8,16 +8,14 @@ from constructs import Construct
 
 class FbmNodeStack(FbmBaseStack):
 
-    def __init__(self, scope: Construct, construct_id: str,
-                 stack_name: str,
+    def __init__(self, scope: Construct, id: str,
                  site_name: str,
                  dns_domain: str,
                  description: str,
                  network_number: int,
                  bucket_name: str,
                  env: Environment) -> None:
-        super().__init__(scope, construct_id,
-                         stack_name=stack_name,
+        super().__init__(scope=scope, id=id,
                          site_name=site_name,
                          dns_domain=dns_domain,
                          description=description,

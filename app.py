@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 
-import os
+from aws_fbm.stacks.network_stack import NetworkStack
+from aws_fbm.stacks.node_stack import NodeStack
+from aws_fbm.stacks.peering_stack import PeeringStack
+from aws_fbm.stacks.node_service_stack import NodeServiceStack
+from aws_fbm.stacks.network_service_stack import NetworkServiceStack
+from aws_fbm.stacks.researcher_service_stack import ResearcherServiceStack
+from aws_fbm.utils.config import read_config_file
+from aws_fbm.utils.utils import get_environment
 
 import aws_cdk as cdk
-from aws_fbm.fbm_network_stack import FbmNetworkStack
-from aws_fbm.fbm_node_stack import FbmNodeStack
-from aws_fbm.stacks.fbm_node_setup_stack import FbmNodeSetupStack
-
-
-def get_environment() -> cdk.Environment:
-    # Fetch account and region from env vars.
-    return cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-                           region=os.getenv('CDK_DEFAULT_REGION'))
 
 
 app = cdk.App()

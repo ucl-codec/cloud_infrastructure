@@ -3,6 +3,8 @@
 # UCL PASSIAN - entrypoint script for Fed-BioMed researcher container
 # This script is executed when the container is run
 
+echo "UCL PASSIAN Fed-BioMed Tensorboard container"
+
 # read config.env
 #source ~/bashrc_entrypoint
 
@@ -21,4 +23,7 @@ export PYTHONPATH=/fedbiomed
 source /miniconda/etc/profile.d/conda.sh
 conda activate fedbiomed-researcher
 cd /fedbiomed
+
+echo "Running Tensorboard..."
 tensorboard --logdir runs --host 0.0.0.0 --port="${TENSORBOARD_PORT}"
+echo "...Tensorboard complete. Container will now exit"

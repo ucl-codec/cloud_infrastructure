@@ -2,6 +2,8 @@
 
 # UCL PASSIAN - launch script for Fed-BioMed restful container
 
+echo "UCL PASSIAN Fed-BioMed restful container"
+
 # Remove the database
 rm -rf /app/db.sqlite3
 

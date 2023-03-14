@@ -3,6 +3,8 @@
 # UCL PASSIAN - entrypoint script for Fed-BioMed researcher container
 # This script is executed when the container is run
 
+echo "UCL PASSIAN Fed-BioMed Jupyter container"
+
 # read config.env
 #source ~/bashrc_entrypoint
 
@@ -22,5 +24,6 @@ mkdir -p /fedbiomed/notebooks/defult_notebooks
 cd /fedbiomed/notebooks
 cp -rf /default_notebooks/. /fedbiomed/notebooks/defult_notebooks/
 
-
+echo "Running Jupyter..."
 jupyter notebook --ip=0.0.0.0 --port="${JUPYTER_PORT}" --no-browser --allow-root --NotebookApp.token=''
+echo "...Jupyter complete. Container will now exit"

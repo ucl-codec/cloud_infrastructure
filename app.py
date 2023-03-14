@@ -12,89 +12,82 @@ from aws_fbm.utils.utils import get_environment
 import aws_cdk as cdk
 
 
+# Create the app, the base construct on which all the stacks are build
 app = cdk.App()
 
-network = FbmNetworkStack(
+# Get the config context parameter and use it to read a config file
+# The context is provided on the cdk command line, e.g. --context config=dev
+# This corresponds to a config file to be read, e.g. config/dev.cfg
+config_name = app.node.try_get_context("config")
+config = read_config_file(config_name)
+
+# Create stateful federated stack for hold network and researcher services
+network_stack = NetworkStack(
     scope=app,
-    construct_id="FbmNetworkStack",
-    stack_name="FbmNetworkStack",
-    dns_domain="passian.federated",
-    description="PASSIAN Fed-BioMed stack for federation network",
-    network_number=0,
+    name_prefix=config.network.name_prefix,
+    site_name=config.network.site_name,
+    dns_domain=config.network.domain_name,
     env=get_environment()
 )
 
-node_a_import_bucket_name = "clinical-node-a-import-bucket"
-
-# For initial setup
-# node_a_setup = FbmNodeSetupStack(
-#     scope=app, id="FbmNodeASetup", site_name="Clinical Node A",
-#     bucket_name=node_a_import_bucket_name)
-
-node_a = FbmNodeStack(
+# Create stack for network services
+network_service_stack = NetworkServiceStack(
     scope=app,
-    construct_id="FbmNodeStackA",
-    site_name = "Clinical Node A",
-    stack_name="FbmNodeStackA",
-    dns_domain="passian.clinicala",
-    bucket_name=node_a_import_bucket_name,
-    description="PASSIAN Fed-BioMed stack for clinical node A",
-    network_number=1,
-    network_stack=network,
-    network_vpc=network.vpc,
+    network_stack=network_stack,
     env=get_environment()
 )
 
-node_b_import_bucket_name = "clinical-node-b-import-bucket"
-
-# For initial setup
-# node_b_setup = FbmNodeSetupStack(
-#     scope=app, id="FbmNodeBSetup", site_name="Clinical Node B",
-#     bucket_name=node_b_import_bucket_name)
-
-node_b = FbmNodeStack(
+# Create stack for researcher services
+researcher_service_stack = ResearcherServiceStack(
     scope=app,
-    construct_id="FbmNodeStackB",
-    site_name = "Clinical Node B",
-    stack_name="FbmNodeStackB",
-    dns_domain="passian.clinicalb",
-    bucket_name=node_b_import_bucket_name,
-    description="PASSIAN Fed-BioMed stack for clinical node B",
-    network_number=2,
-    network_stack=network,
-    network_vpc=network.vpc,
+    network_stack=network_stack,
+    network_service_stack=network_service_stack,
     env=get_environment()
 )
 
+# Iterate through nodes from configuration
+nodes = []
+for index, node in enumerate(config.nodes):
 
+    # Create stateful S3 bucket stack
+    # Comment out if using a pre-existing S3 bucket
+    # node_setup = NodeSetupStack(
+    #     scope=app,
+    #     name_prefix=node.name_prefix,
+    #     site_name = node.site_name,
+    #     bucket_name=node.bucket_name,
+    #     env = get_environment()
+    # )
 
-# test_network = FbmNetworkStack(
-#     scope=app,
-#     construct_id="TestNetworkStack",
-#     stack_name="TestNetworkStack",
-#     dns_domain="test.testfederated2",
-#     description="Test PASSIAN Fed-BioMed stack for federation network",
-#     network_number=0,
-#     env=get_environment()
-# )
-#
-# test_node_a_import_bucket_name = "test-a-import-bucket"
-# # test_node_a_setup = FbmNodeSetupStack(
-# #     scope=app, id="TestNodeASetup", site_name="Test A",
-# #     bucket_name=test_node_a_import_bucket_name)
-#
-# test_node_a = FbmNodeStack(
-#     scope=app,
-#     construct_id="TestNodeStackA",
-#     site_name="Test Node A",
-#     stack_name="TestNodeStackA",
-#     dns_domain="test.testclinicala2",
-#     bucket_name=test_node_a_import_bucket_name,
-#     description="Test PASSIAN Fed-BioMed stack for clinical node A",
-#     network_number=1,
-#     network_stack=test_network,
-#     network_vpc=test_network.vpc,
-#     env=get_environment()
-# )
+    # Create stateful node stack
+    node_stack = NodeStack(
+        scope=app,
+        name_prefix=node.name_prefix,
+        stack_name=node.stack_name,
+        site_name=node.site_name,
+        dns_domain=node.domain_name,
+        bucket_name=node.bucket_name,
+        network_number=index+1,
+        env=get_environment()
+    )
+    # Create node services stack
+    node_service_stack = NodeServiceStack(
+        scope=app,
+        node_stack=node_stack,
+        env=get_environment(),
+        mqtt_broker=network_service_stack.mqtt_broker,
+        mqtt_port=network_service_stack.mqtt_port,
+        uploads_url=network_service_stack.uploads_url,
+    )
+    nodes.append(node_stack)
+
+# Create peering stack which connects network and node stacks
+peering_stack = PeeringStack(
+    scope=app,
+    network_stack=network_stack,
+    network_service_stack=network_service_stack,
+    node_stacks=nodes,
+    env=get_environment()
+)
 
 app.synth()

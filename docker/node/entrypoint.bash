@@ -19,7 +19,7 @@ fi
 trap finish TERM INT QUIT
 
 # Pass through env variables to conda environment
-conda env config vars set MQTT_BROKER="${MQTT_BROKER}" MQTT_BROKER_PORT="${MQTT_BROKER_PORT}" UPLOADS_URL="${UPLOADS_URL}"
+conda env config vars set MQTT_BROKER="${MQTT_BROKER}" UPLOADS_URL="${UPLOADS_URL}"
 
 source /miniconda/bin/activate fedbiomed-node
 

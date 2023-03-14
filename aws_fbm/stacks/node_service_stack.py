@@ -10,7 +10,14 @@ from constructs import Construct
 
 
 class NodeServiceStack(Stack):
-    """CDK stack defining a cluster containing Fed-BioMed node services"""
+    """CDK stack defining a cluster containing Fed-BioMed node services
+
+    This stack does not generally contain stateful resources (such as the
+    file system); therefore this stack can be destroyed and re-created
+    without affecting the rest of the system
+
+    Stateful resources are defined in the NodeStack
+    """
 
     def __init__(self, scope: Construct, id: str,
                  node_stack: FbmNodeStack,

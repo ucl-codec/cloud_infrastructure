@@ -10,7 +10,14 @@ from aws_cdk import Environment
 
 
 class NetworkServiceStack(Stack):
-    """CDK stack defining a cluster containing Fed-BioMed network services"""
+    """CDK stack defining a cluster containing Fed-BioMed network services
+
+    This stack does not generally contain stateful resources (such as the
+    VPN or file system); therefore this stack can be destroyed and re-created
+    without affecting the rest of the system
+
+    Stateful resources are defined in the NetworkStack
+    """
 
     def __init__(self, scope: Construct, id: str,
                  network_stack: FbmNetworkStack,
@@ -30,7 +37,8 @@ class NetworkServiceStack(Stack):
 
         self.mqtt_broker = f"{self.mqtt_dns_host}.{network_stack.dns_domain}"
         self.uploads_url = f"http://{self.restful_dns_host}." \
-                           f"{network_stack.dns_domain}:{self.restful_port}/upload/"
+                           f"{network_stack.dns_domain}" \
+                           f":{self.restful_port}/upload/"
 
         # Create cluster
         self.cluster = ecs.Cluster(scope=self, id="NetworkCluster",

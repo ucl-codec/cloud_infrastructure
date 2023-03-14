@@ -19,13 +19,14 @@ class NodeServiceStack(Stack):
     Stateful resources are defined in the NodeStack
     """
 
-    def __init__(self, scope: Construct, id: str,
+    def __init__(self, scope: Construct,
                  node_stack: NodeStack,
                  env: Environment,
                  mqtt_broker: str,
                  mqtt_port: int,
                  uploads_url: str):
-        super().__init__(scope=scope, id=id,
+        super().__init__(scope=scope,
+                         id=f"{node_stack.name_prefix}ServiceStack",
                          description=f"FBM node services stack for "
                                      f"{node_stack.site_name}",
                          env=env)

@@ -14,12 +14,13 @@ from typing import List
 class PeeringStack(Stack):
     """CDK stack defining peering between FBM network and node VPCs"""
 
-    def __init__(self, scope: Construct, id: str,
+    def __init__(self, scope: Construct,
                  network_stack: NetworkStack,
                  network_service_stack: NetworkServiceStack,
                  node_stacks: List[NodeStack],
                  env: Environment) -> None:
-        super().__init__(scope, id=id,
+        super().__init__(scope,
+                         id=f"{network_stack.name_prefix}PeeringStack",
                          description=f"FBM peering stack for "
                                      f"{network_stack.site_name}",
                          env=env)

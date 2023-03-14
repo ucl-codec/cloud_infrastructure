@@ -19,10 +19,11 @@ class NetworkServiceStack(Stack):
     Stateful resources are defined in the NetworkStack
     """
 
-    def __init__(self, scope: Construct, id: str,
+    def __init__(self, scope: Construct,
                  network_stack: NetworkStack,
                  env: Environment):
-        super().__init__(scope=scope, id=id,
+        super().__init__(scope=scope,
+                         id=f"{network_stack.name_prefix}NetworkServiceStack",
                          description=f"FBM network services stack for "
                                      f"{network_stack.site_name}",
                          env=env)

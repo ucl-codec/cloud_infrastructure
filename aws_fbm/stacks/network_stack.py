@@ -11,17 +11,18 @@ class NetworkStack(BaseStack):
     the file system.
     """
 
-    def __init__(self, scope: Construct, id: str,
+    def __init__(self, scope: Construct,
+                 name_prefix: str,
                  site_name: str,
                  dns_domain: str,
-                 network_number: int,
                  env: Environment) -> None:
-        super().__init__(scope=scope, id=id,
+        super().__init__(scope=scope, id=f"{name_prefix}NetworkStack",
                          description=f"FBM network stack for {site_name}",
                          site_name=site_name,
                          dns_domain=dns_domain,
-                         network_number=network_number,
+                         network_number=0,
                          env=env)
+        self.name_prefix = name_prefix
 
         # Create file system and volumes for researcher stack
         self.file_system = FileSystem(

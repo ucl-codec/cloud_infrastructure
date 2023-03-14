@@ -13,14 +13,16 @@ from aws_cdk import Environment
 class ResearcherServiceStack(Stack):
     """CDK stack defining a cluster containing Fed-BioMed researcher services"""
 
-    def __init__(self, scope: Construct, id: str,
+    def __init__(self, scope: Construct,
                  network_stack: NetworkStack,
                  network_service_stack: NetworkServiceStack,
                  env: Environment):
-        super().__init__(scope=scope, id=id,
-                         description=f"FBM researcher services stack for "
-                                     f"{network_stack.site_name}",
-                         env=env)
+        super().__init__(
+            scope=scope,
+            id=f"{network_stack.name_prefix}ResearcherServiceStack",
+            description=f"FBM researcher services stack for "
+                        f"{network_stack.site_name}",
+            env=env)
 
         # Ports and hostnames
         self.jupyter_port = 8888

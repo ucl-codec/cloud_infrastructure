@@ -62,7 +62,7 @@ class BaseStack(Stack):
                     name="private",
                     cidr_mask=24,
                     subnet_type=ec2.SubnetType.PRIVATE_ISOLATED)]
-            )
+        )
 
         # These endpoints are required in order to use the ECS
         # because we are using a private subnet with no internet connectivity

@@ -5,9 +5,12 @@ from constructs import Construct
 
 
 class FbmNetworkStack(FbmBaseStack):
+    """CDK stack defining the core configuration for the FBM network
+    component. This defines stateful configuration such as VPC, VPN and
+    the file system.
+    """
 
-    def __init__(self, scope: Construct, construct_id: str,
-                 stack_name: str,
+    def __init__(self, scope: Construct, id: str,
                  site_name: str,
                  dns_domain: str,
                  description: str,
@@ -27,5 +30,3 @@ class FbmNetworkStack(FbmBaseStack):
             id="FileSystem",
             vpc=self.vpc
         )
-
-

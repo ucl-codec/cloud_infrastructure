@@ -3,6 +3,7 @@ FROM --platform=linux/amd64 nvidia/cuda:11.5.0-base-ubuntu20.04
 
 # Network env variables to be set at runtime
 ENV MQTT_BROKER=""
+ENV MQTT_BROKER_PORT=""
 ENV UPLOADS_URL=""
 
 # install wget though nvidia cuda linux gpg key is obsolete

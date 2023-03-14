@@ -17,11 +17,15 @@ GUI_IP="172.18.0.25"
 JUPYTER_IP="172.18.0.26"
 TENSORBOARD_IP="172.18.0.27"
 RESTFUL_PORT="8000"
+MQTT_PORT="1883"
 NETWORK="fbm_net"
+USE_PRODUCTION_GUI="TRUE"
 
 # These variables will be provided to the containers
 export MQTT_BROKER="${MQTT_IP}"
+export MQTT_BROKER_PORT="${MQTT_PORT}"
 export UPLOADS_URL="http://${RESTFUL_IP}:${RESTFUL_PORT}/upload/"
+export USE_PRODUCTION_GUI="${USE_PRODUCTION_GUI}"
 
 # Persistent storage for local testing and development. Simulates persistent filesystems used on
 # cloud deployment, allowing files to persist between runs.
@@ -46,7 +50,7 @@ docker start restful 2>/dev/null || docker run --rm -d -p 8000:8000 --net "${NET
 # Run gui
 # Note the mounts correspond to the volumes in docker-compose
 docker start gui 2>/dev/null || docker run --rm -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
-  -e MQTT_BROKER -e UPLOADS_URL \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \
   --mount type=bind,source="${NODE_STORAGE}/var",target=/fedbiomed/var \
@@ -57,7 +61,7 @@ docker start gui 2>/dev/null || docker run --rm -d -p 8484:8484 --net "${NETWORK
 # Run jupyter
 # Note the mounts correspond to the volumes in docker-compose
 docker start jupyter 2>/dev/null || docker run --rm -d -p 8888:8888 --net "${NETWORK}" --ip "${JUPYTER_IP}" \
-  -e MQTT_BROKER -e UPLOADS_URL \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL -e USE_PRODUCTION_GUI \
   --mount type=bind,source="${RESEARCHER_STORAGE}/config",target=/config \
   --mount type=bind,source="${RESEARCHER_STORAGE}/data",target=/data \
   --mount type=bind,source="${RESEARCHER_STORAGE}/etc",target=/fedbiomed/etc \
@@ -70,7 +74,7 @@ docker start jupyter 2>/dev/null || docker run --rm -d -p 8888:8888 --net "${NET
 # Run tensorboard
 # Note the mounts correspond to the volumes in docker-compose
 docker start tensorboard 2>/dev/null || docker run --rm -d -p 6007:6007 --net "${NETWORK}" --ip "${TENSORBOARD_IP}" \
-  -e MQTT_BROKER -e UPLOADS_URL \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL \
   --mount type=bind,source="${RESEARCHER_STORAGE}/config",target=/config \
   --mount type=bind,source="${RESEARCHER_STORAGE}/data",target=/data \
   --mount type=bind,source="${RESEARCHER_STORAGE}/etc",target=/fedbiomed/etc \
@@ -82,8 +86,8 @@ docker start tensorboard 2>/dev/null || docker run --rm -d -p 6007:6007 --net "$
 
 # Run node
 # Note the mounts correspond to the volumes in docker-compose
-docker start node 2>/dev/null || docker run --rm -d --net "${NETWORK}" --ip "${NODE_IP}" \
-  -e MQTT_BROKER -e UPLOADS_URL \
+docker start node 2>/dev/null || docker run -d --net "${NETWORK}" --ip "${NODE_IP}" \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL \
   --mount type=bind,source="${NODE_STORAGE}/config",target=/config \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \

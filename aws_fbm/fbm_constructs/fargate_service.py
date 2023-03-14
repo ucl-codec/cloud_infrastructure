@@ -52,12 +52,8 @@ class FargateService(Construct):
             execution_role=EcsExecutionRole(scope=self),
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,
-            ephemeral_storage_gib=ephemeral_storage_gib
-        )
-
-        # Add volumes
-        for volume in volumes:
-            self.task_definition.add_volume(
+            ephemeral_storage_gib=ephemeral_storage_gib,
+            volumes=[ecs.Volume(
                 name=volume.volume_name,
                 efs_volume_configuration=ecs.EfsVolumeConfiguration(
                     file_system_id=volume.file_system_id,
@@ -69,8 +65,8 @@ class FargateService(Construct):
                         access_point_id=volume.access_point.access_point_id,
                         iam="ENABLED"
                     )
-                )
-            )
+                )) for volume in volumes]
+        )
 
         # Add the Docker container
         self.container = self.task_definition.add_container(

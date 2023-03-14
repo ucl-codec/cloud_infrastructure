@@ -39,9 +39,21 @@ class EC2Service(Construct):
         self.task_definition = ecs.Ec2TaskDefinition(
             self,
             id="Ec2TaskDefinition",
-            # ToDo: add volumes here
             task_role=EcsTaskRole(scope=self),
             execution_role=EcsExecutionRole(scope=self),
+            volumes=[ecs.Volume(
+                name=volume.volume_name,
+                efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                    file_system_id=volume.file_system_id,
+                    # Note: when using an access point id, the root directory is
+                    # relative to the access point
+                    root_directory='/',
+                    transit_encryption="ENABLED",
+                    authorization_config=ecs.AuthorizationConfig(
+                        access_point_id=volume.access_point.access_point_id,
+                        iam="ENABLED"
+                    )
+                )) for volume in volumes]
         )
 
         # GPU AMI
@@ -111,22 +123,6 @@ class EC2Service(Construct):
 
         cluster.add_asg_capacity_provider(self.capacity_provider)
 
-        # Add volumes
-        for volume in volumes:
-            self.task_definition.add_volume(
-                name=volume.volume_name,
-                efs_volume_configuration=ecs.EfsVolumeConfiguration(
-                    file_system_id=volume.file_system_id,
-                    # Note: when using an access point id, the root directory is
-                    # relative to the access point
-                    root_directory='/',
-                    transit_encryption="ENABLED",
-                    authorization_config=ecs.AuthorizationConfig(
-                        access_point_id=volume.access_point.access_point_id,
-                        iam="ENABLED"
-                    )
-                )
-            )
 
         # Add the Docker container
         self.container = self.task_definition.add_container(

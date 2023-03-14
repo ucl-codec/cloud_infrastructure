@@ -7,7 +7,8 @@ REPO_DIR=$(dirname $(dirname $(realpath ${0})))
 cd "${REPO_DIR}"
 
 # Update test stacks
-cdk deploy TestNetworkStack TestNetworkServiceStack TestResearcherServiceStack TestNodeStackA TestNodeServiceStackA TestPeeringStack --profile passian
+cdk deploy --all --profile passian --context config=dev
+#cdk deploy TestNetworkStack TestNetworkServiceStack TestResearcherServiceStack TestNodeStackA TestNodeServiceStackA TestPeeringStack --profile passian --context config=dev
 
 # Full deployment
 #cdk deploy TestNetworkStack TestNodeASetup TestNodeStackA --profile passian

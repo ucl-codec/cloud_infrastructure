@@ -32,6 +32,7 @@ class NodeServiceStack(Stack):
                          env=env)
 
         self.gui_dns_host = "gui"
+        use_production_gui = False
 
         # Create cluster
         self.cluster = ecs.Cluster(
@@ -103,7 +104,9 @@ class NodeServiceStack(Stack):
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
-                "UPLOADS_URL": uploads_url},
+                "UPLOADS_URL": uploads_url,
+                "USE_PRODUCTION_GUI": "TRUE" if use_production_gui else "FALSE"
+            },
             file_system=file_system,
             volumes=[node_data_volume, node_etc_volume, node_var_volume,
                      node_common_volume]

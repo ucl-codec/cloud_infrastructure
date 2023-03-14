@@ -7,6 +7,9 @@ from constructs import Construct
 
 
 class FbmNodeStack(FbmBaseStack):
+    """CDK stack defining the core configuration for the FBM network
+    component. This defines stateful configuration such as the file system.
+    """
 
     def __init__(self, scope: Construct, id: str,
                  site_name: str,

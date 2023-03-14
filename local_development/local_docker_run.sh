@@ -50,7 +50,7 @@ docker start restful 2>/dev/null || docker run --rm -d -p 8000:8000 --net "${NET
 # Run gui
 # Note the mounts correspond to the volumes in docker-compose
 docker start gui 2>/dev/null || docker run --rm -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
-  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL -e USE_PRODUCTION_GUI \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \
   --mount type=bind,source="${NODE_STORAGE}/var",target=/fedbiomed/var \

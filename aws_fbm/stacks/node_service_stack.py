@@ -2,7 +2,6 @@ from aws_fbm.utils import repo_path
 from aws_fbm.fbm_constructs.ec2_service import EC2Service
 from aws_fbm.fbm_constructs.fargate_service import HttpService
 from aws_fbm.fbm_node_stack import FbmNodeStack
-from aws_fbm.stacks.network_service_stack import NetworkServiceStack
 
 from aws_cdk import Environment, Stack
 from aws_cdk import aws_ecs as ecs
@@ -14,13 +13,15 @@ class NodeServiceStack(Stack):
     """CDK stack defining a cluster containing Fed-BioMed node services"""
 
     def __init__(self, scope: Construct, id: str,
-                 network_service_stack: NetworkServiceStack,
                  node_stack: FbmNodeStack,
-                 env: Environment):
+                 env: Environment,
+                 mqtt_broker: str,
+                 mqtt_port: int,
+                 uploads_url: str):
         super().__init__(
             scope=scope,
             id=id,
-            description=f"FBM network services stack for {node_stack.site_name}",
+            description=f"FBM node services stack for {node_stack.site_name}",
             env=env)
 
         self.gui_dns_host = "gui"
@@ -43,10 +44,6 @@ class NodeServiceStack(Stack):
         node_common_volume = file_system.create_volume(
             name="common", root_directory='/node/common',
             mount_dir="/fedbiomed/envs/common")
-
-        mqtt_broker = network_service_stack.mqtt_broker
-        mqtt_port = network_service_stack.mqtt_port
-        uploads_url = network_service_stack.uploads_url
 
         # Docker image for node
         node_docker_image = DockerImageAsset(
@@ -74,8 +71,6 @@ class NodeServiceStack(Stack):
             volumes=[node_config_volume, node_data_volume, node_etc_volume,
                      node_var_volume, node_common_volume]
         )
-        # Open network services
-        network_service_stack.allow_from_ip_range(node_stack.cidr_range)
 
         # Docker image for gui
         gui_docker_image = DockerImageAsset(

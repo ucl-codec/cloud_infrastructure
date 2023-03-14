@@ -5,7 +5,6 @@ from aws_fbm.utils import repo_path
 from constructs import Construct
 from aws_cdk import CfnOutput, Stack
 from aws_cdk.aws_ecr_assets import DockerImageAsset
-from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import Environment
 

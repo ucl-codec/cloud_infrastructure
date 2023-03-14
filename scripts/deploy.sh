@@ -7,4 +7,4 @@ REPO_DIR=$(dirname $(dirname $(realpath ${0})))
 cd "${REPO_DIR}"
 
 # Deploy main stacks
-cdk deploy FbmNetworkStack FbmNodeStackA FbmNodeStackB --profile passian
+cdk deploy --all --profile passian --context config=prod

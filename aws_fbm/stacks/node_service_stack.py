@@ -11,6 +11,8 @@ from constructs import Construct
 
 
 class NodeServiceStack(Stack):
+    """CDK stack defining a cluster containing Fed-BioMed node services"""
+
     def __init__(self, scope: Construct, id: str,
                  network_service_stack: NetworkServiceStack,
                  node_stack: FbmNodeStack,
@@ -103,6 +105,7 @@ class NodeServiceStack(Stack):
             volumes=[node_data_volume, node_etc_volume, node_var_volume,
                      node_common_volume]
         )
+        # Configure expected healthy return codes from the web interface
         self.gui_service.load_balanced_service.target_group.\
             configure_health_check(healthy_http_codes="200,304")
 

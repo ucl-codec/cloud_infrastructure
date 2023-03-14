@@ -40,7 +40,7 @@ class AllowVPCPeeringDNSResolution(Construct):
         )
 
         custom_resource = custom_resources.AwsCustomResource(
-            scope, "allow-peering-dns-resolution",
+            self, "AllowPeeringDnsResolution",
             policy=custom_resources.AwsCustomResourcePolicy.from_statements(
                 statements=[
                     iam.PolicyStatement(

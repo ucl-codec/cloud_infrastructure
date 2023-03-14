@@ -24,5 +24,3 @@ conda env config vars set MQTT_BROKER="${MQTT_BROKER}" MQTT_BROKER_PORT="${MQTT_
 source /miniconda/bin/activate fedbiomed-node
 
 /fedbiomed/scripts/fedbiomed_run node start --gpu-only
-
-wait $!

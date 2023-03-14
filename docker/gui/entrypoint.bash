@@ -5,6 +5,9 @@
 
 echo "UCL PASSIAN Fed-BioMed gui container"
 
+# Pass through env variables to conda environment
+conda env config vars set USE_PRODUCTION_GUI="${USE_PRODUCTION_GUI}"
+
 # Populate server configuration file using runtime environment variables
 ini_template="/config_gui.ini.template"
 if [ -f "${ini_template}" ]; then
@@ -34,18 +37,18 @@ fi
 mkdir -p /fedbiomed/var/gui-build
 cp -rf /gui-build/. /fedbiomed/var/gui-build/
 
-echo "Starting gui..."
-/fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start
-echo "...terminated"
-
-#FEDBIOMED_DIR="/fedbiomed" \
-#  NODE_CONFIG_FILE="config_node.ini" \
-#  BUILD_DIR="/gui-build" \
-#  DATA_PATH="/data" \
-#  HOST="$GUI_HOST" \
-#  PORT="$GUI_PORT" \
-#  DEBUG="False" \
-#  FLASK_ENV="production" \
-#  gunicorn -b 0.0.0.0:${GUI_PORT} --worker-class=gevent -w 4 --preload --timeout ${GUI_TIMEOUT} --error-logfile '-' --log-level 'debug' 'app:app'
-
-
+if [ "${USE_PRODUCTION_GUI}" = "TRUE" ]; then
+  echo "Running production gui..."
+  FEDBIOMED_DIR="/fedbiomed" \
+    NODE_CONFIG_FILE="config_node.ini" \
+    BUILD_DIR="/gui-build" \
+    DATA_PATH="/data" \
+    HOST="$GUI_HOST" \
+    PORT="$GUI_PORT" \
+    DEBUG="False" \
+    FLASK_ENV="production" \
+    gunicorn -b 0.0.0.0:${GUI_PORT} --worker-class=gevent -w 4 --preload --timeout ${GUI_TIMEOUT} --error-logfile '-' --log-level 'debug' 'app:app'
+else
+  echo "Running development gui..."
+  /fedbiomed/scripts/fedbiomed_run gui host 0.0.0.0 data-folder /data config config_node.ini start
+fi

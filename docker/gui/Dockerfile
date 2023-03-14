@@ -15,6 +15,7 @@ ENV GUI_DATA_PATH=/data
 ENV GUI_DEFAULT_ADMIN_EMAIL=admin@fedbiomed.gui
 ENV GUI_DEFAULT_ADMIN_PW=admin
 ENV GUI_TIMEOUT=600
+ENV USE_PRODUCTION_GUI=TRUE
 
 # Install dependencies
 RUN apt-get update && apt-get install -y apt-utils wget procps gettext-base

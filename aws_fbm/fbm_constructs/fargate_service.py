@@ -48,8 +48,8 @@ class FargateService(Construct):
         self.task_definition = ecs.FargateTaskDefinition(
             self,
             id="FargateTaskDefinition",
-            task_role=self.create_task_role(),
-            execution_role=self.create_execution_role(),
+            task_role=EcsTaskRole(scope=self),
+            execution_role=EcsExecutionRole(scope=self),
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,
             ephemeral_storage_gib=ephemeral_storage_gib
@@ -117,37 +117,6 @@ class FargateService(Construct):
         # Open the service to incoming connections
         self.allow_from(permitted_client_ip_range)
 
-    def create_task_role(self):
-        """Create IAM role to be used by the ECS tasks.
-        https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
-        """
-        ecs_task_role = iam.Role(
-            self,
-            id="TaskRole",
-            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com")
-        )
-
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('CloudWatchLogsFullAccess'))
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonS3ReadOnlyAccess'))
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonElasticFileSystemFullAccess'))
-
-        return ecs_task_role
-
-    def create_execution_role(self):
-        """Create IAM role to be used to create ECS tasks
-        https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
-        """
-        ecs_execution_role = iam.Role(
-            self,
-            "ExecutionRole",
-            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com")
-        )
-        ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))
-        ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('CloudWatchLogsFullAccess'))
-        ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonElasticFileSystemReadOnlyAccess'))
-
-        return ecs_execution_role
 
     def create_service(self,
                        cluster: ecs.Cluster,

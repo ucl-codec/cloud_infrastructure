@@ -1,4 +1,6 @@
 from typing import Optional, Sequence, Mapping
+from aws_fbm.fbm_constructs.roles import EcsExecutionRole, EcsTaskRole, \
+    Ec2LaunchRole
 
 from constructs import Construct
 
@@ -37,9 +39,9 @@ class EC2Service(Construct):
         self.task_definition = ecs.Ec2TaskDefinition(
             self,
             id="Ec2TaskDefinition",
-            task_role=self.create_task_role(),
-            execution_role=self.create_execution_role(),
             # ToDo: add volumes here
+            task_role=EcsTaskRole(scope=self),
+            execution_role=EcsExecutionRole(scope=self),
         )
 
         # GPU AMI
@@ -80,8 +82,8 @@ class EC2Service(Construct):
             instance_type=ec2.InstanceType("g3s.xlarge"),
             machine_image=machine_image,
             user_data=user_data,
-            role=self.create_launch_role(),
             security_group=template_security_group,
+            role=Ec2LaunchRole(scope=self),
             detailed_monitoring=True
          )
 
@@ -169,45 +171,3 @@ class EC2Service(Construct):
             )]
         )
 
-    def create_task_role(self):
-        """Create IAM role to be used by the ECS tasks.
-        https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
-        """
-        ecs_task_role = iam.Role(
-            self,
-            id="TaskRole",
-            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com")
-        )
-
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('CloudWatchLogsFullAccess'))
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonS3ReadOnlyAccess'))
-        ecs_task_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonElasticFileSystemFullAccess'))
-
-        return ecs_task_role
-
-    def create_execution_role(self):
-        """Create IAM role to be used to create ECS tasks
-        https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
-        """
-        ecs_execution_role = iam.Role(
-            self,
-            "ExecutionRole",
-            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com")
-        )
-        ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonEC2ContainerRegistryReadOnly'))
-        ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('CloudWatchLogsFullAccess'))
-        ecs_execution_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonElasticFileSystemReadOnlyAccess'))
-
-        return ecs_execution_role
-
-    def create_launch_role(self):
-        """Create IAM role to be used to launch EC2 instances"""
-        ec2_launch_role = iam.Role(
-            self,
-            id="Ec2ServiceRole",
-            assumed_by=iam.ServicePrincipal("ec2.amazonaws.com")
-        )
-        ec2_launch_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AmazonEC2ContainerServiceforEC2Role'))
-        ec2_launch_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonSSMManagedInstanceCore'))
-        return ec2_launch_role

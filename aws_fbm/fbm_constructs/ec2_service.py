@@ -1,21 +1,20 @@
-from typing import Optional, Sequence, Mapping
 from aws_fbm.fbm_constructs.roles import EcsExecutionRole, EcsTaskRole, \
     Ec2LaunchRole
+from aws_fbm.fbm_constructs.file_system import Volume, FileSystem
 
 from constructs import Construct
-
-from aws_cdk import aws_ecr_assets as ecr_assets
+from aws_cdk import aws_ecr_assets as ecr_assets, Duration
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_logs as logs
-from aws_cdk import aws_iam as iam
 from aws_cdk import aws_autoscaling as autoscaling
 
-from aws_fbm.fbm_constructs.file_system import Volume, FileSystem
+from typing import Optional, Sequence, Mapping
 
 
 class EC2Service(Construct):
     """Create an EC2 service for running a Docker container"""
+
     def __init__(
         self,
         scope: Construct,
@@ -60,33 +59,27 @@ class EC2Service(Construct):
         machine_image = ecs.EcsOptimizedImage.amazon_linux2(
             hardware_type=ecs.AmiHardwareType.GPU)
 
-        # Custom UserData so the EC2 instance registers with the correct cluster
-        # when it launches
+        # Custom UserData for ECS containers
         user_data = ec2.UserData.for_linux()
         # Tell ECS to use GPU
-        user_data.add_commands(f'echo "ECS_ENABLE_GPU_SUPPORT=true" >> /etc/ecs/ecs.config')
-        # Register cluster - not required if using the default cluster
-        # user_data.add_commands(f'echo "ECS_CLUSTER={cluster.cluster_name}" >> /etc/ecs/ecs.config')
+        user_data.add_commands(
+            f'echo "ECS_ENABLE_GPU_SUPPORT=true" >> /etc/ecs/ecs.config')
+        # Register cluster - this additional user data is required if not using
+        # the default cluster. If using the default cluster, it will be
+        # added automatically so can be commented out here
+        # user_data.add_commands(
+        #     f'echo "ECS_CLUSTER='
+        #     f'{cluster.cluster_name}" >> /etc/ecs/ecs.config')
 
-        template_security_group = ec2.SecurityGroup(
+        self.template_security_group = ec2.SecurityGroup(
             self, "LaunchTemplateSG", vpc=vpc)
 
         # Allow service to access EFS file system
-        # file_system.file_system.connections.allow_from(
-        #     other=template_security_group,
-        #     port_range=ec2.Port.tcp(2049),
-        #     description='Allow access to file system from Fargate service'
-        # )
-        template_security_group.connections.allow_to(
+        self.template_security_group.connections.allow_to(
             other=file_system.file_system,
             port_range=ec2.Port.tcp(2049),
             description='Allow access to file system from Fargate service'
         )
-        # template_security_group.connections.allow_to(
-        #     other=file_system.file_system,
-        #     port_range=ec2.Port.tcp(2049),
-        #     description='Allow access to file system from Fargate service'
-        # )
 
         launch_template = ec2.LaunchTemplate(
             self,
@@ -94,8 +87,8 @@ class EC2Service(Construct):
             instance_type=ec2.InstanceType("g3s.xlarge"),
             machine_image=machine_image,
             user_data=user_data,
-            security_group=template_security_group,
             role=Ec2LaunchRole(scope=self),
+            security_group=self.template_security_group,
             detailed_monitoring=True
          )
 
@@ -117,17 +110,16 @@ class EC2Service(Construct):
             self,
             "AsgCapacityProvider",
             auto_scaling_group=self.auto_scaling_group,
-            # machine_image_type=ecs.MachineImageType.AMAZON_LINUX_2,
             enable_managed_termination_protection=False
         )
 
         cluster.add_asg_capacity_provider(self.capacity_provider)
 
-
         # Add the Docker container
         self.container = self.task_definition.add_container(
             id=task_name,
-            image=ecs.ContainerImage.from_docker_image_asset(docker_image_asset),
+            image=ecs.ContainerImage.from_docker_image_asset(
+                docker_image_asset),
             environment=environment,
             gpu_count=gpu_count,
             cpu=cpu,
@@ -166,4 +158,3 @@ class EC2Service(Construct):
                 weight=1
             )]
         )
-

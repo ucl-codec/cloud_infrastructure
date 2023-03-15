@@ -1,26 +1,26 @@
-# User guide for Passian Learning on AWS
+# User guide for Passian Learning
 
 This guide is for end users of Passian Learning . It assumes you have a fully working installation
 of Passian Learning on AWS.
 
 Users may be  
 - Researchers: can execute federated training
-- Data providers: can add data to their clinical nodes and approve use of training plans on their data
+- Data Providers: can add data to their Data Nodes and approve use of training plans on their data
 
 If you have both of these roles, you need to consider role independently when following the following instructions.
 
 ---
 
-## Data provider 
+## Data Provider 
 
 ### Set up your VPN access
 
-- See [Setting up the VPN](vpn_setup.md)
+- See [Connecting to VPNs for Passian Learning](vpn_setup.md)
 
-### Connect to your clinical network
+### Connect to your Data Node
 
 - Launch the AWS VPN Client 
-- Select the VPN profile for your clinical site:
+- Select the VPN profile for your data node:
   - for example `Passian Data Node (your site name)`
 - Click `Connect`
 - Connect to Fed Bio-Med GUI in your web browser:
@@ -39,7 +39,7 @@ create an account for you and provide you with the credentials
 
 ### Set up your VPN access
 
-- See [Setting up the VPN](vpn_setup.md)
+- See [Connecting to VPNs for Passian Learning](vpn_setup.md)
 
 ### Connect to the Researcher network
 - Launch the AWS VPN Client 

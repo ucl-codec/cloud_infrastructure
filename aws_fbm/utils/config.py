@@ -42,20 +42,10 @@ def read_config_file(config_name: str) -> Config:
     config.read(config_filename)
     network_section = "network"
 
-    network_config = NetworkConfig(
-        name_prefix=config[network_section]['name_prefix'],
-        site_name=config[network_section]['site_name'],
-        domain_name=config[network_section]['domain_name']
-    )
+    network_config = NetworkConfig(**config[network_section])
 
     nodes = []
     for section in config.sections():
         if section != network_section:
-            nodes.append(NodeConfig(
-                name_prefix=config[section]['name_prefix'],
-                stack_name=config[section]['stack_name'],
-                site_name=config[section]['site_name'],
-                domain_name=config[section]['domain_name'],
-                bucket_name=config[section]['bucket_name']
-            ))
+            nodes.append(NodeConfig(**config[section]))
     return Config(network=network_config, nodes=nodes)

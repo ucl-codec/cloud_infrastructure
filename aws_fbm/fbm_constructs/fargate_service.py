@@ -7,10 +7,10 @@ from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_route53 as route53
 from aws_cdk import aws_logs as logs
+from aws_cdk import Duration
+from constructs import Construct
 
 from typing import Optional, Sequence, Mapping
-
-from constructs import Construct
 
 
 class FargateService(Construct):
@@ -151,7 +151,7 @@ class HttpService(FargateService):
             open_listener=False,
             public_load_balancer=False,
             domain_zone=domain_zone,
-            idle_timeout=ec2.Duration(idle_timeout)
+            idle_timeout=Duration.seconds(idle_timeout)
         )
 
     def allow_from_ip_range(self, cidr_range: str):

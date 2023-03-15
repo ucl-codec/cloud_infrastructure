@@ -40,12 +40,11 @@ def read_config_file(config_name: str) -> Config:
 
     config = configparser.RawConfigParser()
     config.read(config_filename)
+
+    # Convert returned config structure to Config object
     network_section = "network"
-
-    network_config = NetworkConfig(**config[network_section])
-
-    nodes = []
-    for section in config.sections():
-        if section != network_section:
-            nodes.append(NodeConfig(**config[section]))
-    return Config(network=network_config, nodes=nodes)
+    return Config(
+        network=NetworkConfig(**config[network_section]),
+        nodes=[NodeConfig(**config[section]) for
+               section in config.sections() if section != network_section]
+    )

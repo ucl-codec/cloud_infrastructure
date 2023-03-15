@@ -143,6 +143,8 @@ class EC2Service(Construct):
             "Ec2Service",
             cluster=cluster,
             task_definition=self.task_definition,
+            min_healthy_percent=0,
+            max_healthy_percent=100,
             circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
             capacity_provider_strategies=[ecs.CapacityProviderStrategy(
                 capacity_provider=self.capacity_provider.capacity_provider_name,

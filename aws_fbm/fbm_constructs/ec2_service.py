@@ -142,11 +142,6 @@ class EC2Service(Construct):
             self,
             "Ec2Service",
             cluster=cluster,
-            # desired_count=1,
-            # min_healthy_percent=50,
-            # max_healthy_percent=200,
-            # min_healthy_percent=0,
-            # max_healthy_percent=100,
             task_definition=self.task_definition,
             circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
             capacity_provider_strategies=[ecs.CapacityProviderStrategy(

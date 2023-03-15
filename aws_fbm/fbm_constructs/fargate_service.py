@@ -30,6 +30,7 @@ class FargateService(Construct):
         task_name: str,
         container_port: int,
         listener_port: int,
+        idle_timeout: int = 60,
         file_system: Optional[FileSystem] = None,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
@@ -96,7 +97,8 @@ class FargateService(Construct):
             container_port=container_port,
             container_name=task_name,
             dns_name=dns_name,
-            domain_zone=domain_zone
+            domain_zone=domain_zone,
+            idle_timeout=idle_timeout
         )
 
         self.service = self.load_balanced_service.service
@@ -116,7 +118,8 @@ class FargateService(Construct):
                        container_port: int,
                        container_name: str,
                        dns_name: str,
-                       domain_zone: route53.IHostedZone):
+                       domain_zone: route53.IHostedZone,
+                       idle_timeout: int):
         """Create the load balanced service"""
         raise NotImplementedError
 
@@ -134,7 +137,8 @@ class HttpService(FargateService):
                        container_port: int,
                        container_name: str,
                        dns_name: str,
-                       domain_zone: route53.IHostedZone):
+                       domain_zone: route53.IHostedZone,
+                       idle_timeout: int):
         return ecs_patterns.ApplicationLoadBalancedFargateService(
             self, "LbFargateService",
             cluster=cluster,
@@ -146,7 +150,8 @@ class HttpService(FargateService):
             listener_port=listener_port,
             open_listener=False,
             public_load_balancer=False,
-            domain_zone=domain_zone
+            domain_zone=domain_zone,
+            idle_timeout=ec2.Duration(idle_timeout)
         )
 
     def allow_from_ip_range(self, cidr_range: str):
@@ -164,7 +169,8 @@ class TcpService(FargateService):
                        container_port: int,
                        container_name: str,
                        dns_name: str,
-                       domain_zone: route53.IHostedZone):
+                       domain_zone: route53.IHostedZone,
+                       idle_timeout: int):
         load_balanced_service = ecs_patterns.NetworkLoadBalancedFargateService(
             self, "LbFargateService",
             cluster=cluster,

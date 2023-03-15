@@ -1,6 +1,6 @@
 # User guide for Passian Learning
 
-This guide is for end users of Passian Learning . It assumes you have a fully working installation
+This guide is for end users of Passian Learning. It assumes you have a fully working installation
 of Passian Learning on AWS.
 
 Users may be  

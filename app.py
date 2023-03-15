@@ -74,6 +74,7 @@ for index, node in enumerate(config.nodes):
     node_service_stack = NodeServiceStack(
         scope=app,
         node_stack=node_stack,
+        node_config=node,
         env=get_environment(),
         mqtt_broker=network_service_stack.mqtt_broker,
         mqtt_port=network_service_stack.mqtt_port,

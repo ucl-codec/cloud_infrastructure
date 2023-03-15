@@ -13,3 +13,7 @@ def get_environment() -> cdk.Environment:
     """Fetch account and region from env vars"""
     return cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
                            region=os.getenv('CDK_DEFAULT_REGION'))
+
+
+def bool_to_str(value: bool) -> str:
+    return "True" if value else "False"

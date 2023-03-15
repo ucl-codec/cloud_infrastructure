@@ -1,4 +1,5 @@
-from aws_fbm.utils.utils import repo_path
+from aws_fbm.utils.config import NodeConfig
+from aws_fbm.utils.utils import repo_path, bool_to_str
 from aws_fbm.fbm_constructs.ec2_service import EC2Service
 from aws_fbm.fbm_constructs.fargate_service import HttpService
 from aws_fbm.stacks.node_stack import NodeStack
@@ -21,6 +22,7 @@ class NodeServiceStack(Stack):
 
     def __init__(self, scope: Construct,
                  node_stack: NodeStack,
+                 node_config: NodeConfig,
                  env: Environment,
                  mqtt_broker: str,
                  mqtt_port: int,
@@ -32,7 +34,6 @@ class NodeServiceStack(Stack):
                          env=env)
 
         self.gui_dns_host = "gui"
-        use_production_gui = False
 
         # Create cluster
         self.cluster = ecs.Cluster(
@@ -75,7 +76,12 @@ class NodeServiceStack(Stack):
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
-                "UPLOADS_URL": uploads_url},
+                "UPLOADS_URL": uploads_url,
+                "ENABLE_TRAINING_PLAN_APPROVAL":
+                    bool_to_str(node_config.enable_training_plan_approval),
+                "ALLOW_DEFAULT_TRAINING_PLANS":
+                    bool_to_str(node_config.allow_default_training_plans)
+            },
             volumes=[node_config_volume, node_data_volume, node_etc_volume,
                      node_var_volume, node_common_volume]
         )
@@ -105,7 +111,8 @@ class NodeServiceStack(Stack):
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
                 "UPLOADS_URL": uploads_url,
-                "USE_PRODUCTION_GUI": "TRUE" if use_production_gui else "FALSE"
+                "USE_PRODUCTION_GUI":
+                    bool_to_str(node_config.use_production_gui)
             },
             file_system=file_system,
             volumes=[node_data_volume, node_etc_volume, node_var_volume,

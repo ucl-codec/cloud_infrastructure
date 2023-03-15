@@ -20,12 +20,16 @@ RESTFUL_PORT="8000"
 MQTT_PORT="1883"
 NETWORK="fbm_net"
 USE_PRODUCTION_GUI="TRUE"
+ENABLE_TRAINING_PLAN_APPROVAL="TRUE"
+ALLOW_DEFAULT_TRAINING_PLANS="FALSE"
 
 # These variables will be provided to the containers
 export MQTT_BROKER="${MQTT_IP}"
 export MQTT_BROKER_PORT="${MQTT_PORT}"
 export UPLOADS_URL="http://${RESTFUL_IP}:${RESTFUL_PORT}/upload/"
 export USE_PRODUCTION_GUI="${USE_PRODUCTION_GUI}"
+export ENABLE_TRAINING_PLAN_APPROVAL="${ENABLE_TRAINING_PLAN_APPROVAL}"
+export ALLOW_DEFAULT_TRAINING_PLANS="${ALLOW_DEFAULT_TRAINING_PLANS}"
 
 # Persistent storage for local testing and development. Simulates persistent filesystems used on
 # cloud deployment, allowing files to persist between runs.
@@ -87,7 +91,7 @@ docker start tensorboard 2>/dev/null || docker run --rm -d -p 6007:6007 --net "$
 # Run node
 # Note the mounts correspond to the volumes in docker-compose
 docker start node 2>/dev/null || docker run -d --net "${NETWORK}" --ip "${NODE_IP}" \
-  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL -e ENABLE_TRAINING_PLAN_APPROVAL -e ALLOW_DEFAULT_TRAINING_PLANS \
   --mount type=bind,source="${NODE_STORAGE}/config",target=/config \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \

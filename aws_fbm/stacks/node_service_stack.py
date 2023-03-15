@@ -107,6 +107,7 @@ class NodeServiceStack(Stack):
             task_name="gui",
             container_port=8484,
             listener_port=80,
+            idle_timeout=18000,
             environment={
                 "MQTT_BROKER": mqtt_broker,
                 "MQTT_BROKER_PORT": f"{mqtt_port}",

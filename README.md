@@ -36,8 +36,8 @@ See here: https://docs.aws.amazon.com/vpn/latest/clientvpn-user/linux-troublesho
 - Launch AWS VPN Client 
 - Select Researcher profile
 - Click Connect
-- Connect to Jupyter notebook in your web browser:  http://jupyter.passian.federated:8888
-- Connect to TensorBoard in your web browser:  http://tensorboard.passian.federated:6007
+- Connect to Jupyter notebook in your web browser:  http://jupyter.passian.federated
+- Connect to TensorBoard in your web browser:  http://tensorboard.passian.federated
 
 ### Connect to a Clinical network
 
@@ -47,8 +47,8 @@ See here: https://docs.aws.amazon.com/vpn/latest/clientvpn-user/linux-troublesho
   - Profile B for site B
 - Click Connect
 - Connect to Fed Bio-Med GUI in your web browser:
-  - Site A: http://gui.passian.clinicala:8484
-  - Site B: http://gui.passian.clinicalb:8484
+  - Site A: http://gui.passian.clinicala
+  - Site B: http://gui.passian.clinicalb
 
 ### Troubleshooting
 
@@ -210,12 +210,6 @@ Deploy the stack
 ```bash
 ./scripts/deploy.sh
 ```
-
-After deployment has started, add the node VPC to the Hosted Zone of the Federated VPC on the AWS console.
-You only need to do this if one of the VPCs has been re-created. 
-
-Note that the node deployment will fail if this is not performed.
-
 
 ### Destroy the AWS stack
 ```bash

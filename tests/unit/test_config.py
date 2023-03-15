@@ -1,34 +1,53 @@
-from aws_fbm.utils.config import read_config_file
+from aws_fbm.utils.config import read_config_file, Config, NetworkConfig, \
+    NodeConfig
 
 
 def test_dev_config():
     """Test development stack configuration is correctly parsed"""
     config = read_config_file("dev")
-    assert config.network.name_prefix == "Test"
-    assert config.network.site_name == "Test Federated"
-    assert config.network.domain_name == "test.testfederated"
-    assert len(config.nodes) == 1
-    assert config.nodes[0].name_prefix == "TestA"
-    assert config.nodes[0].stack_name == "TestNodeStackA"
-    assert config.nodes[0].site_name == "Test Node A"
-    assert config.nodes[0].domain_name == "test.testclinicala"
-    assert config.nodes[0].bucket_name == "test-a-import-bucket"
+    expected = Config(
+        network=NetworkConfig(
+            name_prefix="Test",
+            site_name="Test Federated",
+            domain_name="test.testfederated"
+        ),
+        nodes=[
+            NodeConfig(
+                name_prefix="TestA",
+                stack_name="TestNodeStackA",
+                site_name="Test Node A",
+                domain_name="test.testclinicala",
+                bucket_name="test-a-import-bucket"
+            )
+        ]
+    )
+    assert config == expected
 
 
 def test_prod_config():
     """Test production stack configuration is correctly parsed"""
     config = read_config_file("prod")
-    assert config.network.name_prefix == "Fbm"
-    assert config.network.site_name == "Federated"
-    assert config.network.domain_name == "passian.federated"
-    assert len(config.nodes) == 2
-    assert config.nodes[0].name_prefix == "FbmNodeA"
-    assert config.nodes[0].stack_name == "FbmNodeStackA"
-    assert config.nodes[0].site_name == "Clinical Node A"
-    assert config.nodes[0].domain_name == "passian.clinicala"
-    assert config.nodes[0].bucket_name == "clinical-node-a-import-bucket"
-    assert config.nodes[1].name_prefix == "FbmNodeB"
-    assert config.nodes[1].stack_name == "FbmNodeStackB"
-    assert config.nodes[1].site_name == "Clinical Node B"
-    assert config.nodes[1].domain_name == "passian.clinicalb"
-    assert config.nodes[1].bucket_name == "clinical-node-b-import-bucket"
+    expected = Config(
+        network=NetworkConfig(
+            name_prefix="Fbm",
+            site_name="Federated",
+            domain_name="passian.federated"
+        ),
+        nodes=[
+            NodeConfig(
+                name_prefix="FbmNodeA",
+                stack_name="FbmNodeStackA",
+                site_name="Clinical Node A",
+                domain_name="passian.clinicala",
+                bucket_name="clinical-node-a-import-bucket"
+            ),
+            NodeConfig(
+                name_prefix="FbmNodeB",
+                stack_name="FbmNodeStackB",
+                site_name="Clinical Node B",
+                domain_name="passian.clinicalb",
+                bucket_name="clinical-node-b-import-bucket"
+            )
+        ]
+    )
+    assert config == expected

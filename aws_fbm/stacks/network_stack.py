@@ -22,7 +22,7 @@ class NetworkStack(BaseStack):
             site_name=network_config.site_name,
             dns_domain=network_config.domain_name,
             network_number=0,
-            vpn_cert_arn_param_name=network_config.vpn_cert_arn_param_name,
+            param_vpn_cert_arn=network_config.param_vpn_cert_arn,
             env=env
         )
         self.name_prefix = network_config.name_prefix

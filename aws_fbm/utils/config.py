@@ -18,7 +18,7 @@ class NetworkConfig:
     name_prefix: str  # used to generate stack names - must be unique
     site_name: str  # human-readable name of the Researcher site
     domain_name: str  # domain used when connected to the Researcher VPN
-    vpn_cert_arn_param_name: str  # AWS parameter storing the vpn cert arn
+    param_vpn_cert_arn: str  # AWS parameter storing the vpn cert arn
 
 
 @dataclass
@@ -33,7 +33,7 @@ class NodeConfig:
     site_name: str  # human-readable name of the Data Node site
     domain_name: str  # domain used when connected to the Data Node VPN
     bucket_name: str  # Persistent data bucket for this Data Node
-    vpn_cert_arn_param_name: str  # AWS parameter storing the vpn cert arn
+    param_vpn_cert_arn: str  # AWS parameter storing the vpn cert arn
     default_gui_username: str  # FBM default gui admin username
     param_default_gui_pw: str  # AWS parameter storing default FBM gui password
     enable_training_plan_approval: bool = True  # FBM training must be approved

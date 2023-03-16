@@ -28,7 +28,7 @@ class NodeStack(BaseStack):
             description=f"FBM node stack for {node_config.site_name}",
             dns_domain=node_config.domain_name,
             network_number=network_number,
-            vpn_cert_arn_param_name=node_config.vpn_cert_arn_param_name,
+            param_vpn_cert_arn=node_config.param_vpn_cert_arn,
             env=env
         )
         self.name_prefix = node_config.name_prefix

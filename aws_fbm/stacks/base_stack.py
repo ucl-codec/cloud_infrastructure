@@ -14,7 +14,7 @@ class BaseStack(Stack):
                  dns_domain: str,
                  description: str,
                  network_number: int,
-                 vpn_cert_arn_param_name: str,
+                 param_vpn_cert_arn: str,
                  env: Environment) -> None:
         super().__init__(scope=scope, id=id,
                          description=description,
@@ -30,7 +30,7 @@ class BaseStack(Stack):
         self.vpn_cidr_range = f"10.{2*network_number + 1}.0.0/22"
         self.dns_ip = f"10.{2*network_number}.0.2"
         self.vpn_cert_arn = ssm.StringParameter.value_for_string_parameter(
-            self, vpn_cert_arn_param_name)
+            scope=self, parameter_name=param_vpn_cert_arn)
 
         self.add_vpc()
 

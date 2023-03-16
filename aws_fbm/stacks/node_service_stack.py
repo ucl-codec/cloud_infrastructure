@@ -4,6 +4,7 @@ from aws_fbm.fbm_constructs.ec2_service import EC2Service
 from aws_fbm.fbm_constructs.fargate_service import HttpService
 from aws_fbm.stacks.node_stack import NodeStack
 
+from aws_cdk import aws_ssm as ssm
 from aws_cdk import Environment, Stack
 from aws_cdk import aws_ecs as ecs
 from aws_cdk.aws_ecr_assets import DockerImageAsset
@@ -93,6 +94,13 @@ class NodeServiceStack(Stack):
             directory=str(repo_path() / "docker"),
             file="gui/Dockerfile"
         )
+        # Get parameter containing FBM default gui password
+        default_gui_password = \
+            ssm.StringParameter.from_secure_string_parameter_attributes(
+                scope=self,
+                id="ParamName",
+                parameter_name=node_config.param_default_gui_pw
+            )
         # Create gui service
         self.gui_service = HttpService(
             scope=self,
@@ -113,7 +121,12 @@ class NodeServiceStack(Stack):
                 "MQTT_BROKER_PORT": f"{mqtt_port}",
                 "UPLOADS_URL": uploads_url,
                 "USE_PRODUCTION_GUI":
-                    bool_to_str(node_config.use_production_gui)
+                    bool_to_str(node_config.use_production_gui),
+                "GUI_DEFAULT_ADMIN_EMAIL": node_config.default_gui_username
+            },
+            secrets={
+                "GUI_DEFAULT_ADMIN_PW": ecs.Secret.from_ssm_parameter(
+                    default_gui_password),
             },
             file_system=file_system,
             volumes=[node_data_volume, node_etc_volume, node_var_volume,

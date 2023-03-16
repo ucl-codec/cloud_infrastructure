@@ -22,6 +22,8 @@ NETWORK="fbm_net"
 USE_PRODUCTION_GUI="TRUE"
 ENABLE_TRAINING_PLAN_APPROVAL="TRUE"
 ALLOW_DEFAULT_TRAINING_PLANS="FALSE"
+GUI_DEFAULT_ADMIN_EMAIL="admin@passian.local"
+GUI_DEFAULT_ADMIN_PW="passian"
 
 # These variables will be provided to the containers
 export MQTT_BROKER="${MQTT_IP}"
@@ -30,6 +32,8 @@ export UPLOADS_URL="http://${RESTFUL_IP}:${RESTFUL_PORT}/upload/"
 export USE_PRODUCTION_GUI="${USE_PRODUCTION_GUI}"
 export ENABLE_TRAINING_PLAN_APPROVAL="${ENABLE_TRAINING_PLAN_APPROVAL}"
 export ALLOW_DEFAULT_TRAINING_PLANS="${ALLOW_DEFAULT_TRAINING_PLANS}"
+export GUI_DEFAULT_ADMIN_EMAIL="${GUI_DEFAULT_ADMIN_EMAIL}"
+export GUI_DEFAULT_ADMIN_PW="${GUI_DEFAULT_ADMIN_PW}"
 
 # Persistent storage for local testing and development. Simulates persistent filesystems used on
 # cloud deployment, allowing files to persist between runs.
@@ -54,7 +58,7 @@ docker start restful 2>/dev/null || docker run --rm -d -p 8000:8000 --net "${NET
 # Run gui
 # Note the mounts correspond to the volumes in docker-compose
 docker start gui 2>/dev/null || docker run --rm -d -p 8484:8484 --net "${NETWORK}" --ip "${GUI_IP}" \
-  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL -e USE_PRODUCTION_GUI \
+  -e MQTT_BROKER -e MQTT_BROKER_PORT -e UPLOADS_URL -e USE_PRODUCTION_GUI -e GUI_DEFAULT_ADMIN_EMAIL -e GUI_DEFAULT_ADMIN_PW \
   --mount type=bind,source="${NODE_STORAGE}/data",target=/data \
   --mount type=bind,source="${NODE_STORAGE}/etc",target=/fedbiomed/etc \
   --mount type=bind,source="${NODE_STORAGE}/var",target=/fedbiomed/var \

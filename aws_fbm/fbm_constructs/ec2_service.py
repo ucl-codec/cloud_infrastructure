@@ -29,6 +29,7 @@ class EC2Service(Construct):
         file_system: FileSystem,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
+        secrets: Optional[Mapping[str, ecs.Secret]] = None,
         volumes: Optional[Sequence[Volume]] = None
     ):
         super().__init__(scope, id)
@@ -117,6 +118,7 @@ class EC2Service(Construct):
             image=ecs.ContainerImage.from_docker_image_asset(
                 docker_image_asset),
             environment=environment,
+            secrets=secrets,
             gpu_count=gpu_count,
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,

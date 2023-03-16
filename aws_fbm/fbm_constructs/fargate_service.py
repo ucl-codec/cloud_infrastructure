@@ -34,6 +34,7 @@ class FargateService(Construct):
         file_system: Optional[FileSystem] = None,
         entry_point: Optional[Sequence[str]] = None,
         environment: Optional[Mapping[str, str]] = None,
+        secrets: Optional[Mapping[str, ecs.Secret]] = None,
         volumes: Optional[Sequence[Volume]] = None
     ):
         super().__init__(scope, id)
@@ -73,6 +74,7 @@ class FargateService(Construct):
             id=task_name,
             image=ecs.ContainerImage.from_docker_image_asset(docker_image_asset),
             environment=environment,
+            secrets=secrets,
             gpu_count=0,
             cpu=cpu,
             memory_limit_mib=memory_limit_mib,

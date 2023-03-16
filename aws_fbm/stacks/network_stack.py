@@ -1,5 +1,6 @@
 from aws_fbm.stacks.base_stack import BaseStack
 from aws_fbm.fbm_constructs.file_system import FileSystem
+from aws_fbm.utils.config import NetworkConfig
 
 from aws_cdk import Environment
 from constructs import Construct
@@ -12,17 +13,19 @@ class NetworkStack(BaseStack):
     """
 
     def __init__(self, scope: Construct,
-                 name_prefix: str,
-                 site_name: str,
-                 dns_domain: str,
+                 network_config: NetworkConfig,
                  env: Environment) -> None:
-        super().__init__(scope=scope, id=f"{name_prefix}NetworkStack",
-                         description=f"FBM network stack for {site_name}",
-                         site_name=site_name,
-                         dns_domain=dns_domain,
-                         network_number=0,
-                         env=env)
-        self.name_prefix = name_prefix
+        super().__init__(
+            scope=scope,
+            id=f"{network_config.name_prefix}NetworkStack",
+            description=f"FBM network stack for {network_config.site_name}",
+            site_name=network_config.site_name,
+            dns_domain=network_config.domain_name,
+            network_number=0,
+            vpn_cert_arn_param_name=network_config.vpn_cert_arn_param_name,
+            env=env
+        )
+        self.name_prefix = network_config.name_prefix
 
         # Create file system and volumes for researcher stack
         self.file_system = FileSystem(

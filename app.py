@@ -24,9 +24,7 @@ config = read_config_file(config_name)
 # Create stateful federated stack for hold network and researcher services
 network_stack = NetworkStack(
     scope=app,
-    name_prefix=config.network.name_prefix,
-    site_name=config.network.site_name,
-    dns_domain=config.network.domain_name,
+    network_config=config.network,
     env=get_environment()
 )
 
@@ -62,11 +60,7 @@ for index, node in enumerate(config.nodes):
     # Create stateful node stack
     node_stack = NodeStack(
         scope=app,
-        name_prefix=node.name_prefix,
-        stack_name=node.stack_name,
-        site_name=node.site_name,
-        dns_domain=node.domain_name,
-        bucket_name=node.bucket_name,
+        node_config=node,
         network_number=index+1,
         env=get_environment()
     )

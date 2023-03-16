@@ -54,9 +54,9 @@ for index, node in enumerate(config.nodes):
     # node_setup = NodeSetupStack(
     #     scope=app,
     #     name_prefix=node.name_prefix,
-    #     site_name = node.site_name,
+    #     site_name=node.site_name,
     #     bucket_name=node.bucket_name,
-    #     env = get_environment()
+    #     env=get_environment()
     # )
 
     # Create stateful node stack

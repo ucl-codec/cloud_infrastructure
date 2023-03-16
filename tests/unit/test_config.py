@@ -12,7 +12,8 @@ def test_dev_config():
         network=NetworkConfig(
             name_prefix="Test",
             site_name="Test Federated",
-            domain_name="test.testfederated"
+            domain_name="test.testfederated",
+            vpn_cert_arn_param_name="passian-fbm-vpn-server-cert-arn"
         ),
         nodes=[
             NodeConfig(
@@ -23,7 +24,8 @@ def test_dev_config():
                 bucket_name="test-a-import-bucket",
                 enable_training_plan_approval=True,
                 allow_default_training_plans=False,
-                use_production_gui=True
+                use_production_gui=True,
+                vpn_cert_arn_param_name="passian-fbm-vpn-server-cert-arn"
             )
         ]
     )
@@ -37,7 +39,8 @@ def test_prod_config():
         network=NetworkConfig(
             name_prefix="Fbm",
             site_name="Federated",
-            domain_name="passian.federated"
+            domain_name="passian.federated",
+            vpn_cert_arn_param_name="passian-fbm-vpn-server-cert-arn"
         ),
         nodes=[
             NodeConfig(
@@ -48,7 +51,8 @@ def test_prod_config():
                 bucket_name="clinical-node-a-import-bucket",
                 enable_training_plan_approval=True,
                 allow_default_training_plans=False,
-                use_production_gui=False
+                use_production_gui=False,
+                vpn_cert_arn_param_name="passian-fbm-vpn-server-cert-arn"
             ),
             NodeConfig(
                 name_prefix="FbmNodeB",
@@ -58,7 +62,8 @@ def test_prod_config():
                 bucket_name="clinical-node-b-import-bucket",
                 enable_training_plan_approval=True,
                 allow_default_training_plans=False,
-                use_production_gui=False
+                use_production_gui=False,
+                vpn_cert_arn_param_name="passian-fbm-vpn-server-cert-arn"
             )
         ]
     )
@@ -70,7 +75,8 @@ def test_parse_config():
     config['network'] = {
         'name_prefix': 'my-prefix',
         'site_name': 'my-site-name',
-        'domain_name': 'my-domain-name'
+        'domain_name': 'my-domain-name',
+        'vpn_cert_arn_param_name': "network-cert"
     }
     config['node-a'] = {
         'name_prefix': 'my-node-prefix',
@@ -80,7 +86,8 @@ def test_parse_config():
         'bucket_name': 'my-bucket-name',
         'enable_training_plan_approval': 'True',
         'allow_default_training_plans': 'true',
-        'use_production_gui': 'False'
+        'use_production_gui': 'False',
+        'vpn_cert_arn_param_name': "node-cert"
     }
     config['node-b'] = {
         'name_prefix': 'my-nodeb-prefix',
@@ -90,13 +97,15 @@ def test_parse_config():
         'bucket_name': 'my-bucketb-name',
         'enable_training_plan_approval': 'False',
         'allow_default_training_plans': 'yes',
-        'use_production_gui': 'TRUE'
+        'use_production_gui': 'TRUE',
+        'vpn_cert_arn_param_name': "nodeb-cert"
     }
     expected = Config(
         network=NetworkConfig(
             name_prefix="my-prefix",
             site_name="my-site-name",
-            domain_name="my-domain-name"
+            domain_name="my-domain-name",
+            vpn_cert_arn_param_name="network-cert"
         ),
         nodes=[
             NodeConfig(
@@ -107,7 +116,8 @@ def test_parse_config():
                 bucket_name="my-bucket-name",
                 enable_training_plan_approval=True,
                 allow_default_training_plans=True,
-                use_production_gui=False
+                use_production_gui=False,
+                vpn_cert_arn_param_name="node-cert"
             ),
             NodeConfig(
                 name_prefix="my-nodeb-prefix",
@@ -117,7 +127,8 @@ def test_parse_config():
                 bucket_name="my-bucketb-name",
                 enable_training_plan_approval=False,
                 allow_default_training_plans=True,
-                use_production_gui=True
+                use_production_gui=True,
+                vpn_cert_arn_param_name="nodeb-cert"
             ),
         ]
     )

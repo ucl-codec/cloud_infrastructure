@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List, Type, Optional
 
 from aws_fbm.utils.utils import repo_path
 from dataclasses import dataclass, fields
@@ -8,28 +8,47 @@ import os
 
 
 @dataclass
-class NodeConfig:
-    stack_name: str
-    name_prefix: str
-    site_name: str
-    domain_name: str
-    bucket_name: str
-    enable_training_plan_approval: bool = True
-    allow_default_training_plans: bool = False
-    use_production_gui: bool = True
+class NetworkConfig:
+    """Configuration for a Federated network
+
+    The configuration is stored in a config file e.g. config/dev.cfg
+    which is automatically parsed to create an object of this class
+    """
+
+    name_prefix: str  # used to generate stack names - must be unique
+    site_name: str  # human-readable name of the Researcher site
+    domain_name: str  # domain used when connected to the Researcher VPN
+    vpn_cert_arn_param_name: str  # AWS parameter storing the vpn cert arn
 
 
 @dataclass
-class NetworkConfig:
-    name_prefix: str
-    site_name: str
-    domain_name: str
+class NodeConfig:
+    """Configuration for a Data Node
+
+    The configuration is stored in a config file e.g. config/dev.cfg
+    which is automatically parsed to create an object of this class
+    """
+
+    name_prefix: str  # used to generate stack names - must be unique
+    site_name: str  # human-readable name of the Data Node site
+    domain_name: str  # domain used when connected to the Data Node VPN
+    bucket_name: str  # Persistent data bucket for this Data Node
+    vpn_cert_arn_param_name: str  # AWS parameter storing the vpn cert arn
+    enable_training_plan_approval: bool = True  # FBM training must be approved
+    allow_default_training_plans: bool = False  # FBM permits default training
+    use_production_gui: bool = True  # True if FBM GUI should use gunicorn
+    stack_name: Optional[str] = None  # If specified, overrides the stack name
 
 
 @dataclass
 class Config:
-    network: NetworkConfig
-    nodes: List[NodeConfig]
+    """Configuration for a Passian Learning system
+
+    The configuration is stored in a config file e.g. config/dev.cfg
+    which is automatically parsed to create an object of this class
+    """
+    network: NetworkConfig  # Configuration for the Federated network
+    nodes: List[NodeConfig]  # Configuration for Data Nodes
 
 
 def read_config_file(config_name: str) -> Config:

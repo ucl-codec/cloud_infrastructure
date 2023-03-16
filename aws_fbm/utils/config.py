@@ -34,6 +34,8 @@ class NodeConfig:
     domain_name: str  # domain used when connected to the Data Node VPN
     bucket_name: str  # Persistent data bucket for this Data Node
     vpn_cert_arn_param_name: str  # AWS parameter storing the vpn cert arn
+    default_gui_username: str  # FBM default gui admin username
+    param_default_gui_pw: str  # AWS parameter storing default FBM gui password
     enable_training_plan_approval: bool = True  # FBM training must be approved
     allow_default_training_plans: bool = False  # FBM permits default training
     use_production_gui: bool = True  # True if FBM GUI should use gunicorn

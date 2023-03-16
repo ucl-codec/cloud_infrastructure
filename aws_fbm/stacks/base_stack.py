@@ -18,7 +18,8 @@ class BaseStack(Stack):
                  env: Environment) -> None:
         super().__init__(scope=scope, id=id,
                          description=description,
-                         env=env)
+                         env=env,
+                         termination_protection=True)
 
         self.site_name = site_name
         self.dns_domain = dns_domain

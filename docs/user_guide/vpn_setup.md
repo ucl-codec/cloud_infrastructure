@@ -1,8 +1,8 @@
 # Connecting to VPNs for Pasian Learning
 
-You will need a VPN account to connect to Passian Learning.
-- Researchers need VPN access to the Passian Learning Researcher network
-- Data Providers need VPN access to their Passian Learning Data Node network
+You will need a VPN account to connect to PassianFL.
+- Researchers need VPN access to the PassianFL Researcher network
+- Data Providers need VPN access to their PassianFL Data Node network
 
 If you require both roles, you will need separate VPN accounts for each network.
 
@@ -10,7 +10,7 @@ If you require both roles, you will need separate VPN accounts for each network.
 
 ## Install the AWS Client VPN
 
-Passian Learning has been tested with the AWS Client VPN.
+PassianFL has been tested with the AWS Client VPN.
 You can use other OpenVPN-comaptible clients, but you will need to adjust the following 
 instructions appropriately. 
 
@@ -47,7 +47,7 @@ See [Linux troubleshooting](https://docs.aws.amazon.com/vpn/latest/clientvpn-use
 
 ## Connect to the VPN
 
-You can only connect to one VPN at a time. If you need to connect to multiple Passian Learning networks,
+You can only connect to one VPN at a time. If you need to connect to multiple PassianFL networks,
 close your existing VPN session before connecting to the next one.  
 
 - Launch the AWS VPN Client 

@@ -1,7 +1,7 @@
-# User guide for Passian Learning
+# User guide for PassianFL
 
-This guide is for end users of Passian Learning. It assumes you have a fully working installation
-of Passian Learning on AWS.
+This guide is for end users of PassianFL. It assumes you have a fully working installation
+of PassianFL on AWS.
 
 Users may be  
 - Researchers: can execute federated training
@@ -13,14 +13,21 @@ If you have both of these roles, you need to consider role independently when fo
 
 ## Data Provider 
 
+### Add data
+
+- You can upload data using the AWS S3 import bucket for your Local Node.
+- You will need an AWS IAM account provided by your system administrator with access to this bucket.
+- You can use this to upload data using the AWS S3 web interface or command line
+- After upload, data will be synced into the Local Node. This may take more than an hour
+
 ### Set up your VPN access
 
-- See [Connecting to VPNs for Passian Learning](vpn_setup.md)
+- See [Connecting to VPNs for PassianFL](vpn_setup.md)
 
 ### Connect to your Data Node
 
 - Launch the AWS VPN Client 
-- Select the VPN profile for your data node:
+- Select the VPN profile for your Local Node:
   - for example `Passian Data Node (your site name)`
 - Click `Connect`
 - Connect to Fed Bio-Med GUI in your web browser:
@@ -29,9 +36,19 @@ If you have both of these roles, you need to consider role independently when fo
 
 
 ### Log into the Fed-BioMed gui
- - The Fed-BioMed gui has its own accounts. Your will need your Passian Learning system administator to 
+The Fed-BioMed gui has its own accounts. Your will need your PassianFL system administator to 
 create an account for you and provide you with the credentials 
 
+
+### Tag datasets
+
+Once data have fully arrived on the Local Node, you need to add and tag the data using the
+Fed Bio-Med gui. This allows a researcher to request a training plan to be run on the data.
+See the Fed-BioMed documentation for details.
+
+### Approve training plans
+You will need to approve a researcher's training plans before they can be run on your data.
+See Fed-BioMed documentation for details.
 
 ---
 
@@ -39,7 +56,7 @@ create an account for you and provide you with the credentials
 
 ### Set up your VPN access
 
-- See [Connecting to VPNs for Passian Learning](vpn_setup.md)
+- See [Connecting to VPNs for PassianFL](vpn_setup.md)
 
 ### Connect to the Researcher network
 - Launch the AWS VPN Client 
@@ -48,3 +65,4 @@ create an account for you and provide you with the credentials
 - Connect to Jupyter notebook in your web browser:  http://jupyter.passian.federated
 - Connect to TensorBoard in your web browser:  http://tensorboard.passian.federated
 
+See Fed-BioMed documentation for examples of how to use Jupyter notebooks with Fed-Biomed.

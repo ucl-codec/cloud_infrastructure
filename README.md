@@ -1,6 +1,12 @@
-# Passian Learning
+# PassianFL
 
-This is a Python CDK project for building Passian Learning on AWS
+This is a Python CDK project for building PassianFL on AWS
 
-- [User Guide for Passian Learning](docs/user_guide/user_guide.md) 
-- [Development and installation guide](docs/development/development.md) 
+---
+## Documentation
+
+- [Documentation home](docs/passianfl.md)
+  - [User Guide for PassianFL](docs/user_guide/user_guide.md) 
+  - [Installation and administration of PassianFL](docs/administration/administration.md) 
+  - [Development guide](docs/development/development.md) 
+---

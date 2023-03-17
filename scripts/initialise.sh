@@ -56,16 +56,16 @@ process_config_file() {
         echo "Config file ${config_file} does not exist"
         exit 1
     fi
-    echo "Using configuration from ${config_file}"
+    echo "PassianFL: initialising using configuration from ${config_file}"
 
     sections=$(crudini --get --list "${config_file}")
 
     for section_name in ${sections}; do
-        echo "Processing config file section: ${section_name}"
+        echo "Initialising resources for ${section_name}:"
 
         local param_vpn_cert_arn
         param_vpn_cert_arn=$(get_config_value "${config_file}" "${section_name}" "param_vpn_cert_arn")
-        "${SCRIPTS_DIR}/initialise_vpn_certs.sh" "${param_vpn_cert_arn}" "${profile_name}"
+        "${SCRIPTS_DIR}/initialise_vpn_certs.sh" "${section_name}" "${param_vpn_cert_arn}" "${profile_name}"
 
         if [ "${section_name}" != "network" ]; then
             local bucket_name

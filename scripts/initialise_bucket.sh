@@ -34,10 +34,12 @@ fi
 ${SCRIPTS_DIR}/check_credentials.sh "${profile_name}"
 
 # Check if bucket already exists. Note: will fail if user does not have access to bucket
-if ! aws s3api head-bucket --bucket "${bucket_name}" --profile "${profile_name}" 2>/dev/null; then
-    echo "Creating bucket ${bucket_name}"
-    aws s3api create-bucket --bucket "${bucket_name}" --create-bucket-configuration LocationConstraint=eu-west-2 --object-ownership BucketOwnerEnforced --profile "${profile_name}"
+if aws s3api head-bucket --bucket "${bucket_name}" --profile "${profile_name}" >> /dev/null 2>&1; then
+    echo " - Skipping bucket creation as bucket ${bucket_name} already exists"
+else
+    echo " - Creating bucket ${bucket_name}"
+    aws s3api create-bucket --bucket "${bucket_name}" --create-bucket-configuration LocationConstraint=eu-west-2 --object-ownership BucketOwnerEnforced --profile "${profile_name}" >> /dev/null
 
-    echo "Adding public access block for bucket ${bucket_name}"
+    echo " - Adding public access block for bucket ${bucket_name}"
     aws s3api put-public-access-block --bucket "${bucket_name}" --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true" --profile "${profile_name}"
 fi

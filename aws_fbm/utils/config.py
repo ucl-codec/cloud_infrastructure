@@ -44,7 +44,7 @@ class NodeConfig:
 
 @dataclass
 class Config:
-    """Configuration for a Passian Learning system
+    """Configuration for a PassianFL system
 
     The configuration is stored in a config file e.g. config/dev.cfg
     which is automatically parsed to create an object of this class

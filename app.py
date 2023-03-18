@@ -85,5 +85,5 @@ peering_stack = PeeringStack(
     env=get_environment()
 )
 
-cdk.Tags.of(app).add("passianfl-config", config.network.config_name)
+cdk.Tags.of(app).add("passianfl-config", config_name)
 app.synth()

@@ -17,14 +17,14 @@ Example configuration file:
 ```
 [network]
 name_prefix = Passian
-site_name =  PassianFL
+site_description =  PassianFL
 domain_name = passianfl.researcher
 param_vpn_cert_arn = passianfl-network-vpn-server-cert-arn
 
 [node-a]
 name_prefix = LocalNodeA
 stack_name = LocalNodeAStack
-site_name =  Local Node A
+site_description =  Local Node A
 domain_name = passianfl.localnodea
 bucket_name = local-node-a-import-bucket
 param_vpn_cert_arn = passianfl-node-a-vpn-server-cert-arn
@@ -33,7 +33,7 @@ param_default_gui_pw = passianfl-node-a-default-gui-pw
 
 [node-b]
 name_prefix = LocalNodeB
-site_name =  Local Node N
+site_description =  Local Node N
 domain_name = passianfl.localnodeb
 bucket_name = local-node-b-import-bucket
 param_vpn_cert_arn = passianfl-node-b-vpn-server-cert-arn
@@ -47,7 +47,7 @@ Each additional seciton desribes a Local Node.
 ## Network
 
 - `name_prefix`: Prefix used to name the CloudFormation stacks. Must be unique in your account
-- `site_name`: Human readable name for the Researcher Node; only used in descriptions
+- `site_description`: Human readable name for the Researcher Node; only used in descriptions
 - `domain_name`: The private hosted zone domain name that researchers will use to access resources 
 while connected to the VPN. For example, if `domain_name` is `passianfl.researcher`, then 
 researchers will access jupyter at `http://jupyter.passianfl.researcher`
@@ -58,7 +58,7 @@ name, and the `initialise.sh` script will populate it for you
 ## Local Nodes
 - `name_prefix`: Prefix used to name the CloudFormation stacks. Must be unique in your account
 - `stack_name`: (optional) overrides the Cloud Formation stack name. Not required in general
-- `site_name`: Human readable name for the Local Node; only used in descriptions
+- `site_description`: Human readable name for the Local Node; only used in descriptions
 - `domain_name`: The private hosted zone domain name that Local Node data providesr will use to access resources 
 while connected to the VPN. For example, if `domain_name` is `passianfl.nodea`, then 
 researchers will access the FBM gui at `http://gui.passianfl.nodea`

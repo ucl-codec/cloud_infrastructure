@@ -12,7 +12,7 @@ def test_dev_config():
         network=NetworkConfig(
             node_name="network",
             name_prefix="Test",
-            site_name="Test Federated",
+            site_description="Test Federated",
             domain_name="test.testfederated",
             param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn"
         ),
@@ -21,7 +21,7 @@ def test_dev_config():
                 node_name="nodea",
                 name_prefix="TestA",
                 stack_name="TestNodeStackA",
-                site_name="Test Node A",
+                site_description="Test Node A",
                 domain_name="test.testclinicala",
                 bucket_name="test-a-import-bucket",
                 enable_training_plan_approval=True,
@@ -43,7 +43,7 @@ def test_prod_config():
         network=NetworkConfig(
             node_name="network",
             name_prefix="Fbm",
-            site_name="Federated",
+            site_description="Federated",
             domain_name="passian.federated",
             param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn"
         ),
@@ -52,7 +52,7 @@ def test_prod_config():
                 node_name="nodea",
                 name_prefix="FbmNodeA",
                 stack_name="FbmNodeStackA",
-                site_name="Clinical Node A",
+                site_description="Clinical Node A",
                 domain_name="passian.clinicala",
                 bucket_name="clinical-node-a-import-bucket",
                 enable_training_plan_approval=True,
@@ -66,7 +66,7 @@ def test_prod_config():
                 node_name="nodeb",
                 name_prefix="FbmNodeB",
                 stack_name="FbmNodeStackB",
-                site_name="Clinical Node B",
+                site_description="Clinical Node B",
                 domain_name="passian.clinicalb",
                 bucket_name="clinical-node-b-import-bucket",
                 enable_training_plan_approval=True,
@@ -87,13 +87,13 @@ def test_parse_config():
     config = configparser.ConfigParser()
     config['network'] = {
         'name_prefix': 'my-prefix',
-        'site_name': 'my-site-name',
+        'site_description': 'my-site-name',
         'domain_name': 'my-domain-name',
         'param_vpn_cert_arn': "network-cert"
     }
     config['node-a'] = {
         'name_prefix': 'my-node-prefix',
-        'site_name': 'my-node-site-name',
+        'site_description': 'my-node-site-name',
         'domain_name': 'my-node-domain-name',
         'stack_name': 'my-node-stack-name',
         'bucket_name': 'my-bucket-name',
@@ -106,7 +106,7 @@ def test_parse_config():
     }
     config['node-b'] = {
         'name_prefix': 'my-nodeb-prefix',
-        'site_name': 'my-nodeb-site-name',
+        'site_description': 'my-nodeb-site-name',
         'domain_name': 'my-nodeb-domain-name',
         'stack_name': 'my-nodeb-stack-name',
         'bucket_name': 'my-bucketb-name',
@@ -121,7 +121,7 @@ def test_parse_config():
         network=NetworkConfig(
             node_name="network",
             name_prefix="my-prefix",
-            site_name="my-site-name",
+            site_description="my-site-name",
             domain_name="my-domain-name",
             param_vpn_cert_arn="network-cert"
         ),
@@ -130,7 +130,7 @@ def test_parse_config():
                 node_name="node-a",
                 name_prefix="my-node-prefix",
                 stack_name="my-node-stack-name",
-                site_name="my-node-site-name",
+                site_description="my-node-site-name",
                 domain_name="my-node-domain-name",
                 bucket_name="my-bucket-name",
                 enable_training_plan_approval=True,
@@ -144,7 +144,7 @@ def test_parse_config():
                 node_name="node-b",
                 name_prefix="my-nodeb-prefix",
                 stack_name="my-nodeb-stack-name",
-                site_name="my-nodeb-site-name",
+                site_description="my-nodeb-site-name",
                 domain_name="my-nodeb-domain-name",
                 bucket_name="my-bucketb-name",
                 enable_training_plan_approval=False,

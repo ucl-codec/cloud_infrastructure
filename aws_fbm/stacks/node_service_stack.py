@@ -31,7 +31,7 @@ class NodeServiceStack(Stack):
         super().__init__(scope=scope,
                          id=f"{node_stack.name_prefix}ServiceStack",
                          description=f"FBM node services stack for "
-                                     f"{node_stack.site_name}",
+                                     f"{node_stack.site_description}",
                          env=env)
 
         self.gui_dns_host = "gui"

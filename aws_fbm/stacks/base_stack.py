@@ -10,7 +10,7 @@ class BaseStack(Stack):
     FBM network and node stacks"""
 
     def __init__(self, scope: Construct, id: str,
-                 site_name: str,
+                 site_description: str,
                  dns_domain: str,
                  description: str,
                  network_number: int,
@@ -21,7 +21,7 @@ class BaseStack(Stack):
                          env=env,
                          termination_protection=True)
 
-        self.site_name = site_name
+        self.site_description = site_description
         self.dns_domain = dns_domain
 
         # Select IP ranges for VPC and VPN. These must be non-overlapping

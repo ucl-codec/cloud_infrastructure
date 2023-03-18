@@ -25,7 +25,7 @@ class NetworkServiceStack(Stack):
         super().__init__(scope=scope,
                          id=f"{network_stack.name_prefix}NetworkServiceStack",
                          description=f"FBM network services stack for "
-                                     f"{network_stack.site_name}",
+                                     f"{network_stack.site_description}",
                          env=env)
 
         # Ports and hostnames

@@ -18,8 +18,9 @@ class NetworkStack(BaseStack):
         super().__init__(
             scope=scope,
             id=f"{network_config.name_prefix}NetworkStack",
-            description=f"FBM network stack for {network_config.site_name}",
-            site_name=network_config.site_name,
+            description=f"FBM network stack for "
+                        f"{network_config.site_description}",
+            site_description=network_config.site_description,
             dns_domain=network_config.domain_name,
             network_number=0,
             param_vpn_cert_arn=network_config.param_vpn_cert_arn,

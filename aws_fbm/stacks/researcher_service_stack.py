@@ -21,7 +21,7 @@ class ResearcherServiceStack(Stack):
             scope=scope,
             id=f"{network_stack.name_prefix}ResearcherServiceStack",
             description=f"FBM researcher services stack for "
-                        f"{network_stack.site_name}",
+                        f"{network_stack.site_description}",
             env=env)
 
         # Ports and hostnames

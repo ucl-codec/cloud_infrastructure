@@ -10,7 +10,7 @@ class DataSync(Construct):
             self,
             scope: Construct,
             id: str,
-            site_name: str,
+            site_description: str,
             bucket_name: str,
             file_system: aws_efs.FileSystem,
             vpc: aws_ec2.Vpc,
@@ -113,7 +113,7 @@ class DataSync(Construct):
             subdirectory='/node/data')
         dest_location.node.add_dependency(file_system.mount_targets_available)
 
-        self.log_group = logs.LogGroup(self, f"{site_name} data sync")
+        self.log_group = logs.LogGroup(self, f"{site_description} data sync")
 
         # Create the DataSync task
         self.datasync_task = aws_datasync.CfnTask(
@@ -123,7 +123,7 @@ class DataSync(Construct):
             source_location_arn=source_location.attr_location_arn,
             cloud_watch_log_group_arn=self.log_group.log_group_arn,
             excludes=None,
-            name=f"DataSync for {site_name}",
+            name=f"DataSync for {site_description}",
             options=aws_datasync.CfnTask.OptionsProperty(
                 log_level="BASIC",
                 preserve_deleted_files="REMOVE",

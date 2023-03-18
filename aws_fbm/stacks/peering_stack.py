@@ -22,7 +22,7 @@ class PeeringStack(Stack):
         super().__init__(scope,
                          id=f"{network_stack.name_prefix}PeeringStack",
                          description=f"FBM peering stack for "
-                                     f"{network_stack.site_name}",
+                                     f"{network_stack.site_description}",
                          env=env)
 
         # Peer each node

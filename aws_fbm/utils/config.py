@@ -17,7 +17,7 @@ class NetworkConfig:
 
     node_name: str  # Always "network"
     name_prefix: str  # used to generate stack names - must be unique
-    site_name: str  # human-readable name of the Researcher site
+    site_description: str  # human-readable name of the Researcher site
     domain_name: str  # domain used when connected to the Researcher VPN
     param_vpn_cert_arn: str  # AWS parameter storing the vpn cert arn
 
@@ -32,7 +32,7 @@ class NodeConfig:
 
     node_name: str  # Name of node, from the section name in the config file
     name_prefix: str  # used to generate stack names - must be unique
-    site_name: str  # human-readable name of the Data Node site
+    site_description: str  # human-readable name of the Data Node site
     domain_name: str  # domain used when connected to the Data Node VPN
     bucket_name: str  # Persistent data bucket for this Data Node
     param_vpn_cert_arn: str  # AWS parameter storing the vpn cert arn

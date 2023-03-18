@@ -23,8 +23,8 @@ class NodeStack(BaseStack):
         super().__init__(
             scope=scope,
             id=stack_name,
-            site_name=node_config.site_name,
-            description=f"FBM node stack for {node_config.site_name}",
+            site_description=node_config.site_description,
+            description=f"FBM node stack for {node_config.site_description}",
             dns_domain=node_config.domain_name,
             network_number=network_number,
             param_vpn_cert_arn=node_config.param_vpn_cert_arn,
@@ -44,7 +44,7 @@ class NodeStack(BaseStack):
             scope=self,
             id="DataSync",
             bucket_name=node_config.bucket_name,
-            site_name=node_config.site_name,
+            site_description=node_config.site_description,
             file_system=self.file_system.file_system,
             vpc=self.vpc,
             subnet_arn=f'arn:aws:ec2:{self.region}:{self.account}:'

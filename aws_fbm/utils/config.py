@@ -15,7 +15,6 @@ class NetworkConfig:
     which is automatically parsed to create an object of this class
     """
 
-    config_name: str  # Name of config file which generated this configuration
     node_name: str  # Always "network"
     name_prefix: str  # used to generate stack names - must be unique
     site_name: str  # human-readable name of the Researcher site
@@ -31,7 +30,6 @@ class NodeConfig:
     which is automatically parsed to create an object of this class
     """
 
-    config_name: str  # Name of config file which generated this configuration
     node_name: str  # Name of node, from the section name in the config file
     name_prefix: str  # used to generate stack names - must be unique
     site_name: str  # human-readable name of the Data Node site
@@ -69,22 +67,20 @@ def read_config_file(config_name: str) -> Config:
 
     config = RawConfigParser()
     config.read(config_filename)
-    return parse_config(config_name=config_name, config=config)
+    return parse_config(config=config)
 
 
-def parse_config(config_name: str, config: ConfigParser):
+def parse_config(config: ConfigParser):
     """Convert returned config structure to Config object"""
     network_section = "network"
     return Config(
         network=convert_inputs(
             dataclass_type=NetworkConfig,
             section=config[network_section],
-            config_name=config_name,
             node_name="network"),
         nodes=[convert_inputs(
             dataclass_type=NodeConfig,
             section=config[section],
-            config_name=config_name,
             node_name=section) for
                section in config.sections() if section != network_section]
     )

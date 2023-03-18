@@ -3,7 +3,7 @@ from aws_fbm.stacks.network_stack import NetworkStack
 from aws_fbm.utils.utils import repo_path
 
 from constructs import Construct
-from aws_cdk import CfnOutput, Stack
+from aws_cdk import Stack
 from aws_cdk.aws_ecr_assets import DockerImageAsset
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import Environment

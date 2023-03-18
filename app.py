@@ -27,6 +27,8 @@ network_stack = NetworkStack(
     network_config=config.network,
     env=get_environment()
 )
+cdk.Tags.of(network_stack).add(
+    "passianfl-node-name", config.network.node_name)
 
 # Create stack for network services
 network_service_stack = NetworkServiceStack(
@@ -34,6 +36,9 @@ network_service_stack = NetworkServiceStack(
     network_stack=network_stack,
     env=get_environment()
 )
+cdk.Tags.of(network_service_stack).add(
+    "passianfl-node-name", config.network.node_name)
+
 
 # Create stack for researcher services
 researcher_service_stack = ResearcherServiceStack(
@@ -42,6 +47,8 @@ researcher_service_stack = ResearcherServiceStack(
     network_service_stack=network_service_stack,
     env=get_environment()
 )
+cdk.Tags.of(researcher_service_stack).add(
+    "passianfl-node-name", config.network.node_name)
 
 # Iterate through nodes from configuration
 nodes = []
@@ -54,6 +61,8 @@ for index, node in enumerate(config.nodes):
         network_number=index+1,
         env=get_environment()
     )
+    cdk.Tags.of(node_stack).add("passianfl-node-name", node.node_name)
+
     # Create node services stack
     node_service_stack = NodeServiceStack(
         scope=app,
@@ -64,6 +73,7 @@ for index, node in enumerate(config.nodes):
         mqtt_port=network_service_stack.mqtt_port,
         uploads_url=network_service_stack.uploads_url,
     )
+    cdk.Tags.of(node_service_stack).add("passianfl-node-name", node.node_name)
     nodes.append(node_stack)
 
 # Create peering stack which connects network and node stacks
@@ -75,4 +85,5 @@ peering_stack = PeeringStack(
     env=get_environment()
 )
 
+cdk.Tags.of(app).add("passianfl-config", config.network.config_name)
 app.synth()

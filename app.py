@@ -47,16 +47,6 @@ researcher_service_stack = ResearcherServiceStack(
 nodes = []
 for index, node in enumerate(config.nodes):
 
-    # Create stateful S3 bucket stack
-    # Comment out if using a pre-existing S3 bucket
-    # node_setup = NodeSetupStack(
-    #     scope=app,
-    #     name_prefix=node.name_prefix,
-    #     site_name=node.site_name,
-    #     bucket_name=node.bucket_name,
-    #     env=get_environment()
-    # )
-
     # Create stateful node stack
     node_stack = NodeStack(
         scope=app,

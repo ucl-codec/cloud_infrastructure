@@ -10,6 +10,8 @@ def test_dev_config():
     config = read_config_file("dev")
     expected = Config(
         network=NetworkConfig(
+            config_name="dev",
+            node_name="network",
             name_prefix="Test",
             site_name="Test Federated",
             domain_name="test.testfederated",
@@ -17,6 +19,8 @@ def test_dev_config():
         ),
         nodes=[
             NodeConfig(
+                config_name="dev",
+                node_name="nodea",
                 name_prefix="TestA",
                 stack_name="TestNodeStackA",
                 site_name="Test Node A",
@@ -39,6 +43,8 @@ def test_prod_config():
     config = read_config_file("prod")
     expected = Config(
         network=NetworkConfig(
+            config_name="prod",
+            node_name="network",
             name_prefix="Fbm",
             site_name="Federated",
             domain_name="passian.federated",
@@ -46,6 +52,8 @@ def test_prod_config():
         ),
         nodes=[
             NodeConfig(
+                config_name="prod",
+                node_name="nodea",
                 name_prefix="FbmNodeA",
                 stack_name="FbmNodeStackA",
                 site_name="Clinical Node A",
@@ -59,6 +67,8 @@ def test_prod_config():
                 param_default_gui_pw="passian-nodea-default-gui-pw"
             ),
             NodeConfig(
+                config_name="prod",
+                node_name="nodeb",
                 name_prefix="FbmNodeB",
                 stack_name="FbmNodeStackB",
                 site_name="Clinical Node B",
@@ -77,6 +87,8 @@ def test_prod_config():
 
 
 def test_parse_config():
+    """Test the parse_config function"""
+
     config = configparser.ConfigParser()
     config['network'] = {
         'name_prefix': 'my-prefix',
@@ -112,6 +124,8 @@ def test_parse_config():
     }
     expected = Config(
         network=NetworkConfig(
+            config_name="my-config",
+            node_name="network",
             name_prefix="my-prefix",
             site_name="my-site-name",
             domain_name="my-domain-name",
@@ -119,6 +133,8 @@ def test_parse_config():
         ),
         nodes=[
             NodeConfig(
+                config_name="my-config",
+                node_name="node-a",
                 name_prefix="my-node-prefix",
                 stack_name="my-node-stack-name",
                 site_name="my-node-site-name",
@@ -132,6 +148,8 @@ def test_parse_config():
                 param_default_gui_pw="node-pw-param"
             ),
             NodeConfig(
+                config_name="my-config",
+                node_name="node-b",
                 name_prefix="my-nodeb-prefix",
                 stack_name="my-nodeb-stack-name",
                 site_name="my-nodeb-site-name",
@@ -146,7 +164,7 @@ def test_parse_config():
             ),
         ]
     )
-    assert parse_config(config) == expected
+    assert parse_config(config_name="my-config", config=config) == expected
 
 
 @dataclass
@@ -165,6 +183,8 @@ class DataTest:
 
 
 def test_convert_to():
+    """Test the convert_to function"""
+
     config = configparser.ConfigParser()
     config['test'] = {
         'stringtype': 'my-string',
@@ -193,6 +213,8 @@ def test_convert_to():
 
 
 def test_convert_inputs():
+    """Test the convert_inputs function"""
+
     config = configparser.ConfigParser()
     config['test'] = {
         'stringtype': 'my-string',
@@ -207,7 +229,9 @@ def test_convert_inputs():
         'false4': 'NO',
         'false5': '0'
     }
-    assert convert_inputs(dataclass_type=DataTest, section=config['test']) == \
+    assert convert_inputs(
+        dataclass_type=DataTest,
+        section=config['test']) == \
         DataTest(
             stringtype='my-string',
             true1=True,

@@ -15,6 +15,8 @@ class NetworkConfig:
     which is automatically parsed to create an object of this class
     """
 
+    config_name: str  # Name of config file which generated this configuration
+    node_name: str  # Always "network"
     name_prefix: str  # used to generate stack names - must be unique
     site_name: str  # human-readable name of the Researcher site
     domain_name: str  # domain used when connected to the Researcher VPN
@@ -29,6 +31,8 @@ class NodeConfig:
     which is automatically parsed to create an object of this class
     """
 
+    config_name: str  # Name of config file which generated this configuration
+    node_name: str  # Name of node, from the section name in the config file
     name_prefix: str  # used to generate stack names - must be unique
     site_name: str  # human-readable name of the Data Node site
     domain_name: str  # domain used when connected to the Data Node VPN
@@ -65,22 +69,28 @@ def read_config_file(config_name: str) -> Config:
 
     config = RawConfigParser()
     config.read(config_filename)
-    return parse_config(config)
+    return parse_config(config_name=config_name, config=config)
 
 
-def parse_config(config: ConfigParser):
+def parse_config(config_name: str, config: ConfigParser):
     """Convert returned config structure to Config object"""
     network_section = "network"
     return Config(
         network=convert_inputs(
-            dataclass_type=NetworkConfig, section=config[network_section]),
+            dataclass_type=NetworkConfig,
+            section=config[network_section],
+            config_name=config_name,
+            node_name="network"),
         nodes=[convert_inputs(
-            dataclass_type=NodeConfig, section=config[section]) for
+            dataclass_type=NodeConfig,
+            section=config[section],
+            config_name=config_name,
+            node_name=section) for
                section in config.sections() if section != network_section]
     )
 
 
-def convert_inputs(dataclass_type: Type, section: SectionProxy):
+def convert_inputs(dataclass_type: Type, section: SectionProxy, **kwargs):
     """Convert this config section into a dataclas object, converting the string
     variables where necessary"""
     field_types = {field.name: field.type for field in fields(dataclass_type)}
@@ -89,7 +99,7 @@ def convert_inputs(dataclass_type: Type, section: SectionProxy):
                         key=key,
                         field_type=field_types[key]) for key in section
     }
-    return dataclass_type(**converted)
+    return dataclass_type(**converted, **kwargs)
 
 
 def convert_to(section: SectionProxy, key: str, field_type: Type):

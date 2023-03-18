@@ -5,8 +5,6 @@
 ## Clone this repository
 ```bash
 git clone <this-repo-url> <your-path>
-git submodule init
-git submodule update
 ```
 
 ### Initialise submodules
@@ -70,6 +68,7 @@ CDK will build the Docker images locally as part of deployment, so you need both
 ## Install nvm and node
 It strongly recommended that you use nvm to install/manage node and do not install node directly.
 - Install nvm
+  - macOS note: you can install nvm through homebrew. Install homebrew if necessary and then run `brew install nvm`. Make sure you follow the additional instructions - you need to modify your .zshrc file if you are using zsh shell which is default on new macs. If you are using bash, modify .bash_profile instead. You then need to open a new terminal window, or source .zshrc or .bash_profile before continuing in the current window.
 - Use nvm to install latest LTS version of node
    ```bash
     nvm install --lts

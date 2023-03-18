@@ -110,8 +110,7 @@ class DataSync(Construct):
             ),
             efs_filesystem_arn=file_system.file_system_arn,
             in_transit_encryption="TLS1_2",
-            subdirectory='/node/data',
-            tags=None)
+            subdirectory='/node/data')
         dest_location.node.add_dependency(file_system.mount_targets_available)
 
         self.log_group = logs.LogGroup(self, f"{site_name} data sync")
@@ -133,5 +132,5 @@ class DataSync(Construct):
             ),
             schedule=aws_datasync.CfnTask.TaskScheduleProperty(
                 schedule_expression="cron(0 0 * ? * * *)"
-            ),
-            tags=None)
+            )
+        )

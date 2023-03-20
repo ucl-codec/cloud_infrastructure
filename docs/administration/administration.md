@@ -5,5 +5,7 @@
   - [Configure your AWS credentials](configure-aws-credentials.md)
   - [Configuration files](configuration-files.md)
 - [Adding users](adding-users.md)
+- [Managing instances and services to save costs](managing-instances.md)
+- [Monitoring](monitoring.md)
 - [Troubleshooting](troubleshooting.md)
 

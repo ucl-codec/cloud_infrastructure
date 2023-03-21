@@ -37,7 +37,7 @@ if aws ssm get-parameter --name "${param_default_gui_pw}" --profile "${profile_n
 else
     echo " - Creating default FBM gui password and storing in AWS SecureString parameter ${param_default_gui_pw}"
     # Use AWS to generate a password
-    default_pw=$(aws secretsmanager get-random-password --profile "${profile_name}" --output text)
+    default_pw=$(aws secretsmanager get-random-password --exclude-punctuation --profile "${profile_name}" --output text)
     # Upload new password to Parameter Store as a SecureString
     aws ssm put-parameter --name "${param_default_gui_pw}" --value "${default_pw}" --type "SecureString" --profile "${profile_name}" >> /dev/null
 fi

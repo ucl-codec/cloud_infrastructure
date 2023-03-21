@@ -4,9 +4,10 @@
 set -e
 
 generate_and_upload_cert() {
-    server_name="${1}"
-    param_vpn_cert_arn="${2}"
-    profile_name="${3}"
+    ca_name="${1}"
+    server_name="${2}"
+    param_vpn_cert_arn="${3}"
+    profile_name="${4}"
 
     root=$(realpath ~/passian_vpn_certificates)
     mkdir -p "${root}/passian_cas"
@@ -22,7 +23,7 @@ generate_and_upload_cert() {
         git clone "${git_repo}" "${git_checkout}" --quiet
     fi
 
-    ca_root="${root}/passian_cas/${server_name}"
+    ca_root="${root}/passian_cas/${ca_name}"
     ca_crt="${ca_root}/ca.crt"
     server_crt="${ca_root}/issued/${server_name}.crt"
     server_key="${ca_root}/private/${server_name}.key"
@@ -63,23 +64,29 @@ REPO_DIR=$(dirname $(dirname $(realpath ${0})))
 
 # Create VPN certificates and store in AWS
 
-server_name="${1}"
-param_vpn_cert_arn="${2}"
-profile_name="${3:-passian}"
+ca_name="${1}"
+server_name="${2}"
+param_vpn_cert_arn="${3}"
+profile_name="${4:-passian}"
 
+if [ -z "${ca_name}" ]
+then
+    echo "CA name must be specified as first argument"
+    exit 1
+fi
 if [ -z "${server_name}" ]
 then
-    echo "Server name must be specified as first argument"
+    echo "Server name must be specified as second argument"
     exit 1
 fi
 if [ -z "${param_vpn_cert_arn}" ]
 then
-    echo "Parameter name must be specified as second argument"
+    echo "Parameter name must be specified as third argument"
     exit 1
 fi
 if [ -z "${profile_name}" ]
 then
-    echo "AWS profile name ${profile_name} must be specified as third argument"
+    echo "AWS profile name ${profile_name} must be specified as fourth argument"
     exit 1
 fi
 
@@ -90,5 +97,5 @@ if aws ssm get-parameter --name "${param_vpn_cert_arn}" --profile "${profile_nam
     echo " - Skipping VPN certificate creation as parameter ${param_vpn_cert_arn} already exists"
 else
     echo " - Creating VPN certificate, uploading and storing arn in parameter ${param_vpn_cert_arn}"
-    generate_and_upload_cert "${server_name}" "${param_vpn_cert_arn}" "${profile_name}"
+    generate_and_upload_cert "${ca_name}" "${server_name}" "${param_vpn_cert_arn}" "${profile_name}"
 fi

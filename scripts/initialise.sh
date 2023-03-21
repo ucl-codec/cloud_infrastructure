@@ -63,9 +63,10 @@ process_config_file() {
     for section_name in ${sections}; do
         echo "Initialising resources for ${section_name}:"
 
+        local ca_name="${config_name}-${section_name}"
         local param_vpn_cert_arn
         param_vpn_cert_arn=$(get_config_value "${config_file}" "${section_name}" "param_vpn_cert_arn")
-        "${SCRIPTS_DIR}/initialise_vpn_certs.sh" "${section_name}" "${param_vpn_cert_arn}" "${profile_name}"
+        "${SCRIPTS_DIR}/initialise_vpn_certs.sh" "${ca_name}" "${section_name}" "${param_vpn_cert_arn}" "${profile_name}"
 
         if [ "${section_name}" != "network" ]; then
             local bucket_name

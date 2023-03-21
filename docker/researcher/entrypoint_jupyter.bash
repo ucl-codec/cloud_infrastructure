@@ -20,9 +20,9 @@ trap finish TERM INT QUIT
 export PYTHONPATH=/fedbiomed
 
 # Copy default
-mkdir -p /fedbiomed/notebooks/defult_notebooks
+mkdir -p /fedbiomed/notebooks/default_notebooks
 cd /fedbiomed/notebooks
-cp -rf /default_notebooks/. /fedbiomed/notebooks/defult_notebooks/
+cp -rf /default_notebooks/. /fedbiomed/notebooks/default_notebooks/
 
 echo "Running Jupyter..."
 jupyter notebook --ip=0.0.0.0 --port="${JUPYTER_PORT}" --no-browser --allow-root --NotebookApp.token=''

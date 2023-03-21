@@ -10,6 +10,7 @@ def test_dev_config():
     config = read_config_file("dev")
     expected = Config(
         network=NetworkConfig(
+            config_name="dev",
             node_name="network",
             name_prefix="Test",
             site_description="Test Federated",
@@ -18,6 +19,7 @@ def test_dev_config():
         ),
         nodes=[
             NodeConfig(
+                config_name="dev",
                 node_name="nodea",
                 name_prefix="TestA",
                 stack_name="TestNodeStackA",
@@ -41,6 +43,7 @@ def test_prod_config():
     config = read_config_file("prod")
     expected = Config(
         network=NetworkConfig(
+            config_name="prod",
             node_name="network",
             name_prefix="Fbm",
             site_description="Federated",
@@ -49,6 +52,7 @@ def test_prod_config():
         ),
         nodes=[
             NodeConfig(
+                config_name="prod",
                 node_name="nodea",
                 name_prefix="FbmNodeA",
                 stack_name="FbmNodeStackA",
@@ -63,6 +67,7 @@ def test_prod_config():
                 param_default_gui_pw="passian-nodea-default-gui-pw"
             ),
             NodeConfig(
+                config_name="prod",
                 node_name="nodeb",
                 name_prefix="FbmNodeB",
                 stack_name="FbmNodeStackB",
@@ -119,6 +124,7 @@ def test_parse_config():
     }
     expected = Config(
         network=NetworkConfig(
+            config_name="my-config",
             node_name="network",
             name_prefix="my-prefix",
             site_description="my-site-name",
@@ -127,6 +133,7 @@ def test_parse_config():
         ),
         nodes=[
             NodeConfig(
+                config_name="my-config",
                 node_name="node-a",
                 name_prefix="my-node-prefix",
                 stack_name="my-node-stack-name",
@@ -141,6 +148,7 @@ def test_parse_config():
                 param_default_gui_pw="node-pw-param"
             ),
             NodeConfig(
+                config_name="my-config",
                 node_name="node-b",
                 name_prefix="my-nodeb-prefix",
                 stack_name="my-nodeb-stack-name",
@@ -156,7 +164,7 @@ def test_parse_config():
             ),
         ]
     )
-    assert parse_config(config=config) == expected
+    assert parse_config(config_name="my-config", config=config) == expected
 
 
 @dataclass

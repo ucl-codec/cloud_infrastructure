@@ -28,6 +28,7 @@ class NodeStack(BaseStack):
             dns_domain=node_config.domain_name,
             network_number=network_number,
             param_vpn_cert_arn=node_config.param_vpn_cert_arn,
+            param_vpn_endpoint_id=node_config.param_vpn_endpoint_id,
             env=env
         )
         self.name_prefix = node_config.name_prefix

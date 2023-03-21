@@ -15,6 +15,7 @@ class BaseStack(Stack):
                  description: str,
                  network_number: int,
                  param_vpn_cert_arn: str,
+                 param_vpn_endpoint_id: str,
                  env: Environment) -> None:
         super().__init__(scope=scope, id=id,
                          description=description,
@@ -38,7 +39,7 @@ class BaseStack(Stack):
         # arbitrarily choose the first
         self.first_subnet_id = self.vpc.select_subnets(
             subnet_group_name="private").subnet_ids[0]
-        self.add_vpn()
+        self.add_vpn(param_vpn_endpoint_id=param_vpn_endpoint_id)
         self.add_dns(namespace=self.dns_domain)
 
     def add_vpc(self):
@@ -114,10 +115,10 @@ class BaseStack(Stack):
             comment="Private Hosted Zone for FBM"
         )
 
-    def add_vpn(self):
+    def add_vpn(self, param_vpn_endpoint_id: str):
         """Add VPN endpoint"""
 
-        # Note this will automatically creates authorization rule
+        # Note this will automatically create authorization rule
         self.vpn_endpoint = self.vpc.add_client_vpn_endpoint(
             "VpnEndpoint",
             cidr=self.vpn_cidr_range,

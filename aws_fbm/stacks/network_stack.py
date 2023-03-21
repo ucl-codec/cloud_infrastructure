@@ -24,6 +24,7 @@ class NetworkStack(BaseStack):
             dns_domain=network_config.domain_name,
             network_number=0,
             param_vpn_cert_arn=network_config.param_vpn_cert_arn,
+            param_vpn_endpoint_id=network_config.param_vpn_endpoint_id,
             env=env
         )
         self.name_prefix = network_config.name_prefix

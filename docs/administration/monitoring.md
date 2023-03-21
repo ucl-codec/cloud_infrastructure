@@ -28,4 +28,20 @@ AWS Session Manager from within the AWS Console
 
 Note you can navigate directly to an EC2 node instance from the Elastic Container Services page. To
 do this select the appropriate Node Services Stack cluster, select the Instances tab, then click on 
-the Instance ID listed in the Container Instances section at the bottom. 
+the Instance ID listed in the Container Instances section at the bottom.
+
+### Access the Docker node container using Session Manager
+
+For debugging purposes you may wish to connect to the docker container that is running the 
+Fed-BioMed node service. Once you have connected to the EC2 instance with Session Manager, you can
+view the running docker containers using
+```bash
+docker ps
+```
+This will identify the container ID. You can then start a bash shell in the container using
+```bash
+docker exec -it <container-id> bash
+```
+This will then give you the same environment as the Fed-BioMed node, including environment
+variables and the mounted EFS volumes (such as `/data`)
+

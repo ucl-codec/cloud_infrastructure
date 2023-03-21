@@ -130,6 +130,12 @@ class BaseStack(Stack):
             dns_servers=[self.dns_ip],
             description=f"{self.stack_name} Client VPN Endpoint",
         )
+        self.vpn_endpoint_id_param = ssm.StringParameter(
+            scope=self,
+            id="VpnEndpointIdParam",
+            parameter_name=param_vpn_endpoint_id,
+            string_value=self.vpn_endpoint.endpoint_id
+        )
 
     def add_interface_endpoint(self, name, service):
         endpoint = self.vpc.add_interface_endpoint(id=name, service=service)

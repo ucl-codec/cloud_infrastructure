@@ -5,6 +5,7 @@ from aws_fbm.stacks.node_stack import NodeStack
 from aws_fbm.stacks.peering_stack import PeeringStack
 from aws_fbm.stacks.node_service_stack import NodeServiceStack
 from aws_fbm.stacks.network_service_stack import NetworkServiceStack
+from aws_fbm.stacks.data_import_stack import DataImportStack
 from aws_fbm.stacks.researcher_service_stack import ResearcherServiceStack
 from aws_fbm.utils.config import read_config_file
 from aws_fbm.utils.utils import get_environment
@@ -54,10 +55,17 @@ cdk.Tags.of(researcher_service_stack).add(
 nodes = []
 for index, node in enumerate(config.nodes):
 
+    node_data_import_stack = DataImportStack(
+        scope=app,
+        node_config=node,
+        env=get_environment()
+    )
+
     # Create stateful node stack
     node_stack = NodeStack(
         scope=app,
         node_config=node,
+        data_import_stack=node_data_import_stack,
         network_number=index+1,
         env=get_environment()
     )

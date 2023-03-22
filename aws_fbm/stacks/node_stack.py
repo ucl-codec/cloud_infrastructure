@@ -6,6 +6,8 @@ from aws_fbm.utils.config import NodeConfig
 from aws_cdk import Environment
 from constructs import Construct
 
+from stacks.data_import_stack import DataImportStack
+
 
 class NodeStack(BaseStack):
     """CDK stack defining the core configuration for the FBM network
@@ -14,6 +16,7 @@ class NodeStack(BaseStack):
 
     def __init__(self, scope: Construct,
                  node_config: NodeConfig,
+                 data_import_stack: DataImportStack,
                  network_number: int,
                  env: Environment) -> None:
         # Stack name is derived fom name_prefix, but can be overridden in the

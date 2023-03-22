@@ -12,7 +12,8 @@ def test_dev_config():
         network=NetworkConfig(
             config_name="dev",
             node_name="network",
-            name_prefix="Test",
+            stack_name="TestNetworkStack",
+            name_prefix="passianfl-dev-network-",
             site_description="Test Federated",
             domain_name="test.testfederated"
         ),
@@ -20,11 +21,10 @@ def test_dev_config():
             NodeConfig(
                 config_name="dev",
                 node_name="nodea",
-                name_prefix="TestA",
+                name_prefix='passianfl-dev-nodea-',
                 stack_name="TestNodeStackA",
                 site_description="Test Node A",
                 domain_name="test.testclinicala",
-                bucket_name="test-a-import-bucket",
                 enable_training_plan_approval=False,
                 allow_default_training_plans=True,
                 use_production_gui=True,
@@ -33,6 +33,7 @@ def test_dev_config():
         ]
     )
     assert config == expected
+    assert config.nodes[0].import_bucket_name == "passianfl-dev-nodea-import-bucket"
 
 
 def test_prod_config():
@@ -43,6 +44,7 @@ def test_prod_config():
             config_name="prod",
             node_name="network",
             name_prefix="Fbm",
+            stack_name="FbmNetworkStack",
             site_description="Federated",
             domain_name="passian.federated"
         ),
@@ -54,7 +56,6 @@ def test_prod_config():
                 stack_name="FbmNodeStackA",
                 site_description="Clinical Node A",
                 domain_name="passian.clinicala",
-                bucket_name="clinical-node-a-import-bucket",
                 enable_training_plan_approval=False,
                 allow_default_training_plans=False,
                 use_production_gui=False,
@@ -67,7 +68,6 @@ def test_prod_config():
                 stack_name="FbmNodeStackB",
                 site_description="Clinical Node B",
                 domain_name="passian.clinicalb",
-                bucket_name="clinical-node-b-import-bucket",
                 enable_training_plan_approval=False,
                 allow_default_training_plans=False,
                 use_production_gui=False,
@@ -76,6 +76,8 @@ def test_prod_config():
         ]
     )
     assert config == expected
+    assert config.nodes[0].import_bucket_name == "passianfl-prod-nodea-import-bucket"
+    assert config.nodes[1].import_bucket_name == "passianfl-prod-nodeb-import-bucket"
 
 
 def test_parse_config():
@@ -92,7 +94,6 @@ def test_parse_config():
         'site_description': 'my-node-site-name',
         'domain_name': 'my-node-domain-name',
         'stack_name': 'my-node-stack-name',
-        'bucket_name': 'my-bucket-name',
         'enable_training_plan_approval': 'True',
         'allow_default_training_plans': 'False',
         'use_production_gui': 'False',
@@ -103,7 +104,6 @@ def test_parse_config():
         'site_description': 'my-nodeb-site-name',
         'domain_name': 'my-nodeb-domain-name',
         'stack_name': 'my-nodeb-stack-name',
-        'bucket_name': 'my-bucketb-name',
         'enable_training_plan_approval': 'False',
         'allow_default_training_plans': 'True',
         'use_production_gui': 'TRUE',
@@ -125,7 +125,6 @@ def test_parse_config():
                 stack_name="my-node-stack-name",
                 site_description="my-node-site-name",
                 domain_name="my-node-domain-name",
-                bucket_name="my-bucket-name",
                 enable_training_plan_approval=True,
                 allow_default_training_plans=False,
                 use_production_gui=False,
@@ -138,15 +137,15 @@ def test_parse_config():
                 stack_name="my-nodeb-stack-name",
                 site_description="my-nodeb-site-name",
                 domain_name="my-nodeb-domain-name",
-                bucket_name="my-bucketb-name",
                 enable_training_plan_approval=False,
                 allow_default_training_plans=True,
                 use_production_gui=True,
                 default_gui_username="admin.nodeb",
-            ),
+            )
         ]
     )
     assert parse_config(config_name="my-config", config=config) == expected
+    assert expected.nodes[0].import_bucket_name == "passianfl-my-config-node-a-import-bucket"
 
 
 @dataclass

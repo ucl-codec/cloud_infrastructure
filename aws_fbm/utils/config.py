@@ -70,9 +70,6 @@ class NodeConfig:
     # Domain used when connected to the Data Node VPN
     domain_name: str
 
-    # Persistent data bucket for this Data Node
-    bucket_name: str
-
     # FBM default gui admin username
     default_gui_username: str
 

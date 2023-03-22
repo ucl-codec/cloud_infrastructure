@@ -51,9 +51,6 @@ Each additional seciton desribes a Local Node.
 - `domain_name`: The private hosted zone domain name that researchers will use to access resources 
 while connected to the VPN. For example, if `domain_name` is `passianfl.researcher`, then 
 researchers will access jupyter at `http://jupyter.passianfl.researcher`
-- `param_vpn_cert_arn` The name of the AWS parameter which holds the arn of the AWS certificate 
-used for server VPN authentication. For development purposes you only need to give this a unique
-name, and the `initialise.sh` script will populate it for you
 
 ## Local Nodes
 - `name_prefix`: Prefix used to name the CloudFormation stacks. Must be unique in your account
@@ -64,9 +61,6 @@ while connected to the VPN. For example, if `domain_name` is `passianfl.nodea`, 
 researchers will access the FBM gui at `http://gui.passianfl.nodea`
 - `bucket_name`: The name of the S3 bucket used to import data into this Local Node. This must be unique.
 for each node. The `initialise.sh` script will create the bucket if it does not exist.
-- `param_vpn_cert_arn`: The name of the AWS parameter which holds the arn of the AWS certificate 
-used for Local Node server VPN authentication. For development purposes you only need to give this a unique
-name, and the `initialise.sh` script will populate it for you
 - `default_gui_username`: The Fed-BioMed gui default admin username. Only used when the system is first run to set up an initial admin user
 - `param_default_gui_pw`: The name of a SecureString AWS parameter which holds the initial password for the Fed-BioMed gui admin user.
 The `initialise.sh` script will populate it for you if it does not already exist. This is only used the first time

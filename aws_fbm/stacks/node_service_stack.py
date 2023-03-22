@@ -4,9 +4,9 @@ from aws_fbm.fbm_constructs.ec2_service import EC2Service
 from aws_fbm.fbm_constructs.fargate_service import HttpService
 from aws_fbm.stacks.node_stack import NodeStack
 
-from aws_cdk import aws_ssm as ssm
 from aws_cdk import Environment, Stack
 from aws_cdk import aws_ecs as ecs
+from aws_cdk import aws_secretsmanager as secretsmanager
 from aws_cdk.aws_ecr_assets import DockerImageAsset
 from constructs import Construct
 
@@ -94,13 +94,17 @@ class NodeServiceStack(Stack):
             directory=str(repo_path() / "docker"),
             file="gui/Dockerfile"
         )
-        # Get parameter containing FBM default gui password
-        default_gui_password = \
-            ssm.StringParameter.from_secure_string_parameter_attributes(
-                scope=self,
-                id="ParamName",
-                parameter_name=node_config.param_default_gui_pw
+        # Create default FBM gui admin password. This will be accessible as a
+        # secret in AWS Secrets Manager. This is only used on the first run of
+        # the gui
+        default_gui_password_secret = secretsmanager.Secret(
+            scope=self,
+            id=node_config.secret_name_default_gui_password,
+            description="Default password for the FBM gui admin user",
+            generate_secret_string=secretsmanager.SecretStringGenerator(
+                exclude_punctuation=True
             )
+        )
         # Create gui service
         self.gui_service = HttpService(
             scope=self,
@@ -125,8 +129,8 @@ class NodeServiceStack(Stack):
                 "GUI_DEFAULT_ADMIN_EMAIL": node_config.default_gui_username
             },
             secrets={
-                "GUI_DEFAULT_ADMIN_PW": ecs.Secret.from_ssm_parameter(
-                    default_gui_password),
+                "GUI_DEFAULT_ADMIN_PW": ecs.Secret.from_secrets_manager(
+                    default_gui_password_secret)
             },
             file_system=file_system,
             volumes=[node_data_volume, node_etc_volume, node_var_volume,

@@ -105,6 +105,9 @@ class BaseStack(Stack):
         self.add_interface_endpoint(
             name="SSMMessagesEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES)
+        self.add_interface_endpoint(
+            name="SecretsManagerEndpoint",
+            service=ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER)
 
     def add_dns(self, namespace):
         self.hosted_zone = route53.HostedZone(

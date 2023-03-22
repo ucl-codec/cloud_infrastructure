@@ -62,5 +62,5 @@ if [ -f "${config_name}" ]; then
     exit 1
 fi
 
-aws ssm get-parameter --name "${credentials_param_name}" --profile "${profile_name}" > "${config_name}"
-echo "This VPN client configuration file has been downloaded to ${config_name}"
+aws ssm get-parameter --name "${credentials_param_name}" --profile "${profile_name}" --with-decryption --query Parameter.Value --output text > "${config_name}"
+echo "The VPN client configuration file has been downloaded to ${config_name}"

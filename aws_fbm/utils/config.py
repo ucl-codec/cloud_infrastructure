@@ -28,8 +28,8 @@ class NetworkConfig:
     param_vpn_endpoint_id: str = field(init=False)
 
     def __post_init__(self, config_name: str):
-        self.param_vpn_endpoint_id = f"{config_name}-" \
-                                      f"{self.node_name}-vpn-endpoint-id"
+        self.param_vpn_endpoint_id = \
+            f"passianfl-{config_name}-{self.node_name}-vpn-endpoint-id"
 
 
 @dataclass
@@ -61,8 +61,8 @@ class NodeConfig:
     param_vpn_endpoint_id: str = field(init=False)
 
     def __post_init__(self, config_name: str):
-        self.param_vpn_endpoint_id = f"{config_name}-" \
-                                     f"{self.node_name}-vpn-endpoint-id"
+        self.param_vpn_endpoint_id = \
+            f"passianfl-{config_name}-{self.node_name}-vpn-endpoint-id"
 
 
 @dataclass

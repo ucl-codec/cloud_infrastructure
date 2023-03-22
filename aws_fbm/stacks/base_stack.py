@@ -105,6 +105,8 @@ class BaseStack(Stack):
         self.add_interface_endpoint(
             name="SSMMessagesEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES)
+
+        # Endpoints for passing AWS Secrets to ECS containers
         self.add_interface_endpoint(
             name="SecretsManagerEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER)

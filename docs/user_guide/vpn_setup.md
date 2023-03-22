@@ -20,6 +20,36 @@ You can install the [AWS Client VPN from the AWS website](https://aws.amazon.com
 
 ## Obtain your VPN profiles
 
+User VPN credentials are stored in a VPN client configuration file. This can be downloaded from the
+AWS Parameter Store.
+
+You can also use the `download_vpn_credentials.sh` script to download your configuration files, 
+provided you have the AWS CLI and credentials set up
+
+---
+
+### Using the `download_vpn_credentials.sh` script
+
+You can only use this script if you have this repository cloned, and have the AWS CLI and your 
+AWS credentials locally configured.
+
+From the terminal, navigate to the folder containing this repository and run
+```bash
+./scripts/download_vpn_credentials.sh <config-name> <node-name> <client-name> <aws-profile-name> 
+```
+where you must substitute:
+- `<config-name>` with the configuration name for your deployment (e.g. `dev` or `prod`)
+- `<node-name>` with `network` for the researcher node, or for local nodes it is the node name (e.g. `nodea`) as specified in the section name of the configuration file
+- `<client-name>` with the client name as used to generate the client certificate
+- `<aws-profile-name>` with your local AWS credentials profile, e.g. `passian`  
+
+Run this command for each VPN file you need to download. The files will be downloaded to 
+the folder `~/passian_vpn_certificates/vpn_configuration_files`
+
+---
+
+### From the AWS Console
+
 - Log into the AWS Console
 - Go to AWS Systems Manager
 - Select Parameter Store on the left

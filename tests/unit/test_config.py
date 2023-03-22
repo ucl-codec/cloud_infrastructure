@@ -14,8 +14,7 @@ def test_dev_config():
             node_name="network",
             name_prefix="Test",
             site_description="Test Federated",
-            domain_name="test.testfederated",
-            param_vpn_cert_arn="dev-network-vpn-server-cert-arn"
+            domain_name="test.testfederated"
         ),
         nodes=[
             NodeConfig(
@@ -26,12 +25,10 @@ def test_dev_config():
                 site_description="Test Node A",
                 domain_name="test.testclinicala",
                 bucket_name="test-a-import-bucket",
-                enable_training_plan_approval=True,
-                allow_default_training_plans=False,
+                enable_training_plan_approval=False,
+                allow_default_training_plans=True,
                 use_production_gui=True,
-                param_vpn_cert_arn="dev-nodea-vpn-server-cert-arn",
                 default_gui_username="admin@testclinicala",
-                param_default_gui_pw="dev-nodea-default-gui-pw"
             )
         ]
     )
@@ -47,8 +44,7 @@ def test_prod_config():
             node_name="network",
             name_prefix="Fbm",
             site_description="Federated",
-            domain_name="passian.federated",
-            param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn"
+            domain_name="passian.federated"
         ),
         nodes=[
             NodeConfig(
@@ -59,12 +55,10 @@ def test_prod_config():
                 site_description="Clinical Node A",
                 domain_name="passian.clinicala",
                 bucket_name="clinical-node-a-import-bucket",
-                enable_training_plan_approval=True,
+                enable_training_plan_approval=False,
                 allow_default_training_plans=False,
                 use_production_gui=False,
-                param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn",
                 default_gui_username="admin@clinicala",
-                param_default_gui_pw="passian-nodea-default-gui-pw"
             ),
             NodeConfig(
                 config_name="prod",
@@ -74,12 +68,10 @@ def test_prod_config():
                 site_description="Clinical Node B",
                 domain_name="passian.clinicalb",
                 bucket_name="clinical-node-b-import-bucket",
-                enable_training_plan_approval=True,
+                enable_training_plan_approval=False,
                 allow_default_training_plans=False,
                 use_production_gui=False,
-                param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn",
                 default_gui_username="admin@clinicalb",
-                param_default_gui_pw="passian-nodeb-default-gui-pw"
             )
         ]
     )
@@ -93,8 +85,7 @@ def test_parse_config():
     config['network'] = {
         'name_prefix': 'my-prefix',
         'site_description': 'my-site-name',
-        'domain_name': 'my-domain-name',
-        'param_vpn_cert_arn': "network-cert"
+        'domain_name': 'my-domain-name'
     }
     config['node-a'] = {
         'name_prefix': 'my-node-prefix',
@@ -103,11 +94,9 @@ def test_parse_config():
         'stack_name': 'my-node-stack-name',
         'bucket_name': 'my-bucket-name',
         'enable_training_plan_approval': 'True',
-        'allow_default_training_plans': 'true',
+        'allow_default_training_plans': 'False',
         'use_production_gui': 'False',
-        'param_vpn_cert_arn': 'node-cert-param',
-        'default_gui_username': 'admin.node',
-        'param_default_gui_pw': 'node-pw-param'
+        'default_gui_username': 'admin.node'
     }
     config['node-b'] = {
         'name_prefix': 'my-nodeb-prefix',
@@ -116,11 +105,9 @@ def test_parse_config():
         'stack_name': 'my-nodeb-stack-name',
         'bucket_name': 'my-bucketb-name',
         'enable_training_plan_approval': 'False',
-        'allow_default_training_plans': 'yes',
+        'allow_default_training_plans': 'True',
         'use_production_gui': 'TRUE',
-        'param_vpn_cert_arn': "nodeb-cert-param",
-        'default_gui_username': 'admin.nodeb',
-        'param_default_gui_pw': 'nodeb-pw-param'
+        'default_gui_username': 'admin.nodeb'
     }
     expected = Config(
         network=NetworkConfig(
@@ -128,8 +115,7 @@ def test_parse_config():
             node_name="network",
             name_prefix="my-prefix",
             site_description="my-site-name",
-            domain_name="my-domain-name",
-            param_vpn_cert_arn="network-cert"
+            domain_name="my-domain-name"
         ),
         nodes=[
             NodeConfig(
@@ -141,11 +127,9 @@ def test_parse_config():
                 domain_name="my-node-domain-name",
                 bucket_name="my-bucket-name",
                 enable_training_plan_approval=True,
-                allow_default_training_plans=True,
+                allow_default_training_plans=False,
                 use_production_gui=False,
-                param_vpn_cert_arn="node-cert-param",
                 default_gui_username="admin.node",
-                param_default_gui_pw="node-pw-param"
             ),
             NodeConfig(
                 config_name="my-config",
@@ -158,9 +142,7 @@ def test_parse_config():
                 enable_training_plan_approval=False,
                 allow_default_training_plans=True,
                 use_production_gui=True,
-                param_vpn_cert_arn="nodeb-cert-param",
                 default_gui_username="admin.nodeb",
-                param_default_gui_pw="nodeb-pw-param"
             ),
         ]
     )

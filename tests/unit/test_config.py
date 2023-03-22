@@ -15,7 +15,7 @@ def test_dev_config():
             name_prefix="Test",
             site_description="Test Federated",
             domain_name="test.testfederated",
-            param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn"
+            param_vpn_cert_arn="dev-network-vpn-server-cert-arn"
         ),
         nodes=[
             NodeConfig(
@@ -29,9 +29,9 @@ def test_dev_config():
                 enable_training_plan_approval=True,
                 allow_default_training_plans=False,
                 use_production_gui=True,
-                param_vpn_cert_arn="passian-fbm-vpn-server-cert-arn",
+                param_vpn_cert_arn="dev-nodea-vpn-server-cert-arn",
                 default_gui_username="admin@testclinicala",
-                param_default_gui_pw="test-nodea-default-gui-pw"
+                param_default_gui_pw="dev-nodea-default-gui-pw"
             )
         ]
     )

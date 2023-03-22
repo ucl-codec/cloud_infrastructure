@@ -16,7 +16,7 @@ class NetworkStack(BaseStack):
                  network_config: NetworkConfig,
                  env: Environment) -> None:
         stack_name = network_config.stack_name or \
-                     f"{network_config.name_prefix}-NetworkStack"
+                     f"{network_config.name_prefix}NetworkStack"
         super().__init__(
             scope=scope,
             id=stack_name,

@@ -15,9 +15,11 @@ class NetworkStack(BaseStack):
     def __init__(self, scope: Construct,
                  network_config: NetworkConfig,
                  env: Environment) -> None:
+        stack_name = network_config.stack_name or \
+                     f"{network_config.name_prefix}-NetworkStack"
         super().__init__(
             scope=scope,
-            id=f"{network_config.name_prefix}NetworkStack",
+            id=stack_name,
             description=f"FBM network stack for "
                         f"{network_config.site_description}",
             site_description=network_config.site_description,

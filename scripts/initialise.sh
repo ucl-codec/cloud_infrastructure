@@ -69,11 +69,6 @@ process_config_file() {
             local bucket_name
             bucket_name=$(get_config_value "${config_file}" "${section_name}" "bucket_name")
             "${SCRIPTS_DIR}/initialise_bucket.sh" "${bucket_name}" "${profile_name}"
-
-            # Warning: do not inline local with pw_param_name, otherwise exit code will be swallowed
-            local pw_param_name
-            pw_param_name=$(get_config_value "${config_file}" "${section_name}" "param_default_gui_pw")
-            "${SCRIPTS_DIR}/initialise_gui_default_pw.sh" "${pw_param_name}" "${profile_name}"
         fi
     done
 

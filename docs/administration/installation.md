@@ -87,8 +87,6 @@ If initialisation fails (for example if you have not installed all the required 
 required resources
 
 The resources this script creates are:
-- For each Local Node, a Fed-BioMed gui default admin password, which is stored in the SecureString parameter named in the config file
-- For each Local Node, a private S3 import bucket with the name specified in the config file
 - For the Researcher Node and each Local Node, a development CA and server certificate for accessing the VPN 
 
 ---
@@ -129,7 +127,27 @@ There are helper scripts to depoloy dev and production:
     ```
 
 ---
-### Destroy the CDK stack
+
+## Change the Fed-BioMed gui admin password
+
+After the local nodes have been deployed, you should log into the Fed-BioMed gui on each node and
+change the admin password. You may also wish to create Fed-BioMed user accounts for the data 
+providers 
+
+- You will need to generate a VPN client configuration file for yourself for each node you wish to 
+connect to. See [Adding users](adding-users.md)
+- You then need to set up VPN access for each node by adding this file to the AWS Client VPN. See
+[VPN setup](../user_guide/vpn_setup.md)
+- Once connected to the local node VPN, you can connect to the Fed-BioMed gui as described in the [user guide](../user_guide/user_guide.md).
+- The default credentials for the Fed-BioMed admin user are as follows:
+  - The admin username is specified in the configuration file, e.g. `conf/prod.cfg` 
+  - The default admin password is stored in an AWS secret with the prefix `passianfl<config-name><node-name>guidefault-xxxxxx`
+  where `<config-name>` is the name of the configuration file and `<node-name>` the name of the node
+  (this is the name of that node's section in the configuration file). 
+
+
+---
+## Destroy the CDK stack
 
 To remove a deployment, you can either:
 - run cdk destroy from your machine to destroy the CDK stacks

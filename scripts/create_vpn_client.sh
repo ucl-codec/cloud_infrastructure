@@ -75,9 +75,9 @@ generate_and_upload_client_cert() {
     echo " - Writing ovpn file ${vpn_profile}"
     echo "${user_ovpn_file}" > "${vpn_profile}"
 
-    # Upload new password to Parameter Store as a SecureString
+    # Upload new client configuration file to Parameter Store as a SecureString
     echo " - Uploading ovpn file to SecureString parameter ${credentials_param_name}"
-    aws ssm put-parameter --name "${credentials_param_name}" --value "${user_ovpn_file}" --type "SecureString" --tier Advanced --profile "${profile_name}" >> /dev/null
+    aws ssm put-parameter --name "${credentials_param_name}" --description "VPN client configuration file for ${client_domain} in VPN ${ca_name}" --value "${user_ovpn_file}" --type "SecureString" --tier Advanced --profile "${profile_name}" >> /dev/null
 
 }
 

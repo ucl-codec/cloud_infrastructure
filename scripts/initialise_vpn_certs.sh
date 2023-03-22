@@ -52,7 +52,7 @@ generate_and_upload_cert() {
 
     # Store certificate ARN in parameter
     echo " - Storing the certificate ARN in AWS System Parameter ${param_vpn_cert_arn}"
-    aws ssm put-parameter --name "${param_vpn_cert_arn}" --value "${cert_arn}" --type "String" --profile "${profile_name}" >> /dev/null
+    aws ssm put-parameter --name "${param_vpn_cert_arn}" --description "ARN of VPN server certificate for server ${server_name} in VPN ${ca_name}" --value "${cert_arn}" --type "String" --profile "${profile_name}" >> /dev/null
 }
 
 

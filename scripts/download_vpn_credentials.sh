@@ -49,6 +49,7 @@ fi
 # Check that credentials are working. Otherwise the bucket lookup will always report not found
 ${SCRIPTS_DIR}/check_credentials.sh "${profile_name}"
 
+mkdir -p ~/passian_vpn_certificates
 root=$(realpath ~/passian_vpn_certificates)
 profile_dir="${root}/vpn_configuration_files"
 mkdir -p "${profile_dir}"

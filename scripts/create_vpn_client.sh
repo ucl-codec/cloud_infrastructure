@@ -23,6 +23,7 @@ generate_and_upload_client_cert() {
 
     verbose="--silent --silent-ssl"
 
+    mkdir -p ~/passian_vpn_certificates
     root=$(realpath ~/passian_vpn_certificates)
     git_checkout="${root}/easy-rsa"
     easyrsa="${git_checkout}/easyrsa3/easyrsa"

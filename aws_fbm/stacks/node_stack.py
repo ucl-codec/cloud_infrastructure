@@ -2,11 +2,11 @@ from aws_fbm.stacks.base_stack import BaseStack
 from aws_fbm.fbm_constructs.data_sync import DataSync
 from aws_fbm.fbm_constructs.file_system import FileSystem
 from aws_fbm.utils.config import NodeConfig
+from aws_fbm.stacks.data_import_stack import DataImportStack
 
 from aws_cdk import Environment
 from constructs import Construct
 
-from stacks.data_import_stack import DataImportStack
 
 
 class NodeStack(BaseStack):
@@ -47,7 +47,7 @@ class NodeStack(BaseStack):
         self.data_sync = DataSync(
             scope=self,
             id="DataSync",
-            bucket_name=node_config.bucket_name,
+            bucket_name=data_import_stack.import_bucket.bucket_name,
             site_description=node_config.site_description,
             file_system=self.file_system.file_system,
             vpc=self.vpc,

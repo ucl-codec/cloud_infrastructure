@@ -55,6 +55,7 @@ cdk.Tags.of(researcher_service_stack).add(
 nodes = []
 for index, node in enumerate(config.nodes):
 
+    # Create stack which hosts data import bucket
     node_data_import_stack = DataImportStack(
         scope=app,
         node_config=node,

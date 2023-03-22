@@ -20,7 +20,7 @@ class PeeringStack(Stack):
                  node_stacks: List[NodeStack],
                  env: Environment) -> None:
         super().__init__(scope,
-                         id=f"{network_stack.name_prefix}PeeringStack",
+                         id=f"{network_stack.name_prefix}-PeeringStack",
                          description=f"FBM peering stack for "
                                      f"{network_stack.site_description}",
                          env=env)

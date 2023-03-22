@@ -23,7 +23,7 @@ class NetworkServiceStack(Stack):
                  network_stack: NetworkStack,
                  env: Environment):
         super().__init__(scope=scope,
-                         id=f"{network_stack.name_prefix}NetworkServiceStack",
+                         id=f"{network_stack.name_prefix}-NetworkServiceStack",
                          description=f"FBM network services stack for "
                                      f"{network_stack.site_description}",
                          env=env)

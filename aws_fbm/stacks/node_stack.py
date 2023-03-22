@@ -19,7 +19,7 @@ class NodeStack(BaseStack):
         # Stack name is derived fom name_prefix, but can be overridden in the
         # configuration if required
         stack_name = node_config.stack_name or \
-                     f"{node_config.name_prefix}NodeStack"
+                     f"{node_config.name_prefix}-NodeStack"
         super().__init__(
             scope=scope,
             id=stack_name,

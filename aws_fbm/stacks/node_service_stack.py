@@ -29,7 +29,7 @@ class NodeServiceStack(Stack):
                  mqtt_port: int,
                  uploads_url: str):
         super().__init__(scope=scope,
-                         id=f"{node_stack.name_prefix}ServiceStack",
+                         id=f"{node_stack.name_prefix}-ServiceStack",
                          description=f"FBM node services stack for "
                                      f"{node_stack.site_description}",
                          env=env)

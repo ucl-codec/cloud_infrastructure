@@ -94,7 +94,7 @@ client_name="${3}"
 profile_name="${4:-passian}"
 
 ca_name="${config_name}-${node_name}"
-credentials_param_name="${ca_name}-${client_name}-vpn-profile"
+credentials_param_name="passianfl-${ca_name}-${client_name}-vpn-profile"
 vpn_endpoint_id_param_name="passianfl-${ca_name}-vpn-endpoint-id"
 client_domain="${client_name}.${node_name}.${config_name}"
 

@@ -121,11 +121,11 @@ There are helper scripts to depoloy dev and production:
 
 - Deploy dev:
     ```bash
-    ./scripts/test_deploy.sh
+    ./scripts/deploy_dev.sh
     ```
 - Deploy production:
     ```bash
-    ./scripts/deploy.sh
+    ./scripts/deploy_prod.sh
     ```
 
 ---

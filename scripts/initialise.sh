@@ -64,12 +64,6 @@ process_config_file() {
         echo "Initialising resources for ${section_name}:"
 
         "${SCRIPTS_DIR}/initialise_vpn_certs.sh" "${config_name}" "${section_name}" "${profile_name}"
-
-        if [ "${section_name}" != "network" ]; then
-            local bucket_name
-            bucket_name=$(get_config_value "${config_file}" "${section_name}" "bucket_name")
-            "${SCRIPTS_DIR}/initialise_bucket.sh" "${bucket_name}" "${profile_name}"
-        fi
     done
 
 }

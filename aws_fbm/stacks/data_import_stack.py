@@ -14,7 +14,8 @@ class DataImportStack(Stack):
                          id=f"{node_config.name_prefix}DataImportStack",
                          description=f"FBM data import stack for "
                                      f"{node_config.site_description}",
-                         env=env)
+                         env=env,
+                         termination_protection=True)
 
         # Create S3 bucket for data import
         self.import_bucket = s3.Bucket(

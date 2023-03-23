@@ -1,8 +1,8 @@
 # Connecting to VPNs for PassianFL
 
 You will need a VPN account to connect to PassianFL.
-- Researchers need VPN access to the PassianFL Researcher network
-- Data Providers need VPN access to their PassianFL Data Node network
+- Researchers need VPN access to the PassianFL Researcher Node network
+- Data Providers need VPN access to their PassianFL Local Node network
 
 If you require both roles, you will need separate VPN accounts for each network.
 
@@ -14,24 +14,32 @@ PassianFL has been tested with the AWS Client VPN.
 You can use other OpenVPN-compatible clients, but you will need to adjust the following 
 instructions appropriately. 
 
-You can install the [AWS Client VPN from the AWS website](https://aws.amazon.com/vpn/client-vpn-download)
+You can install the 
+[AWS Client VPN from the AWS website](https://aws.amazon.com/vpn/client-vpn-download)
 
 ---
 
-## Obtain your VPN profiles
+## Obtain your VPN credentials
 
-User VPN credentials are stored in a VPN client configuration file. This can be downloaded from the
-AWS Parameter Store.
+The administrator for your PassianFL Node should create your VPN
+credentials following the [Adding users guide](../administration/adding-users.md).
 
-You can also use the `download_vpn_credentials.sh` script to download your configuration files, 
-provided you have the AWS CLI and credentials set up
+The default PassianFL authorisation method is using certificates. For each VPN you need access to, 
+your administrator will create a **client configuration file** for you and upload it to the AWS
+Parameter Store. You need to download each client configuration file and add it to your AWS Client
+VPN.
+
+You can either download the contents each file directly, or use the `download_vpn_credentials.sh`
+script.
 
 ---
 
-### Using the `download_vpn_credentials.sh` script
+### Download a personal client configuration file using the `download_vpn_credentials.sh` script
 
-You can only use this script if you have this repository cloned, and have the AWS CLI and your 
-AWS credentials locally configured.
+To use this script you must have the AWS CLI installed and your AWS profile set up as described in
+the following pages:
+- [Setting up a local machine](../administration/deployment-machine-setup.md)
+- [Configure your AWS credentials](../administration/configure-aws-credentials.md)
 
 From the terminal, navigate to the folder containing this repository and run
 ```bash
@@ -39,7 +47,8 @@ From the terminal, navigate to the folder containing this repository and run
 ```
 where you must substitute:
 - `<config-name>` with the configuration name for your deployment (e.g. `dev` or `prod`)
-- `<node-name>` with `network` for the researcher node, or for local nodes it is the node name (e.g. `nodea`) as specified in the section name of the configuration file
+- `<node-name>` with `network` for the researcher node, or for local nodes it is the node name
+(e.g. `nodea`) as specified in the section name of the configuration file
 - `<client-name>` with the client name as used to generate the client certificate
 - `<aws-profile-name>` with your local AWS credentials profile, e.g. `passian`  
 
@@ -48,7 +57,7 @@ the folder `~/passian_vpn_certificates/vpn_configuration_files`
 
 ---
 
-### From the AWS Console
+### Download a personal client configuration file from the AWS Console
 
 - Log into the AWS Console
 - Go to AWS Systems Manager
@@ -69,9 +78,15 @@ See [Linux troubleshooting](https://docs.aws.amazon.com/vpn/latest/clientvpn-use
 ## Add your VPN profiles to your VPN client
 - Launch AWS VPN Client 
 - Go to Manage Profiles
-- If you are a researcher, add your Researcher profile with profile name `Passian Researcher`
-- If you are a data provider, add your Data Node profile with profile name `Passian Data Node (your site name)`.
-  - _Note: If you are a data provider for multiple sites, you need to add a profile for each site_
+- Click `Add Profile`
+- For `Display Name`, type in an appropriate name to help you identify the profile for this site, for example:
+  - `PassianFL <site name> Researcher Node` for a Researcher Node
+  - `PassianFL <site name> Local Node` for a Local Node
+- For `VPN Configuration File`, select the file symbol and choose the client configuration file you downloaded for this site
+
+  _Note: If you used the script to download your client configuration file, it will be in your home directry under `~/passian_vpn_certificates/vpn_configuration_files`_
+
+- Repeat this process for each client configuratin file. _Note: If you are a data provider for multiple sites, you need to add a profile for each site_
 
 ----
 

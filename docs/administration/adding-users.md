@@ -32,7 +32,7 @@ VPN connections use certificate-based authentication by default.
 Each user is provided with a VPN _client configuration file_ for each VPN they need to connect to.
 The client configuration file contains the connection details for the VPN and the user's private
 key and certificate for that VPN. This file must be kept secure. 
-The user will load this file into the AWS Client VPN or compatible OVPN client software. 
+The user will load this file into the AWS Client VPN or compatible OpenVPN client software. 
 
 The Researcher Node and each of the Local Nodes each have their own separate VPNs. If a user needs
 to connect to multiple VPNs, they will require a separate client configuration file for each one.
@@ -54,7 +54,7 @@ where you need to set the parameters as follows:
 - `<config-name>`: name of the config file describing this PassianFL system (in the `config` folder), such as `dev` or `prod`
 - `<node-name>`: is `network` for the researcher node, or the node name for a local node. The node name is the section name of the part of the config file which describes that node, e.g. `nodea`
 - `<client-name>` is the user or machine name which identifies the user of the certificate. The certificate will be given a CN of the form `<client-name>.<node-name>.<config-name> (note this does not have to correspond to their machine's DNS name)
-- `<aws-credentials-profile>` is the your local profile name containing AWS credentials, e.g. `passian`
+- `<aws-credentials-profile>` is the name of your local AWS profile containing AWS credentials, e.g. `passian`
 
 The script will:
 - generate and save a new client certificate under `~/passian_vpn_certificates`

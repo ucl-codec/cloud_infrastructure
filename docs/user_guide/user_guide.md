@@ -18,7 +18,12 @@ If you have both of these roles, you need to consider role independently when fo
 - You can upload data using the AWS S3 import bucket for your Local Node.
 - You will need an AWS IAM account provided by your system administrator with access to this bucket.
 - You can use this to upload data using the AWS S3 web interface or command line
-- After upload, data will be synced into the Local Node. This may take more than an hour
+- After upload, data will be synced form the S3 bucket into the Local Node.
+  - Synchronisation starts once per hour, so after adding data you may have to wait before the data
+become available on the node
+  - The PassianFL Local Node administrator can manually trigger an immediate sync from the AWS Data Sync console   
+  - Data sync can take some time depending on the size of the data 
+    - Data deleted from the S3 bucket will also be deleted from the Local Node during the sync
 
 ### Set up your VPN access
 

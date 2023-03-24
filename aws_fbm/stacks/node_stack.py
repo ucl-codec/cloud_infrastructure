@@ -29,7 +29,9 @@ class NodeStack(BaseStack):
             site_description=node_config.site_description,
             description=f"FBM node stack for {node_config.site_description}",
             dns_domain=node_config.domain_name,
+            parent_dns_domain=node_config.parent_domain,
             network_number=network_number,
+            use_https=node_config.use_https,
             param_vpn_cert_arn=node_config.param_vpn_cert_arn,
             param_vpn_endpoint_id=node_config.param_vpn_endpoint_id,
             env=env

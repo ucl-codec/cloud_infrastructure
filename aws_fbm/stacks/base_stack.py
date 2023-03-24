@@ -4,6 +4,8 @@ from aws_cdk import aws_ssm as ssm
 from aws_cdk import aws_route53 as route53
 from constructs import Construct
 
+from typing import Optional
+
 
 class BaseStack(Stack):
     """CDK stack base class defining common VPC, VPN and DNS configuration for
@@ -12,8 +14,10 @@ class BaseStack(Stack):
     def __init__(self, scope: Construct, id: str,
                  site_description: str,
                  dns_domain: str,
+                 parent_dns_domain: Optional[str],
                  description: str,
                  network_number: int,
+                 use_https: bool,
                  param_vpn_cert_arn: str,
                  param_vpn_endpoint_id: str,
                  env: Environment) -> None:
@@ -24,6 +28,7 @@ class BaseStack(Stack):
 
         self.site_description = site_description
         self.dns_domain = dns_domain
+        self.use_https = use_https
 
         # Select IP ranges for VPC and VPN. These must be non-overlapping
         # across the entire system, since the VPCs are peered
@@ -40,7 +45,8 @@ class BaseStack(Stack):
         self.first_subnet_id = self.vpc.select_subnets(
             subnet_group_name="private").subnet_ids[0]
         self.add_vpn(param_vpn_endpoint_id=param_vpn_endpoint_id)
-        self.add_dns(namespace=self.dns_domain)
+        self.add_dns(namespace=self.dns_domain,
+                     parent_namespace=parent_dns_domain)
 
     def add_vpc(self):
         """Create VPC"""
@@ -111,7 +117,7 @@ class BaseStack(Stack):
             name="SecretsManagerEndpoint",
             service=ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER)
 
-    def add_dns(self, namespace):
+    def add_dns(self, namespace: str, parent_namespace: Optional[str]):
         self.hosted_zone = route53.HostedZone(
             self,
             "HostedZone",

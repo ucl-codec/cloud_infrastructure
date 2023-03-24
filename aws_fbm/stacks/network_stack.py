@@ -24,7 +24,9 @@ class NetworkStack(BaseStack):
                         f"{network_config.site_description}",
             site_description=network_config.site_description,
             dns_domain=network_config.domain_name,
+            parent_dns_domain=network_config.parent_domain,
             network_number=0,
+            use_https=network_config.use_https,
             param_vpn_cert_arn=network_config.param_vpn_cert_arn,
             param_vpn_endpoint_id=network_config.param_vpn_endpoint_id,
             env=env

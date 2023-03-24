@@ -27,6 +27,27 @@ class NetworkConfig:
     # Domain used when connected to the Researcher VPN
     domain_name: str
 
+    # Whether to use TLS-encrypted https traffic to the web services.
+    # Even though all traffic is tunneled through the VPN, it is still
+    # recommended that you set this to True for production systems.
+    # If True, you must set the parent_domain parameter and create a
+    # corresponding public hosted zone for a domain name you control. You must
+    # set the NS records on your registrar to point to the public hosted zone in
+    # order for certificate validation to succeed
+    use_https: bool = True
+
+    # Domain of an existing AWS public hosted zone in this account. You must
+    # create this public hosted zone yourself. This should generally be the
+    # parent of the domain_name (e.g. if domain_name is
+    # researcher.example.com, parent_name should normally be example.com).
+    # This setting is required when using https certificates. A public hosted
+    # zone will be created for the domain_name and its NS records will be added
+    # to the existing public hosted zone for the parent_domain.
+    # For https certificate validation to work, you must also add the NS records
+    # for the parent public hosted zone you created to the DNS provider of the
+    # parent domain.
+    parent_domain: Optional[str] = None
+
     # Optional: if specified, will override the prefix used to construct stack
     # names
     name_prefix: Optional[str] = None
@@ -72,6 +93,27 @@ class NodeConfig:
 
     # FBM default gui admin username
     default_gui_username: str
+
+    # Whether to use TLS-encrypted https traffic to the web services.
+    # Even though all traffic is tunneled through the VPN, it is still
+    # recommended that you set this to True for production systems.
+    # If True, you must set the parent_domain parameter and create a
+    # corresponding public hosted zone for a domain name you control. You must
+    # set the NS records on your registrar to point to the public hosted zone in
+    # order for certificate validation to succeed
+    use_https: bool = True
+
+    # Domain of an existing AWS public hosted zone in this account. You must
+    # create this public hosted zone yourself. This should generally be the
+    # parent of the domain_name (e.g. if domain_name is
+    # researcher.example.com, parent_name should normally be example.com).
+    # This setting is required when using https certificates. A public hosted
+    # zone will be created for the domain_name and its NS records will be added
+    # to the existing public hosted zone for the parent_domain.
+    # For https certificate validation to work, you must also add the NS records
+    # for the parent public hosted zone you created to the DNS provider of the
+    # parent domain.
+    parent_domain: Optional[str] = None
 
     # True if Fed-BioMed should require training plans to be approved
     enable_training_plan_approval: bool = True

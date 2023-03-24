@@ -31,12 +31,12 @@ class NetworkServiceStack(Stack):
         # Ports and hostnames
         self.restful_port = 8000
         self.mqtt_port = 1883
-        self.restful_dns_host = "restful"
-        self.mqtt_dns_host = "mqtt"
+        self.restful_dns_host = f"restful.{network_stack.dns_domain}"
+        self.mqtt_dns_host = f"mqtt.{network_stack.dns_domain}"
+        protocol = 'https://' if network_stack.use_https else 'http://'
 
-        self.mqtt_broker = f"{self.mqtt_dns_host}.{network_stack.dns_domain}"
-        self.uploads_url = f"http://{self.restful_dns_host}." \
-                           f"{network_stack.dns_domain}" \
+        self.mqtt_broker = f"{self.mqtt_dns_host}"
+        self.uploads_url = f"{protocol}{self.restful_dns_host}" \
                            f":{self.restful_port}/upload/"
 
         # Create cluster

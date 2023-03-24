@@ -27,8 +27,8 @@ class ResearcherServiceStack(Stack):
         # Ports and hostnames
         self.jupyter_port = 8888
         self.tensorboard_port = 6007
-        self.jupyter_dns_host = "jupyter"
-        self.tensorboard_dns_host = "tensorboard"
+        self.jupyter_dns_host = f"jupyter.{network_stack.dns_domain}"
+        self.tensorboard_dns_host = f"tensorboard.{network_stack.dns_domain}"
         mqtt_broker = network_service_stack.mqtt_broker
         mqtt_port = network_service_stack.mqtt_port
         uploads_url = network_service_stack.uploads_url

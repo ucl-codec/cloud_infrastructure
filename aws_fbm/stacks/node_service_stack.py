@@ -34,7 +34,7 @@ class NodeServiceStack(Stack):
                                      f"{node_stack.site_description}",
                          env=env)
 
-        self.gui_dns_host = "gui"
+        self.gui_dns_host = f"gui.{node_stack.hosted_zone.zone_name}"
 
         # Create cluster
         self.cluster = ecs.Cluster(

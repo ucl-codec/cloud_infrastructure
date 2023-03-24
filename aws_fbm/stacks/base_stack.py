@@ -120,10 +120,10 @@ class BaseStack(Stack):
     def add_dns(self, namespace: str, parent_namespace: Optional[str]):
         self.hosted_zone = route53.HostedZone(
             self,
-            "HostedZone",
+            "PrivateHostedZone",
             vpcs=[self.vpc],
             zone_name=namespace,
-            comment="Private Hosted Zone for FBM"
+            comment=f"Private Hosted Zone for {self.site_description}"
         )
 
     def add_vpn(self, param_vpn_endpoint_id: str):

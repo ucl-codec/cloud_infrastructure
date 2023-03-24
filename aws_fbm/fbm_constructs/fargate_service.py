@@ -8,6 +8,8 @@ from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_route53 as route53
 from aws_cdk import aws_logs as logs
 from aws_cdk import Duration
+from aws_cdk import aws_elasticloadbalancingv2 as elb
+from aws_cdk import aws_certificatemanager as acm
 from constructs import Construct
 
 from typing import Optional, Sequence, Mapping
@@ -140,6 +142,16 @@ class HttpService(FargateService):
                        domain_zone: route53.IHostedZone,
                        public_zone: route53.IHostedZone,
                        idle_timeout: int):
+        if self.use_https and not public_zone:
+            raise ValueError("Configuration file error: if use_https is True, "
+                             "then public_zone must be defined")
+        certificate = acm.Certificate(
+            scope=self,
+            id='LbCertificate',
+            domain_name=dns_name,
+            validation=acm.CertificateValidation.from_dns(public_zone),
+        ) if self.use_https else None
+
         return ecs_patterns.ApplicationLoadBalancedFargateService(
             self, "LbFargateService",
             cluster=cluster,
@@ -151,6 +163,10 @@ class HttpService(FargateService):
             assign_public_ip=False,
             domain_name=dns_name,
             listener_port=self.listener_port,
+            protocol=elb.ApplicationProtocol.HTTPS if
+            self.use_https else elb.ApplicationProtocol.HTTP,
+            certificate=certificate,
+            redirect_http=self.redirect_http,
             open_listener=False,
             public_load_balancer=False,
             domain_zone=domain_zone,
@@ -161,6 +177,11 @@ class HttpService(FargateService):
         self.load_balancer.connections.allow_from(
             ec2.Peer.ipv4(cidr_range),
             ec2.Port.tcp(self.listener_port))
+        # Externally-facing services may permit http->https redirection
+        if self.redirect_http and self.listener_port != 80:
+            self.load_balancer.connections.allow_from(
+                ec2.Peer.ipv4(cidr_range),
+                ec2.Port.tcp(80))
 
 
 class TcpService(FargateService):

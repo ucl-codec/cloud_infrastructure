@@ -58,6 +58,7 @@ class NetworkServiceStack(Stack):
             cluster=self.cluster,
             dns_name=self.mqtt_dns_host,
             domain_zone=network_stack.hosted_zone,
+            public_zone=network_stack.public_hosted_zone,
             cpu=512,
             memory_limit_mib=4096,
             ephemeral_storage_gib=40,
@@ -65,6 +66,8 @@ class NetworkServiceStack(Stack):
             task_name="mqtt",
             container_port=self.mqtt_port,
             listener_port=self.mqtt_port,
+            use_https=False,
+            redirect_http=False
         )
 
         # Restful container
@@ -81,6 +84,7 @@ class NetworkServiceStack(Stack):
             cluster=self.cluster,
             dns_name=self.restful_dns_host,
             domain_zone=network_stack.hosted_zone,
+            public_zone=network_stack.public_hosted_zone,
             cpu=512,
             memory_limit_mib=4096,
             ephemeral_storage_gib=40,
@@ -88,6 +92,8 @@ class NetworkServiceStack(Stack):
             task_name="restful",
             container_port=self.restful_port,
             listener_port=self.restful_port,
+            use_https=network_stack.use_https,
+            redirect_http=False
         )
 
     def allow_from_ip_range(self, cidr_range: str):

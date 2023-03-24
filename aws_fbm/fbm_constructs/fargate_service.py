@@ -23,6 +23,7 @@ class FargateService(Construct):
         cluster: ecs.Cluster,
         dns_name: str,
         domain_zone: route53.IHostedZone,
+        public_zone: route53.IHostedZone,
         cpu: int,
         memory_limit_mib: int,
         ephemeral_storage_gib: int,
@@ -30,6 +31,8 @@ class FargateService(Construct):
         task_name: str,
         container_port: int,
         listener_port: int,
+        redirect_http: bool,
+        use_https: bool,
         idle_timeout: int = 60,
         file_system: Optional[FileSystem] = None,
         entry_point: Optional[Sequence[str]] = None,
@@ -39,6 +42,8 @@ class FargateService(Construct):
     ):
         super().__init__(scope, id)
         self.listener_port = listener_port
+        self.use_https = use_https
+        self.redirect_http = redirect_http
 
         if volumes and not file_system:
             raise RuntimeError("file_system must be specified if volumes are"
@@ -95,11 +100,9 @@ class FargateService(Construct):
 
         self.load_balanced_service = self.create_service(
             cluster=cluster,
-            listener_port=listener_port,
-            container_port=container_port,
-            container_name=task_name,
             dns_name=dns_name,
             domain_zone=domain_zone,
+            public_zone=public_zone,
             idle_timeout=idle_timeout
         )
 
@@ -116,11 +119,9 @@ class FargateService(Construct):
 
     def create_service(self,
                        cluster: ecs.Cluster,
-                       listener_port: int,
-                       container_port: int,
-                       container_name: str,
                        dns_name: str,
                        domain_zone: route53.IHostedZone,
+                       public_zone: route53.IHostedZone,
                        idle_timeout: int):
         """Create the load balanced service"""
         raise NotImplementedError
@@ -151,7 +152,7 @@ class HttpService(FargateService):
             circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
             assign_public_ip=False,
             domain_name=dns_name,
-            listener_port=listener_port,
+            listener_port=self.listener_port,
             open_listener=False,
             public_load_balancer=False,
             domain_zone=domain_zone,
@@ -169,11 +170,9 @@ class TcpService(FargateService):
 
     def create_service(self,
                        cluster: ecs.Cluster,
-                       listener_port: int,
-                       container_port: int,
-                       container_name: str,
                        dns_name: str,
                        domain_zone: route53.IHostedZone,
+                       public_zone: route53.IHostedZone,
                        idle_timeout: int):
         load_balanced_service = ecs_patterns.NetworkLoadBalancedFargateService(
             self, "LbFargateService",
@@ -185,7 +184,7 @@ class TcpService(FargateService):
             circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
             assign_public_ip=False,
             domain_name=dns_name,
-            listener_port=listener_port,
+            listener_port=self.listener_port,
             public_load_balancer=False,
             domain_zone=domain_zone
         )

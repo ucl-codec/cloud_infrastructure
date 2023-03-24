@@ -118,6 +118,38 @@ class BaseStack(Stack):
             service=ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER)
 
     def add_dns(self, namespace: str, parent_namespace: Optional[str]):
+        # Create the public hosted zone. This is only used in validating
+        # certificates for https
+        self.public_hosted_zone = route53.HostedZone(
+            self,
+            "PublicHostedZone",
+            zone_name=namespace,
+            comment=f"Public Hosted Zone for {self.site_description}, used"
+                    f"for certificate validation"
+        )
+
+        if parent_namespace:
+            # Access the parent public hosted zone - this must already exist
+            parent_public_hosted_zone = route53.HostedZone.from_lookup(
+                scope=self,
+                id="ParentPublicHostedZone",
+                domain_name=parent_namespace,
+                private_zone=False
+            )
+            # Create the NS records that route public traffic from the parent
+            # public zone to the public zone. This is only used to validate the
+            # https certificates
+            parent_ns_records = route53.NsRecord(
+                scope=self,
+                id="NsRecords",
+                zone=parent_public_hosted_zone,
+                comment=f"NS records for {self.public_hosted_zone}",
+                delete_existing=True,
+                record_name=namespace,
+                values=self.public_hosted_zone.hosted_zone_name_servers
+            )
+
+        # Create the private hosted zone used to access the services
         self.hosted_zone = route53.HostedZone(
             self,
             "PrivateHostedZone",

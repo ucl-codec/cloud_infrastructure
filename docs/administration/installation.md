@@ -52,6 +52,17 @@ existing templates provided. Please follow the instructions in [Configuration fi
 
 ---
 
+## Configure a custom domain to enable https encryption
+
+If you wish to enable https encryption to the web servers (recommended), you must own or have 
+control of a public web domain. This is in order to allow AWS to generate and verify 
+certificates that will be recognised by your web browser.
+
+- Please follow the instructions in [Enabling https](enabling-https.md) before deploying a system with
+https enabled
+
+---
+
 ## One-time setup
 
 These actions must be performed once before installing PassianFL for the first time
@@ -64,10 +75,16 @@ set up the resources necessary for CDK to run.
 cdk bootstrap --profile passian
 ```
 
-### Create initial resources
+### Create VPN certificate authority and server certificates
 
-Certain resources must exist before you can run the CDK deployment. The script 
-`/scripts/initialise.sh` will automatically create these for you, using your configuration file.
+The VPN server certificates must exist before you can run the CDK deployment.
+
+For a development environment, the script `/scripts/initialise.sh` will automatically create these 
+for you based on your configuration file, using the `easyrsa` utility.
+The keys and certificates will be created in your home directory under `~/passian_vpn_certificates`. 
+For this reason, you should only run this on a machine
+where you can keep this folder secure. You will need to generate client certificates on the same 
+machine, or else securely move the certificate authority files across.
 
 Ensure you have set up your configuration file before running this command. See [Configuration files](configuration-files.md)
 
@@ -89,12 +106,18 @@ required resources
 The resources this script creates are:
 - For the Researcher Node and each Local Node, a development CA and server certificate for accessing the VPN 
 
+
 ---
 ## VPN with production deployments
 
-Production deployments should not use the automatically-generated VPN certificates from the previous step.
-You should generate your own certificates securely or configure an alternative method for VPN authentication.
-Please see [AWS VPN documentation](https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/client-authentication.html)  .
+The `initialise.sh` and `create_vpn_client.sh` scripts provide a convenient way of quickly creating and distributing
+VPN credentials for a development system. The certificate authority files and keys are stored in your home directory,
+and client configuration files are distributed as SecureStrings via the AWS Parameter Store. This 
+will not in general be appropriate for a production system, where it is necessary to strictly maintain the secrecy of keys and credentials
+
+For production deployments, ensure keys are only stored on a secure system. You may wish to consider 
+your own secure mechanisms for creating and distributing keys and certificates, or using an alternative method for
+VPN authorisation. Please see the [AWS VPN documentation](https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/client-authentication.html)  .
 
 ---
 

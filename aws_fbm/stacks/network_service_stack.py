@@ -36,8 +36,7 @@ class NetworkServiceStack(Stack):
         protocol = 'https://' if network_stack.use_https else 'http://'
 
         self.mqtt_broker = f"{self.mqtt_dns_host}"
-        self.uploads_url = f"{protocol}{self.restful_dns_host}" \
-                           f":{self.restful_port}/upload/"
+        self.uploads_url = f"{protocol}{self.restful_dns_host}/upload/"
 
         # Create cluster
         self.cluster = ecs.Cluster(scope=self, id="NetworkCluster",
@@ -91,9 +90,9 @@ class NetworkServiceStack(Stack):
             docker_image_asset=restful_docker_image,
             task_name="restful",
             container_port=self.restful_port,
-            listener_port=self.restful_port,
+            listener_port=443 if network_stack.use_https else 80,
             use_https=network_stack.use_https,
-            redirect_http=False
+            redirect_http=True
         )
 
     def allow_from_ip_range(self, cidr_range: str):

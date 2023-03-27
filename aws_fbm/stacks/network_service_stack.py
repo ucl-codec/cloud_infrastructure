@@ -92,7 +92,7 @@ class NetworkServiceStack(Stack):
             container_port=self.restful_port,
             listener_port=443 if network_stack.use_https else 80,
             use_https=network_stack.use_https,
-            redirect_http=True
+            redirect_http=network_stack.use_https
         )
 
     def allow_from_ip_range(self, cidr_range: str):

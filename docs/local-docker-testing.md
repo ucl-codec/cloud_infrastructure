@@ -6,7 +6,7 @@ scripts. This will give you a fully working test Fed-BioMed instance on your loc
 ---
 ## Requirements
 
-Please configure your system as described in [Deployment machine setup](../administration/deployment-machine-setup.md).
+Please configure your system as described in [Deployment machine setup](deployment-machine-setup.md).
 You don't need to install AWS tools or credentials, but you do need to install a docker engine and 
 configure its RAM and disk limits so that you can build and run the containers
 
@@ -75,5 +75,5 @@ docker system prune --all --force --volumes
 ---
 ## Troubleshooting
 
-See [Troubleshooting](../administration/troubleshooting.md)
+See [Troubleshooting](troubleshooting.md)
 

@@ -4,7 +4,7 @@
 
 ## Configuring your machine for local development
 
-- The base requirements are the same as in the [Deployment machine setup](../administration/deployment-machine-setup.md).
+- The base requirements are the same as in the [Deployment machine setup](deployment-machine-setup.md).
 - Additional python dependencies are in `requirements-dev.txt`
 
 
@@ -12,7 +12,7 @@
 
 ## Multiple configurations for test/staging/production etc 
 
-Use [Configuration files](../administration/configuration-files.md) to create different PassianFL environments
+Use [Configuration files](configuration-files.md) to create different PassianFL environments
 - CDK deployments are independent if they have different Stack Names. You can ensure this by providing unique stack prefixes in the configuration
 - Some AWS resources gave global names, such as S3 buckets and parameters. You need to specify 
 - non-conflicting names in the configuration files for these. But you can share these resources if you wish to betwen configurations. 

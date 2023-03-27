@@ -22,7 +22,7 @@ You can install the
 ## Obtain your VPN credentials
 
 The administrator for your PassianFL Node should create your VPN
-credentials following the [Adding users guide](../administration/adding-users.md).
+credentials following the [Adding users guide](adding-users.md).
 
 The default PassianFL authorisation method is using certificates. For each VPN you need access to, 
 your administrator will create a **client configuration file** for you and upload it to the AWS
@@ -38,8 +38,8 @@ script.
 
 To use this script you must have the AWS CLI installed and your AWS profile set up as described in
 the following pages:
-- [Setting up a local machine](../administration/deployment-machine-setup.md)
-- [Configure your AWS credentials](../administration/configure-aws-credentials.md)
+- [Setting up a local machine](deployment-machine-setup.md)
+- [Configure your AWS credentials](configure-aws-credentials.md)
 
 From the terminal, navigate to the folder containing this repository and run
 ```bash

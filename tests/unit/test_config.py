@@ -12,23 +12,25 @@ def test_dev_config():
         network=NetworkConfig(
             config_name="dev",
             node_name="network",
-            stack_name="TestNetworkStack",
+            stack_name=None,
             name_prefix="passianfl-dev-network-",
-            site_description="Test Federated",
-            domain_name="test.testfederated"
+            site_description="Development researcher node",
+            domain_name="researcher.passianfldev.com",
+            use_https=False
         ),
         nodes=[
             NodeConfig(
                 config_name="dev",
                 node_name="nodea",
                 name_prefix='passianfl-dev-nodea-',
-                stack_name="TestNodeStackA",
-                site_description="Test Node A",
-                domain_name="test.testclinicala",
+                stack_name=None,
+                site_description="Development node a",
+                domain_name="nodea.passianfldev.com",
                 enable_training_plan_approval=False,
                 allow_default_training_plans=True,
                 use_production_gui=True,
                 default_gui_username="admin@testclinicala",
+                use_https=False
             )
         ]
     )

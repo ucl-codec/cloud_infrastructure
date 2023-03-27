@@ -26,4 +26,6 @@
 ## Development
 
 - [Development guide](development.md) 
+- [Architecture](architecture.md)
 - [Local docker testing](local-docker-testing.md)
+- [Unit tests](unit-tests.md)

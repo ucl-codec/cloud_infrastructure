@@ -24,21 +24,7 @@ The initial VPC limit in each AWS account is 5 VPCs but you can request that AWS
 
 ## Stack architecture
 
-There is one VPC for the Researcher Node and one for each of the Local Nodes.
-
-These are divided into multiple stacks:
-
-Researcher Node:
-- NetworkStack: stateful resources (VPC, VPN, storage)
-- NetworkServicesStack: cluster of FBM federation services (mqtt + restful)
-- ResearcherServicesStack: cluster of researcher services (jupyter + tensorboard)
-
-Each Local Node:
-- NodeStack: stateful resources (VPC, VPN, storage)
-- NodeServicesStack: cluster of node services (FBM node + FBM gui)
-
-Peering Stack: connects the VPCs together
-
+- See [Architecture](architecture.md)
 
 ---
 
@@ -62,13 +48,4 @@ See [Local docker testing](local-docker-testing.md).
 
 ## Unit tests
 
-Some unit tests for pytest are found in the `tests/unit` folder.
-
-To install the required python dependencies 
-```bash
-pip install -r requirements-dev.txt
-```
-To run the tests using pytest:
-```bash
-pytest tests/unit/
-```
+- see [Unit tests](unit-tests.md)

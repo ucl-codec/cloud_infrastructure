@@ -198,8 +198,12 @@ and for destroying the production stack:
 
 Note that resources defined outside of the CDK stacks will not be deleted (such as the VPN 
 certificates, and the parent public hosted zone if you are using https). Additionally,
-some resources may not delete as they are protected from deletion (such as logs) or are in use by
-other resources. These can be deleted manually after the rest of the stack deletion is complete.
+some resources may not delete as they are protected from deletion (such as S3 buckets logs) or are
+in use by other resources. These can be deleted manually after the rest of the stack deletion is 
+complete.
+
+You might not be able to re-deploy a deleted stack if fixed-name resources (such as S3 buckets) have
+not been deleted.
 
 Any resources that are not deleted will continue to incur the relevant AWS costs. 
 

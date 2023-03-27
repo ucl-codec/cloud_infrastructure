@@ -182,16 +182,26 @@ You should only manually delete resources in one of following situations:
  - they were created outside of CDK (such as by the `initialise.sh` script above)
  - where the stack has already been destroyed and a resource remains because it could not be deleted
 
-Some stacks are protected from deletion, as they contain "stateful" resources (such as the file systems and VPN).
-Destroying these could result in data loss or users having to obtain new VPN credentials.
-To remove protected stacks, you will first need to disable stack protection using the AWS console. 
+Some stacks have been protected from deletion. This is because they contain "stateful" resources
+(such as the file systems and VPN). Destroying these could result in data loss or users having to 
+obtain new VPN credentials. To remove protected stacks, you will first need to disable stack
+protection, which can be done using the AWS console. 
 
-A convenience script is provided for destroying the production stack:
+Convenience scripts are provided for destroying the dev stack:
 ```bash
-./scripts/destroy.sh
+./scripts/destroy_dev.sh
 ```
-Note that some resources are defined outside of the CDK stacks and will persist (such as parameters, certificates and S3 buckets).
-These need to be manually deleted to stop further costs.
+and for destroying the production stack:
+```bash
+./scripts/destroy_prod.sh
+```
+
+Note that resources defined outside of the CDK stacks will not be deleted (such as the VPN 
+certificates, and the parent public hosted zone if you are using https). Additionally,
+some resources may not delete as they are protected from deletion (such as logs) or are in use by
+other resources. These can be deleted manually after the rest of the stack deletion is complete.
+
+Any resources that are not deleted will continue to incur the relevant AWS costs. 
 
 ---
 ## Troubleshooting

@@ -21,7 +21,7 @@ If you have both of these roles, you need to consider role independently when fo
 - After upload, data will be synced form the S3 bucket into the Local Node.
   - Synchronisation starts once per hour, so after adding data you may have to wait before the data
 become available on the node
-  - The PassianFL Local Node administrator can manually trigger an immediate sync from the AWS Data Sync console   
+  - The PassianFL Local Node administrator can manually trigger an immediate sync from the AWS Data Sync console. See [Data sync](data-sync.md)   
   - Data sync can take some time depending on the size of the data 
     - Data deleted from the S3 bucket will also be deleted from the Local Node during the sync
 

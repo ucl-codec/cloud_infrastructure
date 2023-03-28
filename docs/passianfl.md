@@ -17,8 +17,10 @@
 - [PassianFL Configuration files](configuration-files.md)
 - [Enabling https](enabling-https.md)
 - [Adding users](adding-users.md)
+- [Data sync](data-sync.md)
 - [Managing instances and services to save costs](managing-instances.md)
 - [Monitoring](monitoring.md)
+- [Teardown](teardown.md)
 - [Troubleshooting](troubleshooting.md)
 
 ---

@@ -170,42 +170,20 @@ connect to. See [Adding users](adding-users.md)
 
 
 ---
-## Destroy the CDK stack
 
-To remove a deployment, you can either:
-- run cdk destroy from your machine to destroy the CDK stacks
-- delete the CloudFormation stacks on the AWS Console
+## Removing resources and uninstalling
 
-Do not delete resources manually, as you may then be unable to perform further CDK updates.
+To remove a PassianFL installation, see [teardown](teardown.md).
 
-You should only manually delete resources in one of following situations:
- - they were created outside of CDK (such as by the `initialise.sh` script above)
- - where the stack has already been destroyed and a resource remains because it could not be deleted
+To permanently remove a resource, this should be done by modifying the CDK stacks.
+Do not delete resources manually, as this could leave your system in an inconsistent state which 
+CDK cannot update.
 
-Some stacks have been protected from deletion. This is because they contain "stateful" resources
-(such as the file systems and VPN). Destroying these could result in data loss or users having to 
-obtain new VPN credentials. To remove protected stacks, you will first need to disable stack
-protection, which can be done using the AWS console. 
-
-Convenience scripts are provided for destroying the dev stack:
-```bash
-./scripts/destroy_dev.sh
-```
-and for destroying the production stack:
-```bash
-./scripts/destroy_prod.sh
-```
-
-Note that resources defined outside of the CDK stacks will not be deleted (such as the VPN 
-certificates, and the parent public hosted zone if you are using https). Additionally,
-some resources may not delete as they are protected from deletion (such as S3 buckets logs) or are
-in use by other resources. These can be deleted manually after the rest of the stack deletion is 
-complete.
-
-You might not be able to re-deploy a deleted stack if fixed-name resources (such as S3 buckets) have
-not been deleted.
-
-Any resources that are not deleted will continue to incur the relevant AWS costs. 
+If you need to temporarily remove resources, you can delete the CloudFormation stack in which they
+reside. A deployment update will then re-create the missing stack. However, be aware of the
+consequences of deleting stacks containing "stateful" resources. For example, deleting VPN endpoints
+means that users will require new client configuration files to connect. PassianFL adds 
+termination to stateful stacks
 
 ---
 ## Troubleshooting

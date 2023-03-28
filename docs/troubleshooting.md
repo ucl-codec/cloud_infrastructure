@@ -1,5 +1,36 @@
 # Troubleshooting
 
+---
+
+## CDK / CloudFormation issues
+
+### Drift
+
+CDK/CloudFormation expect to manage the AWS resources they create. If resources are manually 
+added, modified or deleted, this can result in stack drift and CDK may be unable to perform updates.
+
+For example, if you manually create an AWS resource that depends on a VPC, then
+CloudFormation may be unable to modify that VPC because of the dependency you have created.
+
+Drift can be fixed by reverting manual changes, creating and importing missing resources, or
+by deleting CloudFormation stacks. AWS provides tools to detect and analyse drift. 
+- [AWS documentation on stack drift](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html)  
+
+
+### Update failures
+
+In some cases CloudFormation updates resources by creating a new resource and then deleting
+the old one. This can sometimes fail because of dependency ordering (the old resource cannot be 
+deleted as it is still in use by another resource) or because of unique naming constraints (e.g. 
+a new S3 bucket cannot be created with the same name as an exiting bucket).
+
+In some cases you may find it easier to delete the stacks that are causing update issues. You 
+may need to manually delete resources which CloudFormation cannot delete and which are causing
+conflicts.
+
+
+
+---
 
 ## Docker errors
 

@@ -4,8 +4,8 @@
 
 ## Help for end users (researchers and data providers) 
 
-- [End-user guide for PassianFL](user_guide.md) 
-- [Connecting to VPNs](vpn_setup.md)
+- [End-user guide for PassianFL](user-guide.md) 
+- [Connecting to VPNs](vpn-setup.md)
 
 ---
 

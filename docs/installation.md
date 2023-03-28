@@ -160,8 +160,8 @@ providers
 - You will need to generate a VPN client configuration file for yourself for each node you wish to 
 connect to. See [Adding users](adding-users.md)
 - You then need to set up VPN access for each node by adding this file to the AWS Client VPN. See
-[VPN setup](vpn_setup.md)
-- Once connected to the local node VPN, you can connect to the Fed-BioMed gui as described in the [user guide](user_guide.md).
+[VPN setup](vpn-setup.md)
+- Once connected to the local node VPN, you can connect to the Fed-BioMed gui as described in the [user guide](user-guide.md).
 - The default credentials for the Fed-BioMed admin user are as follows:
   - The admin username is specified in the configuration file, e.g. `conf/prod.cfg` 
   - The default admin password is stored in an AWS secret with the prefix `passianfl<config-name><node-name>guidefault-xxxxxx`

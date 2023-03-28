@@ -27,7 +27,7 @@ become available on the node
 
 ### Set up your VPN access
 
-- See [Connecting to VPNs for PassianFL](vpn_setup.md)
+- See [Connecting to VPNs for PassianFL](vpn-setup.md)
 
 ### Connect to your Data Node
 
@@ -61,7 +61,7 @@ See Fed-BioMed documentation for details.
 
 ### Set up your VPN access
 
-- See [Connecting to VPNs for PassianFL](vpn_setup.md)
+- See [Connecting to VPNs for PassianFL](vpn-setup.md)
 
 ### Connect to the Researcher network
 - Launch the AWS VPN Client 

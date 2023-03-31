@@ -105,4 +105,4 @@ close your existing VPN session before connecting to the next one.
 
 ## VPN Troubleshooting
 
-See [Troubleshooting your Client VPN connection](https://docs.aws.amazon.com/vpn/latest/clientvpn-user/linux-troubleshooting.htmlhttps://docs.aws.amazon.com/vpn/latest/clientvpn-user/troubleshooting.html)
+See [Troubleshooting your Client VPN connection](https://docs.aws.amazon.com/vpn/latest/clientvpn-user/troubleshooting.html)

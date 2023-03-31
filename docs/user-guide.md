@@ -38,6 +38,7 @@ become available on the node
 - Connect to Fed Bio-Med GUI in your web browser:
   - Site A: http://gui.passian.clinicala
   - Site B: http://gui.passian.clinicalb
+  - NOTE: these URLs will depend on the configuration of your system: see [Configuration files](configuration-files.md)
 
 
 ### Log into the Fed-BioMed gui

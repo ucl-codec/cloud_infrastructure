@@ -138,7 +138,7 @@ To deploy the dev stack
 cdk deploy --all  --context config=dev --profile passian
 ```
 
-There are helper scripts to depoloy dev and production: 
+There are helper scripts to deploy dev and production: 
 
 - Deploy dev:
     ```bash

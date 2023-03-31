@@ -21,7 +21,7 @@ These can be obtained from the IAM Identity Centre (if you have access), or thro
 ## Add credentials to your machine
 
 It is recommended not to configure default credentials, but instead create a dedicated profile called `passian`.
-This prevents issues with accidently deploying to the wrong account when you have access to multiple AWS accounts.  
+This prevents issues with accidentally deploying to the wrong account when you have access to multiple AWS accounts.  
 
 ### Create an AWS named profile on your machine, named `passian`
 ```bash

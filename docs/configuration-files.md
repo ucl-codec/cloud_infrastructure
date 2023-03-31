@@ -38,8 +38,8 @@ enable_training_plan_approval = True
 allow_default_training_plans = False
 ```
 
-The `[network]` dession describes the Researcher Node.
-Each additional seciton desribes a Local Node.
+The `[network]` section describes the Researcher Node.
+Each additional section describes a Local Node.
 
 ## Network
 

@@ -84,9 +84,9 @@ See [Linux troubleshooting](https://docs.aws.amazon.com/vpn/latest/clientvpn-use
   - `PassianFL <site name> Local Node` for a Local Node
 - For `VPN Configuration File`, select the file symbol and choose the client configuration file you downloaded for this site
 
-  _Note: If you used the script to download your client configuration file, it will be in your home directry under `~/passian_vpn_certificates/vpn_configuration_files`_
+  _Note: If you used the script to download your client configuration file, it will be in your home directory under `~/passian_vpn_certificates/vpn_configuration_files`_
 
-- Repeat this process for each client configuratin file. _Note: If you are a data provider for multiple sites, you need to add a profile for each site_
+- Repeat this process for each client configuration file. _Note: If you are a data provider for multiple sites, you need to add a profile for each site_
 
 ----
 

@@ -48,7 +48,7 @@ Desktop or Rancher Desktop gui, or using the appropriate command-line calls.
 ## Errors during Docker container building
 
 Common intermittent build errors are due to the Docker engine having insufficient RAM or disk space.
-You can adjust the RAM and disk space in the engine'e settings.
+You can adjust the RAM and disk space in the engine's settings.
  - In Docker Desktop, launch the GUI and go to Settings/Resources.
 
 ## No space left on device
@@ -67,7 +67,7 @@ Example commands (see docker documentation for more details)
 ## exit code: 13
 
 `exit code: 13` during a local docker build indicates you need to increase the maximum RAM 
-available to the local docker VM. You can adjust the RAM and disk space in the engine'e settings 
+available to the local docker VM. You can adjust the RAM and disk space in the engine's settings 
 as described above
 
 

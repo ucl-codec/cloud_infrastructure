@@ -33,7 +33,7 @@ These steps must be followed before you deploy PassianFL with https enabled
 - PassianFL will create subdomains under the parent domain. For example, if your parent domain is `example.com`, PassianFL will
 create subdomains `researcher.example.com` for the researcher node, `nodea.example.com` for the local node "nodea", and so on.
 - PassianFL wil automatically create AWS certificates for each web server. In order to approve the certificate, AWS adds a CNAME
-record to the public hosted zone. If you have not correctly configured your NS records as described above, the certificate valiation will fail during deployment.
+record to the public hosted zone. If you have not correctly configured your NS records as described above, the certificate validation will fail during deployment.
 - The public hosted zones are only used for certificate validation. When using PassianFL, communication is over private networks. 
 
 ---

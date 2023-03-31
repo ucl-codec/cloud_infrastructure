@@ -63,7 +63,7 @@ You may also wish to delete `.local_docker_storage` to simulate a clean install.
 ### Environment variables
 
 Some configuration is set via environment variables in the `local_docker_run.sh` script. You can
-modify these values but you will need to destroy and re-run the containers for them to be recognised.
+modify these values, but you will need to destroy and re-run the containers for them to be recognised.
 
 ### Reclaim disk space using docker prune 
 

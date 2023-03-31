@@ -22,6 +22,12 @@ Peering Stack: connects the VPCs together
 
 ---
 
+## Architecture diagram
+
+![Diagram showing PassianFL AWS architecture](passianfl_architecture.png)
+
+---
+
 ## Component summary
 
 - Services:

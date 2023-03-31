@@ -45,3 +45,5 @@ Peering Stack: connects the VPCs together
   - The researcher node and each local node has its own VPN
   - VPC peering allows connections to the mqtt and restful services from the local nodes
   - No external internet access is enabled within the VPCs. Access to AWS services is through interface endpoints (AWS PrivateLink)
+  - The researcher node and each local node has its own Route 53 private hosted zone 
+  - If https is enabled, the researcher node and each local node also has its own Route 53 public hosted zone
